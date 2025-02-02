@@ -28,26 +28,31 @@ Products
 </template>
 
 <script lang="ts" setup>
+import Grandeur_WT from 'assets/images/home/Grandeur_WT.jpg'
+import PG_00755 from 'assets/images/home/PG_00755.jpg'
+import TheGlamourCollection from 'assets/images/home/The-Glamour-Collection.jpg'
+import TheInspirationCollection from 'assets/images/home/The-Inspiration-Collection-Open.jpg'
+
 const products = [
   {
     id:1,
     name: 'The Grandeur Collection',
-    img :new URL('/assets/images/home/Grandeur_WT.jpg', import.meta.url).href
+    img :Grandeur_WT
   },
   {
     id:2,
     name: 'The Prestige Collection',
-    img :new URL('/assets/images/home/PG_00755.jpg', import.meta.url).href
+    img :PG_00755
   },
   {
     id:3,
     name: 'The Glamour Collection',
-    img :new URL('/assets/images/home/The-Glamour-Collection.jpg', import.meta.url).href
+    img :TheGlamourCollection
   },
   {
     id:4,
     name: 'The Inspiration Collection',
-    img :new URL('/assets/images/home/The-Inspiration-Collection-Open.jpg', import.meta.url).href
+    img :TheInspirationCollection
   }
 ]
 </script>

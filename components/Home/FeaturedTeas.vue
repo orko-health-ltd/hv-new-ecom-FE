@@ -29,19 +29,21 @@
 </template>
 
 <script lang="ts" setup>
-
+import DWGT from 'assets/images/home/DWGT.jpg'
+import SNWT from 'assets/images/SNWT.jpg'
+import GEBT from 'assets/images/GEBT.jpg'
 const items = [
   {
     name:'Dragon Well',
     title: 'Green Tea',
     description: "Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.",
-    img:new URL('/assets/images/home/DWGT.jpg', import.meta.url).href
+    img:DWGT
   },
   {
-    name:'Dragon Well',
-    title: 'Green Tea',
-    description: "Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.",
-    img:new URL('/assets/images/home/DWGT.jpg', import.meta.url).href
+    name:'Silver Needle',
+    title: 'White Tea',
+    description: "The lingering fragrance of our Halda Valley Silver Needle White Tea is Delicately honeysuckle floral, with a warmed sugar sweetness and soft mouthfeel and uplifting finish.",
+    img:SNWT
   },
   // {
   //   name:'Dragon Well',
@@ -49,12 +51,12 @@ const items = [
   //   description: "Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.",
   //   img:dwgt
   // },
-  // {
-  //   name:'Dragon Well',
-  //   title: 'Green Tea',
-  //   description: "Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.",
-  //   img:dwgt
-  // },
+ {
+    name:'Golden Eyebrow',
+    title: 'Black Tea',
+    description: "Halda Valley Golden Eyebrow Black Tea is made of delicate handpicked leaves that offers Strong honey and floral fragrance with distinctly honey-sweet & mellow taste.",
+    img:GEBT
+  },
 ]
 const carouselRef = ref()
 

@@ -5,8 +5,8 @@
     </div>
     <div class="w-full">
       <ul class="flex text-white justify-center items-center text-sm gap-8 w-full">
-        <li>Home</li>
-        <li>Shop</li>
+        <nuxt-link to="/">Home</nuxt-link>
+        <nuxt-link to="/shop/">Shop</nuxt-link>
         <li>
            <UDropdown :items="items" mode="hover" class="border-none ring-0 hover:bg-none" :popper="{ placement: 'bottom-start' }">
     <UButton color="white" label=" About Us" class="bg-transparent ring-0 hover:!bg-transparent text-white border-none" trailing-icon="i-heroicons-chevron-down-20-solid" />

@@ -1,5 +1,5 @@
 <template>
- <div class="z-0 w-full h-[85vh] top-0 overflow-hidden">
+ <div class="z-0 w-full h-screen top-0 overflow-hidden">
     <!-- Background Video -->
     <iframe
         width='1440px'

@@ -1,5 +1,6 @@
 {
-  "name": "nuxt-app",
+  "name": "haldavally-ecommerce",
+  "author": "Ishmam Bin Azim",
   "private": true,
   "type": "module",
   "scripts": {

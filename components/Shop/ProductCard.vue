@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[230px] h-auto bg-white rounded-lg shadow-lg p-4">
+  <div class="w-full h-auto bg-white rounded-lg shadow-lg p-4">
     <img :src="props.product.img" class="hover:animate-scaleUpDown" alt="">
     <div class="space-y-2 mt-4">
        <h1 class="text-black">{{ props.product.name }}</h1>

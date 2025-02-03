@@ -20,7 +20,7 @@
            
         </div>
         <div class="w-full col-span-3">
-           <div class="w-full gap-y-5 grid gap-1 grid-cols-4">
+           <div class="w-full gap-y-5 grid gap-4 grid-cols-4">
           <ShopProductCard v-for="product in products" :key="product.id" :product="product" />
         </div>
         </div>

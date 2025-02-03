@@ -1,6 +1,6 @@
 <template>
-   <div class="">
-   <div class="bg-[#01251a] z-10 relative  w-full">
+   <div class="bottom-0 relative">
+   <div class="bg-[#01251a]   w-full">
    <div class=" flex justify-between items-center w-full px-[8%] py-7">
     <div class="flex flex-col py-10 px-12 items-center space-x-5 mb-2 text-white">
       <img class="w-auto h-28" src="/assets/images/logo/golden_logo.png" alt="">

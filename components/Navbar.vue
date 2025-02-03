@@ -8,8 +8,10 @@
         <nuxt-link to="/">Home</nuxt-link>
         <nuxt-link to="/shop/">Shop</nuxt-link>
         <li>
-           <UDropdown :items="items" mode="hover" class="border-none ring-0 hover:bg-none" :popper="{ placement: 'bottom-start' }">
-    <UButton color="white" label=" About Us" class="bg-transparent ring-0 hover:!bg-transparent text-white border-none" trailing-icon="i-heroicons-chevron-down-20-solid" />
+         
+           <UDropdown :items="items" mode="hover" class="border-none ring-0 hover:bg-none"  :popper="{ placement: 'bottom-start' }">
+    <UButton color="white" label=" About Us" class="bg-transparent ring-0 hover:!bg-transparent  border-none" :class="route.path.startsWith('/about-us') ? 'text-[#b4a345]':'text-white'" trailing-icon="i-heroicons-chevron-down-20-solid" />
+       
   </UDropdown>
          </li>
         <li>Our Tea</li>
@@ -24,18 +26,32 @@
 </template>
 
 <script lang="ts" setup>
+const route = useRoute()
 const items = [
   [{
-    label: 'Profile',
-    avatar: {
-      src: 'https://avatars.githubusercontent.com/u/739984?v=4'
-    }
-  }]
+    label: 'Our Story',
+    to: '/about-us/our-story',
+  },
+  {
+    label: 'Timeline',
+    to: '/about-us/timeline',
+  },
+  {
+    label: 'Our People',
+    to: '/about-us/our-people',
+  },
+  {
+    label: 'Corporate Client List',
+    to: '/about-us/corporate-client-list',
+  }
+  ]
 ]
 </script>
 
 
 
 <style>
-
+.router-link-active {
+  color: #b4a345; 
+}
 </style>

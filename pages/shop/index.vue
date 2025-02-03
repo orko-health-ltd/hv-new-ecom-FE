@@ -6,7 +6,7 @@
      
       </div>
    
- <div class="bg-white mx-20 h-screen py-20 ">
+ <div class="bg-white mx-20 min-h-screen py-20 ">
       <div class="grid grid-cols-4 gap-5  items-start">
         <div class="w-full flex space-y-4 flex-col justify-start items-start px-10">
           <h1 class="text-2xl font-serif">Shop By Product</h1>

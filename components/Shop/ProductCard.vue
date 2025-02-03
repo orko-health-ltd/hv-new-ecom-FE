@@ -25,9 +25,9 @@ const props = defineProps({
     required: true,
   }
 })
-const cart = myCartStore()
+const cart = useMyCartStore()
 const addProductToCart = (product: any) => {
-  cart.addProduct(product)
+  cart.addToCart(product)
 }
 </script>
 

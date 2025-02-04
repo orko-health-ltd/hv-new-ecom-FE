@@ -17,11 +17,7 @@
         <p class="text-xl">Nourished by calming rainfall, soft breeze and soothing temperature and cared by our garden team, Halda Valley Tea Estate is an award winning garden complemented by 100% permanent irrigation system covering 1100+ acres of cultivated land. Starting from the green house nursery to the factory, we have been able to make a perfect blend of state of the art technology and pure environment to grow tea that excel in aroma and taste</p>
     </div>
    </div>
-   <div class="w-full overflow-hidden h-[90vh] flex items-center justify-center">
-     <UCarousel v-slot="{ item }" :items="items" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden  " arrows>
-    <img :src="item" class="w-full overflow-hidden" draggable="false">
-  </UCarousel>
-   </div>
+    <CommonSlide />
    <div class="px-[20%] py-20 grid grid-cols-2 justify-center items-center gap-10">
     <div class="flex items-center justify-center">
       <p>
@@ -71,12 +67,7 @@ Halda Valley is a tea estate where growth is hardwired into her DNA. Since 2010,
 </template>
 
 <script lang="ts" setup>
-import slide1 from 'assets/images/slides/Slide-1-scaled.jpg'
-import slide2 from 'assets/images/slides/Slide-2-scaled.jpg'
-import slide3 from 'assets/images/slides/Slide-3-scaled.jpg'
-const items = [
-  slide1,slide2,slide3
-]
+
 </script>
 
 

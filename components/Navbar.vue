@@ -1,8 +1,8 @@
 <template>
   <div class="bg-[#01251a] z-10 fixed flex justify-between items-center w-full px-3 py-7">
-    <div class="w-[160px]">
+    <nuxt-link to="/" class="w-[160px]">
  <img class="w-full h-[48px] " src="/assets/images/logo/hv-logo-white.png" alt="">
-    </div>
+    </nuxt-link>
     <div class="w-full">
       <ul class="flex text-white justify-center items-center text-sm gap-8 w-full">
         <nuxt-link to="/">Home</nuxt-link>
@@ -24,8 +24,9 @@
     <UButton color="white" label="Media" class="bg-transparent ring-0 hover:!bg-transparent  border-none" :class="route.path.startsWith('/media') ? 'text-[#b4a345]':'text-white'" trailing-icon="i-heroicons-chevron-down-20-solid" />
        
   </UDropdown></li>
-        <li>Contact Us</li>
-        <li>Careers</li>
+         <nuxt-link to="/contact-us">Contact Us</nuxt-link>
+         <nuxt-link to="/career">Careers</nuxt-link>
+       
       </ul>
     </div>
   </div>

@@ -39,10 +39,10 @@
          <image-gallery :images="images" galleryID="my-test-gallery" />
         </template>
         <template #video="{ item }">
-         <div class="bg-white p-5 grid grid-cols-2">
-          <div v-for="video in videos" :key="video.link" >
-            {{ video.link }}
-             <iframe :src="video.link" frameborder="0"></iframe>
+         <div class="bg-white p-10 gap-5 grid grid-cols-2">
+          <div v-for="video in videos" class="w-full h-[400px] " :key="video.link" >
+            
+             <iframe :src="video.link" class="w-full h-full rounded-xl" frameborder="0"></iframe>
         
           </div>
           </div>
@@ -148,16 +148,16 @@ const images = [
 ]
 const videos = [
   {
-          link:'https://www.youtube.com/watch?v=eVKvJ9vshX4'
+          link:'https://www.youtube.com/embed/eVKvJ9vshX4'
         },
   {
-          link:'https://youtu.be/Y1yMQSPUteA'
+          link:'https://www.youtube.com/embed/Y1yMQSPUteA'
         },
   {
-          link:'https://youtu.be/71q03ld_pj8'
+          link:'https://www.youtube.com/embed/71q03ld_pj8'
         },
   {
-          link:'https://youtu.be/2OHB3FckqNg'
+          link:'https://www.youtube.com/embed/2OHB3FckqNg'
         }
       ]
 </script>

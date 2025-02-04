@@ -7,7 +7,7 @@
       <h2 class=" text-lg text-nowrap">We Value</h2>
       <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
-            <h1 class="text-5xl text-center w-full uppercase font-serif">Our People</h1>
+            <h1 class="text-5xl text-white text-center w-full uppercase font-serif">Our People</h1>
         </div>
       
      

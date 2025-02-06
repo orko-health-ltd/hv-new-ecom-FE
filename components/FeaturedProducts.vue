@@ -2,7 +2,7 @@
   <div>
      <div class="w-full space-y-10 ">
       <h2 class="text-3xl text-center font-serif">Featured PRODUCTS</h2>
-           <div class="w-full gap-3 grid  grid-cols-4">
+           <div class="w-full gap-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
           <ShopProductCard v-for="product in products" :key="product.id" :product="product" />
         </div>
         </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center h-screen justify-center">
+  <div class="flex items-center h-screen justify-center p-10 pt-28 md:pt-0">
     <div class="flex flex-col space-y-6 justify-center items-center w-[550px]">
       <img class="w-[250px]" src="/assets/images/logo/Halda-Valley-Logo-03.png" alt="">
     

@@ -1,16 +1,12 @@
 <template>
-  <div>
-    <UCarousel
-      ref="carouselRef"
-      v-slot="{ item }"
-      :items="items"
-      :ui="{ item: 'basis-full transition-opacity duration-500 ease-in-out' }"
-      class="rounded-lg overflow-hidden"
-      indicators
-    >
-      <img :src="item.img" alt="" class="w-full">
-    </UCarousel>
-    <div class="flex items-center text-gray-500 font-serif justify-center px-[10%] gap-20 py-10">
+  <div class="pt-20">
+     <Swiper :modules="[EffectFade,Autoplay]" effect="fade" :autoplay="true" >
+    <SwiperSlide v-for="item in items" :key="item.name"> <img :src="item.img" alt="" class="w-full"></SwiperSlide>
+  
+    ...
+     </Swiper>
+   
+    <div class="flex md:flex-row flex-col items-center text-gray-500 font-serif justify-center px-[10%] gap-20 py-10">
       <p class="font-extrathin text-sm">
         In this magnificent Spring, when nature resumes her loveliness with snug warmth and dazzling blossom, the human mind is filled with energy and hope. This blessed season allows lush camellias of Halda valley to flourish with all her treasures to offer the most exquisite, rare and amusing teas of the year- the ‘Spring flush”.
       </p>
@@ -19,7 +15,7 @@
       </p>
     </div>
     <CommonSlide />
-    <div class="grid grid-cols-2 px-[10%] py-10 gap-10 font-thin font-serif ">
+    <div class="grid grid-cols-1 md:grid-cols-2 px-[10%] py-10 gap-10 font-thin font-serif ">
       <div class="flex flex-col space-y-10 items-center justify-center">
        
             <div class="flex w-[350px] items-center space-x-5  text-[#b4a345]">
@@ -38,7 +34,7 @@
     </div>
       </div>
       <img src="/assets/images/Lucent-Collection.jpg" alt="">
-      <img src="/assets/images/Scarlet-front-1.jpg" alt="">
+      <img class="hidden md:block" src="/assets/images/Scarlet-front-1.jpg" alt="">
       <div class="flex flex-col space-y-10 items-center justify-center">
        
             <div class="flex w-[350px] items-center space-x-5  text-[#b4a345]">
@@ -56,6 +52,7 @@
       
     </div>
       </div>
+       <img class="md:hidden block" src="/assets/images/Scarlet-front-1.jpg" alt="">
        <div class="flex flex-col space-y-10 items-center justify-center">
        
             <div class="flex w-[350px] items-center space-x-5  text-[#b4a345]">
@@ -79,6 +76,12 @@
 </template>
 
 <script lang="ts" setup>
+import { EffectFade } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
+  import { Swiper, SwiperSlide } from 'swiper/vue';
+
+  import 'swiper/css';
+  import 'swiper/css/effect-fade';
 import scarlet from 'assets/images/scarlet.png'
 import twilight from 'assets/images/twilight.png'
 import lucent from 'assets/images/lucent.png'

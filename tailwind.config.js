@@ -12,7 +12,7 @@ export default {
       colors: {
         // primary: '#01251a',
         primary: {
-          DEFAULT: '#FF0000',
+          DEFAULT: '#01251a',
           50: '#F1F5FB',
           100: '#E3EBF7',
           200: '#C7D7F0',
@@ -26,7 +26,7 @@ export default {
           'accent-100': '#d9e4f3',
           'accent-200': '#cedbee',
         },
-        secondary: '#9333EA',
+        secondary: '#b4a345',
       },
       fontFamily: {
         quattrocento: ['Quattrocento', 'sans-serif'],
@@ -40,10 +40,25 @@ export default {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(1.1)', opacity: '0.9' },
         },
+        breathout: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.0)', opacity: '0.8' },
+        },
+        slideInLeft: {
+          '0%': { opacity: 0, transform: 'translateX(-100%)' },
+          '100%': { opacity: 1, transform: 'translateX(0)' },
+        },
+        slideInRight: {
+          '0%': { opacity: 0, transform: 'translateX(100%)' },
+          '100%': { opacity: 1, transform: 'translateX(0)' },
+        },
       },
       animation: {
         scaleUpDown: 'scaleUpDown 2s infinite ease-in-out',
         breath: 'breath 10s linear infinite',
+        breathout: 'breath 10s linear infinite',
+        slideInLeft: 'slideInLeft 0.8s ease-out forwards',
+        slideInRight: 'slideInRight 0.8s ease-out forwards',
       },
     },
   },

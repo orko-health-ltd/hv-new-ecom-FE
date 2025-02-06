@@ -3,7 +3,7 @@
     <div
       class="flex font-serif flex-col items-center justify-center w-full bg-[url('/assets/images/home/bg-discover.jpg')] bg-cover py-10 h-[40vh]"
     >
-      <h1 class="text-[47px] uppercase text-white tracking-widest">
+      <h1 class="text-3xl md:text-[47px] mt-10 uppercase text-white tracking-widest">
         Media & Events
       </h1>
     </div>
@@ -13,7 +13,7 @@
         class="w-full flex flex-col py-5 justify-center items-center"
         :ui="{
           list: {
-            width: 'w-1/2',
+            width: 'w-full md:w-1/2',
             tab: { size: 'text-xl', inactive: 'text-white' },
             background: 'bg-[#01251a]',
           },

@@ -1,7 +1,7 @@
 <template>
   <div>
     
-      <div class="flex font-serif flex-col items-center  z-0 justify-center w-full bg-[url('/assets/images/home/about_us-scaled.jpg')] bg-cover pt-28 top-0 h-[100vh]">
+      <div class="flex font-serif flex-col items-center  z-0 justify-center w-full bg-[url('/assets/images/home/about_us-scaled.jpg')] bg-cover pt-28 top-0 h-[60vh] md:h-[100vh]">
          <div class="flex w-[350px] items-center space-x-5  text-[#b4a345]">
       <div class="w-full border-t-2 border-[#b4a345]"></div>
       <h2 class=" text-lg ">Discover</h2>
@@ -9,7 +9,7 @@
     </div>
     <h1 class="text-[47px] uppercase text-white tracking-widest">Our Story</h1>
       </div>
-   <div class="flex text-gray-600 px-[20%] py-20 gap-20 items-center justify-center">
+   <div class="flex md:flex-row flex-col text-gray-600 px-[10%] md:px-[20%] py-20 gap-5 md:gap-20 items-center justify-center">
     <div>
           <p class="italic text-xl">“Making tea is our passion as well as Pride and we do our best to ensure best value from each cup of your tea”</p>
     </div>
@@ -18,7 +18,7 @@
     </div>
    </div>
     <CommonSlide />
-   <div class="px-[20%] py-20 grid grid-cols-2 justify-center items-center gap-10">
+   <div class="px-[10%] md:px-[20%] py-10 md:py-20 grid grid-cols-1 md:grid-cols-2 justify-center items-center gap-10">
     <div class="flex items-center justify-center">
       <p>
         But the story behind is not as nice as Halda Valley appears now. When iconic business personality and philanthropist Md. Nader Khan acquired this estate in 2003, nothing but wild bushes and rain forests were only remains. He had to start from the scratch with zero experience in tea industry. With the love of nature and passion to make a difference in tea industry of Bangladesh, He devoted all his passion and talent to create a masterpiece out of nothing. Now within only 17 years of inception, Halda Valley is the fastest growing, highest yielding and most prosperous tea estate in this country.
@@ -35,7 +35,8 @@
 Halda Valley is a tea estate where growth is hardwired into her DNA. Since 2010, we have achieved exponential growth in CTC tea production and awarded for Highest yield per hector amongst all tea gardens in Bangladesh. On 2020, we produced record 3380 kg CTC tea / hector against 1250 kg CTC tea / hector national average production.</p>
    </div>
    <div>
-    <img src="/assets/images/Role-Model.jpg" alt="">
+   
+    <img class="opacity-0 translate-x-[-100%] animate-slideInLeft" src="/assets/images/Role-Model.jpg" alt="">
    </div>
     <div>
     <img src="/assets/images/Green-house-scaled.jpg" alt="">

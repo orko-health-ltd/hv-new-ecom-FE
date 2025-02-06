@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/ui',
     '@vite-pwa/nuxt',
+    '@vueuse/nuxt',
   ],
   app: {
     head: {

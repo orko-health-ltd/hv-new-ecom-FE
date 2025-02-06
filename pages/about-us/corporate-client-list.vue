@@ -1,14 +1,14 @@
 <template>
   <div>
       <div
-      class="flex font-serif flex-col items-center  justify-center w-full bg-[url('/assets/images/home/bg-discover.jpg')] bg-cover py-10 h-[40vh]"
+      class="flex font-serif flex-col items-center  justify-center w-full bg-[url('/assets/images/home/bg-discover.jpg')] bg-cover  py-10 h-[40vh]"
     >
-      <h1 class="text-[47px] uppercase text-white tracking-widest">Corporate Client List</h1>
+      <h1 class="text-3xl mt-10 p-4 md:text-[47px] uppercase text-white tracking-widest">Corporate Client List</h1>
     </div>
     <div class="bg-white">
-      <div class="flex justify-center py-5 items-center gap-3">
+      <div class="grid grid-cols-3 md:flex px-5 md:px-10 mx-auto justify-center py-5 items-center gap-3">
        
-        <button @click="selectedCategory = category" class="px-3 py-2" :class="selectedCategory.name == category.name ? 'border-2 border-gray-500 rounded-lg':''" v-for="category in categories" :key="category">{{ category.name }}</button>
+        <button @click="selectedCategory = category" class="px-3 w-full text-nowrap py-2" :class="selectedCategory.name == category.name ? 'border-2 border-gray-500 rounded-lg':''" v-for="category in categories" :key="category">{{ category.name }}</button>
       </div>
 
       <div  v-if="selectedCategory.name == 'All'" class="grid grid-cols-5 px-[10%] gap-3">

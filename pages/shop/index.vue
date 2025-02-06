@@ -1,81 +1,18 @@
 <template>
   <div>
+    <div class="overflow-hidden">
+
    
-      <div class="h-[500px] w-full bg-[url('/assets/images/home/bg-discover.jpg')] bg-cover bg-fixed top-0  overflow-x-hidden animate-breath">
+      <div class="h-[300px] sm:h-[400px] md:h-[500px] w-full bg-[url('/assets/images/home/bg-discover.jpg')] bg-cover bg-fixed top-0  overflow-x-hidden animate-breathout">
 
      
       </div>
-   
- <div class="bg-white mx-20 min-h-screen py-20 ">
-      <div class="grid grid-cols-4 gap-5  items-start">
-        <div class="w-full flex space-y-4 flex-col justify-start items-start px-10">
-          <h1 class="text-2xl font-serif">Shop By Product</h1>
-          <div class="space-y-3">
-              <UCheckbox inputClass="w-6 h-6 text-yellow-600 border-yellow-600" label="Label" :model-value="false" />
-              <UCheckbox inputClass="w-6 h-6 text-yellow-600 border-yellow-600" label="Label" :model-value="false" />
-              <UCheckbox inputClass="w-6 h-6 text-yellow-600 border-yellow-600" label="Label" :model-value="false" />
-              <UCheckbox inputClass="w-6 h-6 text-yellow-600 border-yellow-600" label="Label" :model-value="false" />
-          </div>
-         
-           
-        </div>
-        <div class="w-full col-span-3">
-           <div class="w-full gap-y-5 grid gap-4 grid-cols-4">
-          <ShopProductCard v-for="product in products" :key="product.id" :product="product" />
-        </div>
-        </div>
-       
-      </div> 
     </div>
+    <products-grid />
   </div>
 </template>
 
 <script lang="ts" setup>
-import Prod from 'assets/images/Web-image-04.jpg'
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  img: string;
-}
-
-const products: Product[] = [
-  {    id: 1,
-    name: 'Product 1',
-    price: 210,
-    img: Prod
-  },
-  {
-    id: 2,
-    price: 310,
-    name: 'Product 2',
-    img: Prod
-  },
-  {
-    id: 3,
-    price: 410,
-    name: 'Product 3',
-    img: Prod
-  },
-  {
-    id: 4,
-    price: 510,
-    name: 'Product 4',
-    img: Prod
-  },
-  {
-    id: 5,
-    price: 610,
-    name: 'Product 5',
-    img: Prod
-  },
-  {
-    id: 6,
-    price: 710,
-    name: 'Product 6',
-    img: Prod
-  },
-]
 </script>
 
 

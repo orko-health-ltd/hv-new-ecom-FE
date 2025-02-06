@@ -1,14 +1,14 @@
 <template>
   <div>
      <div
-      class="flex font-serif flex-col items-center justify-center w-full bg-[url('/assets/images/Cover-image-02.jpg')] bg-cover py-10 content h-[57vh]"
+      class="flex font-serif flex-col items-center justify-center w-full bg-[url('/assets/images/Cover-image-02.jpg')] bg-cover py-10 content h-[40vh] md:h-[57vh]"
     >
-      <h1 class="text-6xl uppercase text-white tracking-widest">
+      <h1 class="text-3xl sm:text-4xl lg:text-6xl uppercase text-white tracking-widest">
        Contacts
       </h1>
     </div>
     <div class="bg-white flex justify-center items-center space-y-8 flex-col py-20">
-      <h1 class="text-4xl font-extralight font-serif">COMPLETE THE FORM TO GET IN TOUCH WITH US</h1>
+      <h1 class="text-lg text-center md:text-4xl font-extralight font-serif">COMPLETE THE FORM TO GET IN TOUCH WITH US</h1>
       <div class="w-full space-y-4 px-[10%]">
 
 <UInput   size="lg" variant="outline" placeholder="Name" />
@@ -17,8 +17,8 @@
 <UTextarea  size="lg" variant="outline" placeholder="Message..." />
  <UButton label="Send" size="lg" class="bg-gray-600 hover:bg-gray-800" block />
       </div>
-      <h1 class="text-7xl text-primary-900">HALDA VALLEY CONTACTS</h1>
-      <div class="grid text-primary-900 w-full justify-center items-center grid-cols-3">
+      <h1 class="text-2xl sm:text-3xl md:text-5xl lg:text-7xl text-primary-900">HALDA VALLEY CONTACTS</h1>
+      <div class="grid text-primary-900 w-full gap-y-5 justify-center items-center grid-cols-1 md:grid-cols-3">
         <div class="flex space-y-6 flex-col justify-center items-center">
            <UIcon name="line-md:phone-call-twotone-loop" class="text-6xl " />
            <div class="text-center">

@@ -3,24 +3,24 @@
     ref="carouselRef"
     v-slot="{ item }"
     :items="items"
-    :ui="{ item: 'basis-full' }"
-    class="rounded-lg overflow-hidden"
+    :ui="{ item: 'basis-full w-screen flex-col w-full' }"
+    class="rounded-lg overflow-hidden w-full"
     indicators
   >
   
-  <div class="bg-white px-[16%] gap-10 py-10 grid grid-cols-2 justify-center items-center">
+  <div class="bg-white w-full px-5  md:px-[16%] gap-2 md:gap-10 py-10 grid grid-cols-2 justify-center items-center">
     
-     <div class="w-[390px] h-[390px]">
+     <div class="container">
       <img :src="item.img" alt="">
     </div>
-    <div class="font-serif  px-14 py-5 flex flex-col justify-center items-center">
-      <h1 class="text-4xl text-gray-800 font-serif mb-2">{{ item.name }}</h1>
-     <h1 class="text-6xl text-gray-800 font-serif mb-2">{{ item.title }}</h1>
-     <p class="text-gray-900 tracking-normal mb-10 font-thin">{{ item.description }}</p>
-      <div class="flex items-center space-x-5 mb-2 text-[#b4a345]">
-      <div class="w-44 border-t-2 border-[#b4a345]"></div>
-      <h5 class="text-[20px] font-thin ">Explore</h5>
-      <div class="w-44 border-t-2 border-[#b4a345]"></div>
+    <div class="font-serif px-2 lg:px-14 py-5 flex flex-col justify-center items-center">
+      <h1 class="text-lg md:text-4xl text-gray-800 font-serif mb-0 sm:mb-2">{{ item.name }}</h1>
+     <h1 class="text-2xl md:text-6xl text-gray-800 font-serif mb-0 sm:mb-2">{{ item.title }}</h1>
+     <p class="text-gray-900 text-xs tracking-normal mb-5 sm:mb-10 font-thin">{{ item.description }}</p>
+      <div class="flex w-full items-center space-x-2 md:space-x-5 mb-2 text-[#b4a345]">
+      <div class="w-full border-t-2 border-[#b4a345]"></div>
+      <h5 class="text-sm md:text-[20px] font-thin ">Explore</h5>
+      <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
     </div>
    

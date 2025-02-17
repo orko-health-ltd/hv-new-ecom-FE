@@ -3,6 +3,7 @@
     <Navbar />
     <slot />
     <Footer />
+        <UNotifications />
   </div>
 </template>
 

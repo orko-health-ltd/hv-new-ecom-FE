@@ -12,7 +12,7 @@
     </div>
     <hr class="border-t-2 border-white w-full" />
     <div class="flex justify-between items-center w-full px-0 md:px-4 ">
-   <div class="md:flex flex-col justify-start items-center w-full px-4 gap-5 py-7">
+   <div class="md:flex-row flex flex-col justify-start items-center w-full px-4 gap-5 py-7">
     <h1 class="text-white font-thin text-xl md:text-3xl">Follow us</h1>
      <div class="flex justify-start items-center">
     <UIcon name="uil:facebook-f" class="text-white text-3xl" />
@@ -21,7 +21,7 @@
     <UIcon name="mdi:instagram" class="text-white text-3xl" />
     </div>
     </div>
-  <div class="flex-col md:flex justify-end items-center w-full px-4 gap-5 py-7">
+  <div class="flex flex-col md:flex-row justify-end items-center w-full px-4 gap-5 py-7">
     <h1 class="text-xl md:text-3xl font-extralight text-white">Newsletter</h1>
       <div class="relative">
         <input type="text" placeholder="Enter a valid email" class="border-2 text-yellow-600  border-white text-sm md:text-lg rounded-md px-2 py-2 w-full pl-10">
@@ -31,16 +31,16 @@
   </div>
   <div class="bg-[#B4A345] grid grid-cols-2 md:grid-cols-5">
     <img class="w-10 h-10 md:w-28 md:h-28" src="/assets/images/logo/halal-logo.png" alt="">
-    <div class="col-span-3 md:col-span-4 py-10 px-3">
-      <div class="grid grid-cols-2 md:grid-cols-4 justify-center items-center text-sm font-thin text-white gap-3">
+    <div class="col-span-3 md:col-span-3 mx-auto py-10 px-3">
+      <div class="grid grid-cols-2 md:grid-cols-4 justify-center px-10 items-center text-sm font-thin text-white gap-3">
         <p class="px-10  border-0 border-e-2">About Us</p>
-        <p class="px-10  border-0 border-e-2">Contact Us</p>
-        <p class="px-10  border-0 border-e-2">Terms & Conditions</p>
+        <nuxt-link to="/contact-us" class="px-10  border-0 border-e-2">Contact Us</nuxt-link>
+        <p class="px-10 text-nowrap border-0 border-e-2">Terms & Conditions</p>
         <p class=" px-10">Privacy Policy</p>
       </div>
       <p class="text-center mt-4 text-sm">
         YN Center, House - 6/A, Road - 113, Gulshan Avenue, Dhaka - 1212</p>
-        <p class="text-center text-sm">© 2023 Halda Valley Food & Beverage Ltd. Handcrafted with love by <span class="text-white"> Orko Health Team</span>
+        <p class="text-center text-sm">© 2023 Halda Valley Food & Beverage Ltd. Handcrafted with love by <nuxt-link to="https://myorko.com/" class="text-white"> Orko Health Team</nuxt-link>
       </p>
     </div>
   </div>

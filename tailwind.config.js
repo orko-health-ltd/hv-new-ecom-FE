@@ -1,66 +1,86 @@
+const animate = require("tailwindcss-animate")
+
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    './app.vue',
-    './pages/**/*.{vue,js,ts}',
-    './components/**/*.{vue,js,ts}',
-    './layouts/**/*.{vue,js,ts}',
-    './plugins/**/*.{js,ts}',
-  ],
+module.exports = {
+  darkMode: ["class"],
+  safelist: ["dark"],
+  prefix: "",
+  
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
-        // primary: '#01251a',
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: '#01251a',
-          50: '#F1F5FB',
-          100: '#E3EBF7',
-          200: '#C7D7F0',
-          300: '#ABC2E8',
-          400: '#8FAEE0',
-          500: '#01251a',
-          600: '#3061AF',
-          700: '#285192',
-          800: '#204075',
-          900: '#183058',
-          'accent-100': '#d9e4f3',
-          'accent-200': '#cedbee',
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
-        secondary: '#b4a345',
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
-      fontFamily: {
-        quattrocento: ['Quattrocento', 'sans-serif'],
+      borderRadius: {
+        xl: "calc(var(--radius) + 4px)",
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        scaleUpDown: {
-          '0%, 100%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.1)' },
+        "accordion-down": {
+          from: { height: 0 },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
-        breath: {
-          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
-          '50%': { transform: 'scale(1.1)', opacity: '0.9' },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: 0 },
         },
-        breathout: {
-          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
-          '50%': { transform: 'scale(1.0)', opacity: '0.8' },
+        "collapsible-down": {
+          from: { height: 0 },
+          to: { height: 'var(--radix-collapsible-content-height)' },
         },
-        slideInLeft: {
-          '0%': { opacity: 0, transform: 'translateX(-100%)' },
-          '100%': { opacity: 1, transform: 'translateX(0)' },
-        },
-        slideInRight: {
-          '0%': { opacity: 0, transform: 'translateX(100%)' },
-          '100%': { opacity: 1, transform: 'translateX(0)' },
+        "collapsible-up": {
+          from: { height: 'var(--radix-collapsible-content-height)' },
+          to: { height: 0 },
         },
       },
       animation: {
-        scaleUpDown: 'scaleUpDown 2s infinite ease-in-out',
-        breath: 'breath 10s linear infinite',
-        breathout: 'breath 10s linear infinite',
-        slideInLeft: 'slideInLeft 0.8s ease-out forwards',
-        slideInRight: 'slideInRight 0.8s ease-out forwards',
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "collapsible-down": "collapsible-down 0.2s ease-in-out",
+        "collapsible-up": "collapsible-up 0.2s ease-in-out",
       },
     },
   },
-  plugins: [],
+  plugins: [animate],
 }

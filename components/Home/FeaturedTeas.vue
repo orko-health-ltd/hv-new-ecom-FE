@@ -19,7 +19,7 @@
      <p class="text-gray-900 text-xs tracking-normal mb-5 sm:mb-10 font-thin">{{ item.description }}</p>
       <div class="flex w-full items-center space-x-2 md:space-x-5 mb-2 text-[#b4a345]">
       <div class="w-full border-t-2 border-[#b4a345]"></div>
-      <h5 class="text-sm md:text-[20px] font-thin ">Explore</h5>
+      <nuxt-link :to="`/product/${item.slug}`" class="text-sm md:text-[20px] font-thin ">Explore</nuxt-link>
       <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
     </div>
@@ -36,12 +36,14 @@ const items = [
   {
     name:'Dragon Well',
     title: 'Green Tea',
+    slug:'dragon-well-green-tea',
     description: "Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.",
     img:DWGT
   },
   {
     name:'Silver Needle',
     title: 'White Tea',
+    slug:'silver-needle-white-tea',
     description: "The lingering fragrance of our Halda Valley Silver Needle White Tea is Delicately honeysuckle floral, with a warmed sugar sweetness and soft mouthfeel and uplifting finish.",
     img:SNWT
   },
@@ -53,7 +55,8 @@ const items = [
   // },
  {
     name:'Golden Eyebrow',
-    title: 'Black Tea',
+   title: 'Black Tea',
+    slug:'golden-eyebrow-black-tea',
     description: "Halda Valley Golden Eyebrow Black Tea is made of delicate handpicked leaves that offers Strong honey and floral fragrance with distinctly honey-sweet & mellow taste.",
     img:GEBT
   },

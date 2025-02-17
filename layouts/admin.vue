@@ -1,0 +1,396 @@
+<script setup lang=ts>
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar'
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Separator } from '@/components/ui/separator'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
+import {
+  AudioWaveform,
+  BadgeCheck,
+  Bell,
+  BookOpen,
+  Bot,
+  ChevronRight,
+  ChevronsUpDown,
+  Command,
+  CreditCard,
+  Folder,
+  Forward,
+  Frame,
+  GalleryVerticalEnd,
+  LogOut,
+  Map,
+  MoreHorizontal,
+  Package2,
+  Menu,
+  Search,
+  CircleUser,
+
+  PieChart,
+  Plus,
+  Settings2,
+  Sparkles,
+  SquareTerminal,
+  Trash2,
+  BoxIcon,
+  Icon,
+} from 'lucide-vue-next'
+import { ref } from 'vue'
+
+// This is sample data.
+const data = {
+  user: {
+    name: 'Super Admin',
+    email: 'admin@mail.com',
+    avatar: '',
+  },
+  navMain :[
+  {
+    title: 'Dashboard',
+    url: '/admin',
+    icon: 'oui:app-dashboard',
+    isActive: true,
+  },
+  {
+    title: 'Product Management',
+    url: '#',
+    icon: 'icon-park:ad-product',
+    icon2: PieChart,
+    isActive: true,
+    items: [
+      { title: 'Categories', url: '/admin/product-management/categories' , icon: 'tabler:category-2'},
+      { title: 'Brands', url: '/admin/product-management/brands',icon:'material-symbols:branding-watermark' },
+      { title: 'Products', url: '/admin/product-management/products' , icon:'streamline:shopping-bag-suitcase-1-product-business-briefcase' },
+      { title: 'Attributes', url: '/admin/product-management/attributes' ,icon:'material-symbols:edit-attributes'},
+      { title: 'Media Library', url: '/admin/product-management/media-library',icon:'material-symbols:perm-media' },
+      { title: 'Reviews & Ratings', url: '/admin/product-management/reviews',icon:'material-symbols:star-rate-outline' },
+    ],
+  },
+  {
+    title: 'Orders',
+    url: '#',
+    icon: 'material-symbols:shopping-bag-speed',
+     icon2: PieChart,
+    isActive: false,
+    items: [
+      { title: 'All Orders', url: '/orders',icon: 'material-symbols:list-alt-rounded' },
+      { title: 'Pending Orders', url: '/orders/pending' ,icon:'ic:baseline-pending-actions' },
+      { title: 'Completed Orders', url: '/orders/completed' ,icon:'material-symbols:list-alt-check-rounded' },
+      { title: 'Cancelled Orders', url: '/orders/cancelled',icon:'carbon:rule-cancelled' },
+    ],
+  },
+  {
+    title: 'Customers Management',
+    url: '/customers',
+    icon: 'garden:customer-lists-fill-26',
+     icon2: PieChart,
+    isActive: false,
+    items: [
+      { title: 'Customers', url: '/orders',icon: 'gridicons:multiple-users' },
+      { title: 'Support Tickets', url: '/orders/pending' ,icon:'ri:customer-service-2-fill' },
+      { title: 'Newsletter Subscribers', url: '/orders/completed' ,icon:'mdi:email-newsletter' },
+    ],
+  },
+  {
+    title: 'Payments & Transactions',
+    url: '#',
+    icon: 'streamline:money-cash-dollar-coin-accounting-billing-payment-cash-coin-currency-money-finance',
+    isActive: false,
+     icon2: PieChart,
+    items: [
+      { title: 'Payments', url: '/payments' ,icon:'material-symbols:payments-outline'},
+      { title: 'Refunds', url: '/payments/refunds',icon:"tdesign:undertake-transaction-filled" },
+    ],
+  },
+  {
+    title: 'Marketing & Promotions',
+    url: '#',
+    icon: 'nimbus:marketing',
+    isActive: false,
+     icon2: PieChart,
+    items: [
+      { title: 'Coupons', url: '/coupons', icon:'ri:coupon-fill' },
+      { title: 'Banners', url: '/banners',icon:'material-symbols:planner-banner-ad-pt-rounded' },
+    ],
+  },
+  {
+    title: 'Reports & Analytics',
+    url: '/admin/reports',
+     icon2: PieChart,
+    icon: 'material-symbols:bar-chart-4-bars-rounded',
+    isActive: false,
+  },
+  {
+    title: 'Settings',
+    url: '#',
+    icon: 'ic:baseline-settings',
+    isActive: false,
+     icon2: PieChart,
+    items: [
+      { title: 'Store Settings', url: '/admin/settings/store' },
+      { title: 'Users & Roles', url: '/admin/settings/users' },
+      { title: 'Security', url: '/admin/settings/security' },
+    ],
+  },
+],
+
+  projects: [
+    // {
+    //   name: 'Design Engineering',
+    //   url: '#',
+    //   icon: Frame,
+    // },
+    // {
+    //   name: 'Sales & Marketing',
+    //   url: '#',
+    //   icon: PieChart,
+    // },
+    // {
+    //   name: 'Travel',
+    //   url: '#',
+    //   icon: Map,
+    // },
+  ],
+}
+
+
+
+</script>
+
+<template>
+  <SidebarProvider >
+    <Sidebar  collapsible="icon" class="!bg-white kodu">
+      <SidebarHeader >
+        <SidebarMenu>
+          <SidebarMenuItem class="flex justify-center items-center">
+           <nuxt-link to="/" class="w-[200px] flex justify-center items-center">
+      <img
+        class="w-auto h-auto max-h-20"
+        src="/assets/images/logo/golden_logo.png"
+        alt=""
+      />
+      
+    </nuxt-link>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        
+        <SidebarGroup>
+          <SidebarGroupLabel>Platform</SidebarGroupLabel>
+          <SidebarMenu>
+            <Collapsible
+              v-for="item in data.navMain"
+              :key="item.title"
+              as-child
+              :default-open="item.isActive"
+              class="group/collapsible"
+            >
+              <SidebarMenuItem v-if="item.items">
+                <CollapsibleTrigger class="hover:bg-primary-200" as-child>
+                  <SidebarMenuButton :tooltip="item.title">
+                    <UIcon  :name="item.icon" class="w-5 shrink-0 h-5" />
+                    
+                    <span>{{ item.title }}</span>
+                    <ChevronRight class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem
+                      v-for="subItem in item.items"
+                      :key="subItem.title"
+                    >
+                      <SidebarMenuSubButton as-child class="hover:bg-primary-300">
+                        <nuxt-link :to="subItem.url">
+                          <UIcon :name="subItem.icon" class="w-5 shrink-0 h-5" />
+                          <span>{{ subItem.title }}</span>
+                        </nuxt-link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+              <SidebarMenuItem v-else>
+                <SidebarMenuButton as-child class="hover:bg-primary-200">
+                        <nuxt-link :to="item.url">
+                          <UIcon :name="item.icon" class="w-5 shrink-0 h-5" />
+                          <span>{{ item.title }}</span>
+                        </nuxt-link>
+                     </SidebarMenuButton>
+                </SidebarMenuItem>
+            </Collapsible>
+          </SidebarMenu>
+        </SidebarGroup>
+        <SidebarGroup class="group-data-[collapsible=icon]:hidden">
+          <SidebarGroupLabel>Projects</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem
+              v-for="item in data.projects"
+              :key="item.name"
+            >
+              <SidebarMenuButton as-child>
+                <a :href="item.url">
+                  <component :is="item.icon" />
+                  <span>{{ item.name }}</span>
+                </a>
+              </SidebarMenuButton>
+              <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                  <SidebarMenuAction show-on-hover>
+                    <MoreHorizontal />
+                    <span class="sr-only">More</span>
+                  </SidebarMenuAction>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="w-48 rounded-lg" side="bottom" align="end">
+                  <DropdownMenuItem>
+                    <Folder class="text-muted-foreground" />
+                    <span>View Project</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Forward class="text-muted-foreground" />
+                    <span>Share Project</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Trash2 class="text-muted-foreground" />
+                    <span>Delete Project</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton class="text-sidebar-foreground/70">
+                <MoreHorizontal class="text-sidebar-foreground/70" />
+                <span>More</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child>
+                <SidebarMenuButton
+                  size="lg"
+                  class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar class="h-8 w-8 rounded-lg">
+                    <AvatarImage :src="data.user.avatar" :alt="data.user.name" />
+                    <AvatarFallback class="rounded-lg">
+                     SA
+                    </AvatarFallback>
+                  </Avatar>
+                  <div class="grid flex-1 text-left text-sm leading-tight">
+                    <span class="truncate font-semibold">{{ data.user.name }}</span>
+                    <span class="truncate text-xs">{{ data.user.email }}</span>
+                  </div>
+                  <ChevronsUpDown class="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg" side="bottom" align="end" :side-offset="4">
+                <DropdownMenuLabel class="p-0 font-normal">
+                  <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar class="h-8 w-8 rounded-lg">
+                      <AvatarImage :src="data.user.avatar" :alt="data.user.name" />
+                      <AvatarFallback class="rounded-lg">
+                        SA
+                      </AvatarFallback>
+                    </Avatar>
+                    <div class="grid flex-1 text-left text-sm leading-tight">
+                      <span class="truncate font-semibold">{{ data.user.name }}</span>
+                      <span class="truncate text-xs">{{ data.user.email }}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <Sparkles />
+                    Upgrade to Pro
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <BadgeCheck />
+                    Account
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <CreditCard />
+                    Billing
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Bell />
+                    Notifications
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <LogOut />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+    <SidebarInset>
+     
+     
+      <slot />
+    </SidebarInset>
+  </SidebarProvider>
+</template>
+<style>
+/* .active-route */
+</style>

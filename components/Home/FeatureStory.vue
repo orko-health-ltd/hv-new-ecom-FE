@@ -10,7 +10,7 @@
      <p class="text-gray-400 tracking-normal font-thin">In the midst of Khagrachhari and Sitakundu high hill ranges of Chattogram gently flows the world famous river Halda. On her endless river path, here she becomes the lifeline of Halda Valley, the lush green tea garden with pure environment to grow tea that excel in aroma and taste.</p>
       <div class="flex w-full items-center space-x-5 mb-2 text-[#b4a345]">
       <div class="w-full border-t-2 border-[#b4a345]"></div>
-      <h5 class="text-[20px] font-thin ">Explore</h5>
+      <nuxt-link to='/about-us/our-story' class="text-[20px] font-thin ">Explore</nuxt-link>
       <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
     </div>

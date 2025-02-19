@@ -6,9 +6,9 @@
       <img class="w-auto h-28" src="/assets/images/logo/golden_logo.png" alt="">
       <p class="font-quattrocento font-extralight">In the midst of Khagrachhari and Sitakundu high hill ranges of Chattogram gently flows the world famous river Halda. On her endless river path, here she becomes the lifeline of Halda Valley, the lush green tea garden with pure environment to grow tea that excel in aroma and taste.</p>
     </div>
-    <div class="container mx-auto px-5 py-10">
+    <!-- <div class="container mx-auto px-5 py-10">
       <img src="/assets/images/logo/alibaba-logo-Haldavalleytea-company-official.png" alt="">
-    </div>
+    </div> -->
     </div>
     <hr class="border-t-2 border-white w-full" />
     <div class="flex justify-between items-center w-full px-0 md:px-4 ">

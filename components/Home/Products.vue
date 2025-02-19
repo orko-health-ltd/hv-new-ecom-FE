@@ -17,7 +17,7 @@ Products
 </h2>
 <div class="flex w-2/3 justify-between items-center mt-5 gap-5">
    <div class="w-full border-t-2 border-[#b4a345]"></div>
-      <nuxt-link :to="`product/${product.slug}`" class="text-[12px] text-[#b4a345]">Exploreol</nuxt-link>
+      <nuxt-link :to="`product/${product.slug}`" class="text-[12px] text-[#b4a345]">Explore</nuxt-link>
       <div class="w-full border-t-2 border-[#b4a345]"></div>
 </div>
      

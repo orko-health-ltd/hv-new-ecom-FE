@@ -2,20 +2,11 @@
 import {
   CircleUser,
   File,
-  Home,
-  Layout,
-  LineChart,
   ListFilter,
   Loader2,
   MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
   PlusCircle,
-  Search,
-  Settings,
-  ShoppingCart,
-  Users2,
+  Search
 } from 'lucide-vue-next'
 const showCategoryForm = ref(false)
 const creating = ref(false)
@@ -35,7 +26,8 @@ const createCategory = async () => {
     }
 
 definePageMeta({
-  layout:'admin'
+  layout: 'admin',
+  middleware: ['auth']
 })
 </script>
 

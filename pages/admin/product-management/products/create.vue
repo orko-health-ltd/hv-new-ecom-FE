@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <ClientOnly>
     <div class="flex min-h-screen w-full flex-col bg-muted/40">
       <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header
@@ -67,34 +67,29 @@
                 Create product to manage your stocks.
               </CardDescription></CardHeader
             >
-            <form @submit.prevent="createCategory" class="grid gap-4">
+
+            <div class="grid gap-4">
               <CardContent>
                 <div class="grid grid-cols-2 gap-4">
                   <div class="grid gap-2">
                     <Label for="first-name">Brand</Label>
-                    <Select>
+                    <Select v-model="selectedBrandId">
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a brand" />
+                        <SelectValue placeholder="Select a brand">
+                          {{
+                            selectedBrand
+                              ? selectedBrand.name
+                              : 'Select a brand'
+                          }}</SelectValue
+                        >
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectLabel>North America</SelectLabel>
-                        <SelectItem value="est">
-                          Eastern Standard Time (EST)
-                        </SelectItem>
-                        <SelectItem value="cst">
-                          Central Standard Time (CST)
-                        </SelectItem>
-                        <SelectItem value="mst">
-                          Mountain Standard Time (MST)
-                        </SelectItem>
-                        <SelectItem value="pst">
-                          Pacific Standard Time (PST)
-                        </SelectItem>
-                        <SelectItem value="akst">
-                          Alaska Standard Time (AKST)
-                        </SelectItem>
-                        <SelectItem value="hst">
-                          Hawaii Standard Time (HST)
+                        <SelectLabel>Brands</SelectLabel>
+                        <SelectItem
+                          v-for="brand in brands"
+                          :key="brand.id"
+                          :value="brand.id">
+                          {{ brand.name }}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -106,24 +101,12 @@
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectLabel>North America</SelectLabel>
-                        <SelectItem value="est">
-                          Eastern Standard Time (EST)
-                        </SelectItem>
-                        <SelectItem value="cst">
-                          Central Standard Time (CST)
-                        </SelectItem>
-                        <SelectItem value="mst">
-                          Mountain Standard Time (MST)
-                        </SelectItem>
-                        <SelectItem value="pst">
-                          Pacific Standard Time (PST)
-                        </SelectItem>
-                        <SelectItem value="akst">
-                          Alaska Standard Time (AKST)
-                        </SelectItem>
-                        <SelectItem value="hst">
-                          Hawaii Standard Time (HST)
+                        <SelectLabel>Category</SelectLabel>
+                        <SelectItem
+                          v-for="category in categories"
+                          :key="category.id"
+                          :value="category.id">
+                          {{ category.name }}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -161,40 +144,145 @@
                 <div class="grid grid-cols-2">
                   <Label for="sku" class="text-gray-500">Add SKU</Label>
                 </div>
-                <div v-for="sku in skus" :key="sku.name" class="flex flex-col">
-                  <div class="flex gap-2 justify-between items-center">
-                    <div class="grid gap-2">
-                      <Label for="last-name">SKU</Label>
-                      <Input id="last-name" type="text" required />
-                    </div>
-                    <div class="grid gap-2">
-                      <Label for="last-name">Weight</Label>
-                      <Input id="last-name" type="text" required />
-                    </div>
-                    <div class="grid gap-2">
-                      <Label for="last-name">Price</Label>
-                      <Input id="last-name" type="number" required />
-                    </div>
-                    <div class="grid gap-2">
-                      <Label for="last-name">Quantity</Label>
-                      <Input id="last-name" type="text" required />
-                    </div>
-                    <div class="grid gap-2">
-                      <Label for="last-name">Image</Label>
-                      <Input id="last-name" type="file" required />
+                <form
+                  @submit.prevent="addEmptySku"
+                  class="grid grid-cols-4 gap-2 justify-between items-center"
+                >
+                  <div class="grid gap-2">
+                    <Label for="last-name">SKU Name</Label>
+                    <Input
+                      v-model="sku.name"
+                      id="last-name"
+                      type="text"
+                      required/>
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Color</Label>
+                    <Input
+                      v-model="sku.color"
+                      id="last-name"
+                      type="text"
+                      required
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Selling Price</Label>
+                    <Input
+                      v-model="sku.selling_price"
+                      id="last-name"
+                      type="number"
+                      required
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Discount</Label>
+                    <Input
+                      v-model="sku.discount"
+                      id="last-name"
+                      type="text"
+                      required
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Is Active</Label>
+                    <Switch @update:checked="sku.is_active = !sku.is_active" 
+                      :checked="sku.is_active" />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Is Featured</Label>
+                    <Switch
+                      :checked="sku.is_featured"
+                      @update:checked="sku.is_featured = !sku.is_featured" />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Is Combo</Label>
+                    <Switch
+                      :checked="sku.is_combo"
+                      @update:checked="sku.is_combo = !sku.is_combo"
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Packing Type</Label>
+                    <URadioGroup
+                      :options="[
+                        { value: 'sachet', label: 'Sachet' },
+                        { value: 'pouch', label: 'Pouch' },
+                      ]"
+                      v-model="sku.packaging_type"
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Image</Label>
+
+                    <Input
+                      id="last-name"
+                      type="file"
+                      @change="(event) => handleFileChange(event, sku, 'image')"
+                      required
+                    />
+                  </div>
+                  <img
+                    :src="
+                      sku.image
+                        ? sku.image
+                        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
+                    "
+                    alt="SKU Image"
+                    class="w-auto h-20"
+                  />
+                  <Button class="bg-violet-500 mt-7 text-white" type="submit"
+                    ><PlusIcon /> Add SKU</Button
+                  >
+                </form>
+                <div
+                  class="border space-y-2 p-2 rounded-xl"
+                  v-if="skus.length > 0">
+                  <div
+                    class="grid grid-cols-10 pt-4 justify-between items-center"
+                  >
+                    <Label for="last-name">Name</Label>
+                    <Label for="last-name">Color</Label>
+                    <Label for="last-name">Selling Price</Label>
+                    <Label for="last-name">Discount</Label>
+                    <Label for="last-name">Is Active</Label>
+                    <Label for="last-name">Is Featured</Label>
+                    <Label for="last-name">Is Combo</Label>
+                    <Label for="last-name">Packing Type</Label>
+                    <Label for="last-name">Image</Label>
+                    <Label for="last-name">Action</Label>
+                  </div>
+                  <Separator />
+                  <div
+                    v-for="(skuData, index) in skus"
+                    :key="skuData.name"
+                    class="flex flex-col"
+                  >
+                    <div
+                      class="grid grid-cols-10 pt-4 justify-between items-center">
+                      <p>{{ skuData.name }}</p>
+                      <p>{{ skuData.color }}</p>
+                      <p>{{ skuData.selling_price }}</p>
+                      <p>{{ skuData.discount }}</p>
+                      <Switch :checked="skuData.is_active" />
+                      <Switch :checked="skuData.is_featured" />
+                      <Switch :checked="skuData.is_combo" />
+                      <p>{{ skuData.packaging_type }}</p>
+                      <img
+                        v-if="skuData.image"
+                        :src="skuData.image"
+                        alt="SKU Image"
+                        class="w-auto h-20"/>
+                      <Button
+                        class="bg-red-500 text-white"
+                        type="button"
+                        @click="skus.splice(index, 1)"><Trash2 /> Remove</Button
+                      >
                     </div>
                   </div>
                 </div>
                 <div
                   class="grid justify-center items-center py-3 mx-auto gap-2"
-                >
-                  <Button
-                    class="bg-violet-500 text-white"
-                    type="button"
-                    @click="addEmptySku"
-                    ><PlusIcon /> Add New SKU</Button
-                  >
-                </div>
+                ></div>
               </CardContent>
               <CardFooter>
                 <Button class="text-white" :disabled="creating">
@@ -202,53 +290,165 @@
                   Create Product</Button
                 >
               </CardFooter>
-            </form>
+            </div>
           </Card>
         </div>
       </div>
     </div>
-  </div>
+  </ClientOnly>
 </template>
-
 <script lang="ts" setup>
-import { PlusIcon } from 'lucide-vue-next'
-import Select from '~/components/ui/select/Select.vue'
-import SelectContent from '~/components/ui/select/SelectContent.vue'
-import SelectItem from '~/components/ui/select/SelectItem.vue'
-import SelectLabel from '~/components/ui/select/SelectLabel.vue'
-import SelectTrigger from '~/components/ui/select/SelectTrigger.vue'
-import SelectValue from '~/components/ui/select/SelectValue.vue'
-import TagsInput from '~/components/ui/tags-input/TagsInput.vue'
-import TagsInputInput from '~/components/ui/tags-input/TagsInputInput.vue'
-import TagsInputItem from '~/components/ui/tags-input/TagsInputItem.vue'
-import TagsInputItemDelete from '~/components/ui/tags-input/TagsInputItemDelete.vue'
-import TagsInputItemText from '~/components/ui/tags-input/TagsInputItemText.vue'
-import Textarea from '~/components/ui/textarea/Textarea.vue'
-const modelValue = ref([])
-const skus = ref([
+import {
+  PlusIcon,
+  Trash,
+  Trash2,
+  Search,
+  Loader2,
+  CircleUser,
+} from 'lucide-vue-next'
+import Label from '~/components/ui/label/Label.vue'
+
+interface Brand {
+  name: string
+  id: number
+  slug: string
+}
+
+interface Category {
+  name: string
+  id: number
+}
+
+interface Sku {
+  name: string
+  color: string
+  selling_price: number
+  discount: number
+  is_active: boolean
+  is_featured: boolean
+  is_combo: boolean
+  image: string
+  packaging_type: string
+}
+
+interface Product {
+  brand: Brand | Record<string, never>
+}
+const selectedBrandId = ref(null)
+const modelValue = ref<string[]>([])
+const creating = ref(false)
+const brands = ref<Brand[]>([
   {
-    sku: '',
-    weight: '',
-    price: '',
-    quantity: '',
-    image: '',
+    name: 'Sokal Sondha Cha',
+    id: 1,
+    slug: 'ssc',
+  },
+  {
+    name: 'Bikal Bondhu Cha',
+    id: 2,
+    slug: 'bbc',
+  },
+  {
+    name: 'Dragon Well Green Tea',
+    id: 3,
+    slug: 'dwgt',
+  },
+  {
+    name: 'Silver Needle White Tea',
+    id: 4,
+    slug: 'sewt',
+  },
+  {
+    name: 'Red Lebel Olong Tea',
+    id: 5,
+    slug: 'rbot',
+  },
+  {
+    name: 'Gift Box',
+    id: 6,
+    slug: 'bg',
+  },
+  {
+    name: 'Halda Valley Black Tea',
+    id: 7,
+    slug: 'hvbt',
   },
 ])
-const addEmptySku = () => {
-skus.value.push( {
-    sku: '',
-    weight: '',
-    price: '',
-    quantity: '',
-    image: '',
-  })
-}
-const product = ref({
-  isActibe: true,
+
+const categories = ref<Category[]>([
+  {
+    name: 'Black Tea',
+    id: 1,
+  },
+  {
+    name: 'Special Tea',
+    id: 2,
+  },
+  {
+    name: 'Green Tea',
+    id: 3,
+  },
+])
+
+const sku = ref<Sku>({
+  name: '',
+  color: '',
+  selling_price: 0,
+  discount: 0,
+  is_active: false,
+  is_featured: false,
+  is_combo: false,
+  image: '',
+  packaging_type: 'pouch',
 })
+
+const skus = ref<Sku[]>([])
+
+const product = ref<Product>({
+  brand: {},
+})
+const selectedBrand = computed(() => {
+  return brands.value.find((brand) => brand.id === selectedBrandId.value)
+})
+const handleFileChange = (
+  event: Event,
+  targetObject: Record<string, any>,
+  property: string
+): void => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (e.target?.result) {
+        targetObject[property] = e.target.result
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const addEmptySku = (): void => {
+  if (selectedBrand.value) {
+    sku.value.name = selectedBrand.value.name + '-' + sku.value.name
+    skus.value.push({ ...sku.value })
+    sku.value = {
+      name: '',
+      color: '',
+      selling_price: 0,
+      discount: 0,
+      is_active: false,
+      is_featured: false,
+      is_combo: false,
+      image: '',
+      packaging_type: 'pouch',
+    }
+  }
+}
+
 definePageMeta({
   layout: 'admin',
+  middleware: ['auth']
 })
 </script>
-
 <style></style>

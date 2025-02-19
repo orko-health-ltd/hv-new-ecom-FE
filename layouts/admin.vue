@@ -81,7 +81,7 @@ import {
   Icon,
 } from 'lucide-vue-next'
 import { ref } from 'vue'
-
+const route = useRoute()
 // This is sample data.
 const data = {
   user: {
@@ -98,7 +98,7 @@ const data = {
   },
   {
     title: 'Product Management',
-    url: '#',
+    url: '/admin/product-management',
     icon: 'icon-park:ad-product',
     icon2: PieChart,
     isActive: true,
@@ -113,49 +113,49 @@ const data = {
   },
   {
     title: 'Orders',
-    url: '#',
+    url: '/admin/order-management',
     icon: 'material-symbols:shopping-bag-speed',
      icon2: PieChart,
     isActive: false,
     items: [
-      { title: 'All Orders', url: '/orders',icon: 'material-symbols:list-alt-rounded' },
-      { title: 'Pending Orders', url: '/orders/pending' ,icon:'ic:baseline-pending-actions' },
-      { title: 'Completed Orders', url: '/orders/completed' ,icon:'material-symbols:list-alt-check-rounded' },
-      { title: 'Cancelled Orders', url: '/orders/cancelled',icon:'carbon:rule-cancelled' },
+      { title: 'All Orders', url: '/admin/order-management',icon: 'material-symbols:list-alt-rounded' },
+      { title: 'Pending Orders', url: '/admin/order-management/pending' ,icon:'ic:baseline-pending-actions' },
+      { title: 'Completed Orders', url: '/admin/order-management/completed' ,icon:'material-symbols:list-alt-check-rounded' },
+      { title: 'Cancelled Orders', url: '/admin/order-management/cancelled',icon:'carbon:rule-cancelled' },
     ],
   },
   {
     title: 'Customers Management',
-    url: '/customers',
+    url: '/admin/customer-management',
     icon: 'garden:customer-lists-fill-26',
      icon2: PieChart,
     isActive: false,
     items: [
-      { title: 'Customers', url: '/orders',icon: 'gridicons:multiple-users' },
-      { title: 'Support Tickets', url: '/orders/pending' ,icon:'ri:customer-service-2-fill' },
-      { title: 'Newsletter Subscribers', url: '/orders/completed' ,icon:'mdi:email-newsletter' },
+      { title: 'Customers', url: '/admin/customer-management',icon: 'gridicons:multiple-users' },
+      { title: 'Support Tickets', url: '/admin/customer-management/support-tickets' ,icon:'ri:customer-service-2-fill' },
+      { title: 'Newsletter Subscribers', url: '/admin/customer-management/newsletter' ,icon:'mdi:email-newsletter' },
     ],
   },
   {
     title: 'Payments & Transactions',
-    url: '#',
+    url: '/admin/payment-management',
     icon: 'streamline:money-cash-dollar-coin-accounting-billing-payment-cash-coin-currency-money-finance',
     isActive: false,
      icon2: PieChart,
     items: [
-      { title: 'Payments', url: '/payments' ,icon:'material-symbols:payments-outline'},
-      { title: 'Refunds', url: '/payments/refunds',icon:"tdesign:undertake-transaction-filled" },
+      { title: 'Payments', url: '/admin/payment-management/payments' ,icon:'material-symbols:payments-outline'},
+      { title: 'Refunds', url: '/admin/payment-management/refunds',icon:"tdesign:undertake-transaction-filled" },
     ],
   },
   {
     title: 'Marketing & Promotions',
-    url: '#',
+    url: '/admin/marketing-promotions',
     icon: 'nimbus:marketing',
     isActive: false,
      icon2: PieChart,
     items: [
-      { title: 'Coupons', url: '/coupons', icon:'ri:coupon-fill' },
-      { title: 'Banners', url: '/banners',icon:'material-symbols:planner-banner-ad-pt-rounded' },
+      { title: 'Coupons', url: '/admin/marketing-promotions/coupons', icon:'ri:coupon-fill' },
+      { title: 'Banners', url: '/admin/marketing-promotions/banners',icon:'material-symbols:planner-banner-ad-pt-rounded' },
     ],
   },
   {
@@ -167,14 +167,14 @@ const data = {
   },
   {
     title: 'Settings',
-    url: '#',
+    url: '/admin/settings',
     icon: 'ic:baseline-settings',
     isActive: false,
      icon2: PieChart,
     items: [
-      { title: 'Store Settings', url: '/admin/settings/store' },
-      { title: 'Users & Roles', url: '/admin/settings/users' },
-      { title: 'Security', url: '/admin/settings/security' },
+      { title: 'Store Settings', url: '/admin/settings/store',icon:'mdi:store-cog-outline' },
+      { title: 'Users & Roles', url: '/admin/settings/users',icon:'material-symbols:manage-accounts' },
+      { title: 'Security', url: '/admin/settings/security',icon:'material-symbols:security-rounded' },
     ],
   },
 ],
@@ -197,8 +197,6 @@ const data = {
     // },
   ],
 }
-
-
 
 </script>
 
@@ -231,7 +229,11 @@ const data = {
               :default-open="item.isActive"
               class="group/collapsible"
             >
-              <SidebarMenuItem v-if="item.items">
+              <SidebarMenuItem v-if="item.items"  :class="
+                  route.path.startsWith(item.url)
+                    ? 'text-[#b4a345]'
+                    : 'text-black'
+                ">
                 <CollapsibleTrigger class="hover:bg-primary-200" as-child>
                   <SidebarMenuButton :tooltip="item.title">
                     <UIcon  :name="item.icon" class="w-5 shrink-0 h-5" />
@@ -247,8 +249,12 @@ const data = {
                       :key="subItem.title"
                     >
                       <SidebarMenuSubButton as-child class="hover:bg-primary-300">
-                        <nuxt-link :to="subItem.url">
-                          <UIcon :name="subItem.icon" class="w-5 shrink-0 h-5" />
+                        <nuxt-link :to="subItem.url" :class="
+                  route.path.startsWith(subItem.url)
+                    ? 'text-[#b4a345]'
+                    : 'text-black'
+                ">
+                          <UIcon :name="subItem.icon"  class="w-5 shrink-0 h-5" />
                           <span>{{ subItem.title }}</span>
                         </nuxt-link>
                       </SidebarMenuSubButton>
@@ -257,8 +263,13 @@ const data = {
                 </CollapsibleContent>
               </SidebarMenuItem>
               <SidebarMenuItem v-else>
+               
                 <SidebarMenuButton as-child class="hover:bg-primary-200">
-                        <nuxt-link :to="item.url">
+                        <nuxt-link :to="item.url" :class="
+                  route.path == item.url 
+                    ? 'text-[#b4a345]'
+                    : 'text-black'
+                ">
                           <UIcon :name="item.icon" class="w-5 shrink-0 h-5" />
                           <span>{{ item.title }}</span>
                         </nuxt-link>

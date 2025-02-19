@@ -6,14 +6,26 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import {
   Table,
   TableBody,
@@ -22,46 +34,28 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   CircleUser,
   File,
-  Home,
-  Layout,
-  LineChart,
   ListFilter,
   MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
   PlusCircle,
   Search,
-  Settings,
-  ShoppingCart,
-  Users2,
 } from 'lucide-vue-next'
 definePageMeta({
-  layout:'admin'
+  layout: 'admin',
+  middleware: ['auth'],
 })
 </script>
 
 <template>
   <div class="flex min-h-screen w-full flex-col bg-muted/40">
- 
     <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-      <header class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-       <SidebarTrigger class="-ml-1" />
+      <header
+        class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+      >
+        <SidebarTrigger class="-ml-1" />
         <Breadcrumb class="hidden md:flex">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -72,14 +66,17 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-               <nuxt-link to="/admin/product-management/products">Products</nuxt-link>
+                <nuxt-link to="/admin/product-management/products"
+                  >Products</nuxt-link
+                >
               </BreadcrumbLink>
             </BreadcrumbItem>
-         
           </BreadcrumbList>
         </Breadcrumb>
         <div class="relative ml-auto flex-1 md:grow-0">
-          <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search
+            class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
+          />
           <Input
             type="search"
             placeholder="Search..."
@@ -107,15 +104,9 @@ definePageMeta({
         <Tabs default-value="all">
           <div class="flex items-center">
             <TabsList>
-              <TabsTrigger value="all">
-                All
-              </TabsTrigger>
-              <TabsTrigger value="active">
-                Active
-              </TabsTrigger>
-              <TabsTrigger value="draft">
-                Draft
-              </TabsTrigger>
+              <TabsTrigger value="all"> All </TabsTrigger>
+              <TabsTrigger value="active"> Active </TabsTrigger>
+              <TabsTrigger value="draft"> Draft </TabsTrigger>
               <TabsTrigger value="archived" class="hidden sm:flex">
                 Archived
               </TabsTrigger>
@@ -133,13 +124,9 @@ definePageMeta({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem checked>
-                    Active
-                  </DropdownMenuItem>
+                  <DropdownMenuItem checked> Active </DropdownMenuItem>
                   <DropdownMenuItem>Draft</DropdownMenuItem>
-                  <DropdownMenuItem>
-                    Archived
-                  </DropdownMenuItem>
+                  <DropdownMenuItem> Archived </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button size="sm" variant="outline" class="h-7 gap-1">
@@ -149,12 +136,13 @@ definePageMeta({
                 </span>
               </Button>
               <nuxt-link to="/admin/product-management/products/create">
-              <Button size="sm" class="h-7 text-white gap-1">
-                <PlusCircle class="h-3.5 w-3.5" />
-                <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Product
-                </span>
-              </Button></nuxt-link>
+                <Button size="sm" class="h-7 text-white gap-1">
+                  <PlusCircle class="h-3.5 w-3.5" />
+                  <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    Add Product
+                  </span>
+                </Button></nuxt-link
+              >
             </div>
           </div>
           <TabsContent value="all">
@@ -197,22 +185,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         Laser Lemonade Machine
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Draft
-                        </Badge>
+                        <Badge variant="outline"> Draft </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $499.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        25
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 25 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-07-12 10:42 AM
                       </TableCell>
@@ -244,22 +228,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         Hypernova Headphones
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
+                        <Badge variant="outline"> Active </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $129.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        100
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-10-18 03:21 PM
                       </TableCell>
@@ -291,22 +271,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         AeroGlow Desk Lamp
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
+                        <Badge variant="outline"> Active </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $39.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        50
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 50 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-11-29 08:15 AM
                       </TableCell>
@@ -338,22 +314,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         TechTonic Energy Drink
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary">
-                          Draft
-                        </Badge>
+                        <Badge variant="secondary"> Draft </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $2.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        0
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 0 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-12-25 11:59 PM
                       </TableCell>
@@ -385,22 +357,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         Gamer Gear Pro Controller
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
+                        <Badge variant="outline"> Active </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $59.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        75
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 75 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2024-01-01 12:00 AM
                       </TableCell>
@@ -432,22 +400,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         Luminous VR Headset
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
+                        <Badge variant="outline"> Active </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $199.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        30
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 30 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2024-02-14 02:14 PM
                       </TableCell>

@@ -1,26 +1,12 @@
 <script setup lang="ts">
 import {
-  Bold,
   CircleUser,
   File,
-  Home,
-  Italic,
-  Layout,
-  LineChart,
   ListFilter,
   Loader2,
-  MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
   PlusCircle,
   Search,
-  Settings,
-  ShoppingCart,
-  Users2,
 } from 'lucide-vue-next'
-import ToggleGroup from '~/components/ui/toggle-group/ToggleGroup.vue'
-import ToggleGroupItem from '~/components/ui/toggle-group/ToggleGroupItem.vue'
 const showCategoryForm = ref(false)
 const creating = ref(false)
 const category = ref({
@@ -30,31 +16,32 @@ const category = ref({
   isActive: true,
 })
 const createCategory = async () => {
-    creating.value = true
-    try {
-        // await createCategoryMutation.mutateAsync({
-        //     name: create
-        // })
-        showCategoryForm.value = false
-    }
-        catch (error) {
-            console.log(error)
-        } finally {
-            creating.value = false
-        }
-    }
+  creating.value = true
+  try {
+    // await createCategoryMutation.mutateAsync({
+    //     name: create
+    // })
+    showCategoryForm.value = false
+  } catch (error) {
+    console.log(error)
+  } finally {
+    creating.value = false
+  }
+}
 
 definePageMeta({
-  layout:'admin'
+  layout: 'admin',
+  middleware: ['auth'],
 })
 </script>
 
 <template>
   <div class="flex min-h-screen w-full flex-col bg-muted/40">
- 
     <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-      <header class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-       <SidebarTrigger class="-ml-1" />
+      <header
+        class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+      >
+        <SidebarTrigger class="-ml-1" />
         <Breadcrumb class="hidden md:flex">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -65,14 +52,17 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/categories">All Categories</nuxt-link>
+                <nuxt-link to="/admin/product-management/categories"
+                  >All Categories</nuxt-link
+                >
               </BreadcrumbLink>
             </BreadcrumbItem>
-           
           </BreadcrumbList>
         </Breadcrumb>
         <div class="relative ml-auto flex-1 md:grow-0">
-          <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search
+            class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
+          />
           <Input
             type="search"
             placeholder="Search..."
@@ -97,19 +87,12 @@ definePageMeta({
         </DropdownMenu>
       </header>
       <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-       
         <Tabs default-value="all">
           <div class="flex items-center">
             <TabsList>
-              <TabsTrigger value="all">
-                All
-              </TabsTrigger>
-              <TabsTrigger value="active">
-                Active
-              </TabsTrigger>
-              <TabsTrigger value="draft">
-                Draft
-              </TabsTrigger>
+              <TabsTrigger value="all"> All </TabsTrigger>
+              <TabsTrigger value="active"> Active </TabsTrigger>
+              <TabsTrigger value="draft"> Draft </TabsTrigger>
               <TabsTrigger value="archived" class="hidden sm:flex">
                 Archived
               </TabsTrigger>
@@ -127,13 +110,9 @@ definePageMeta({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem checked>
-                    Active
-                  </DropdownMenuItem>
+                  <DropdownMenuItem checked> Active </DropdownMenuItem>
                   <DropdownMenuItem>Draft</DropdownMenuItem>
-                  <DropdownMenuItem>
-                    Archived
-                  </DropdownMenuItem>
+                  <DropdownMenuItem> Archived </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button size="sm" variant="outline" class="h-7 gap-1">
@@ -142,7 +121,11 @@ definePageMeta({
                   Export
                 </span>
               </Button>
-              <Button size="sm" @click="showCategoryForm = !showCategoryForm" class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1">
+              <Button
+                size="sm"
+                @click="showCategoryForm = !showCategoryForm"
+                class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1"
+              >
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Edit Category
@@ -150,37 +133,61 @@ definePageMeta({
               </Button>
             </div>
           </div>
-           <div class="mt-3" >
+          <div class="mt-3">
             <Card>
-                <CardHeader> <CardTitle>Edit Category</CardTitle>
+              <CardHeader>
+                <CardTitle>Edit Category</CardTitle>
                 <CardDescription>
-                 Edit Category to manage your products.
-                </CardDescription></CardHeader>
-                <form @submit.prevent="createCategory" class="grid gap-4">
+                  Edit Category to manage your products.
+                </CardDescription></CardHeader
+              >
+              <form @submit.prevent="createCategory" class="grid gap-4">
                 <CardContent>
-
-                     <div class="grid grid-cols-2 gap-4">
-          <div class="grid gap-2">
-            <Label for="first-name">Category name</Label>
-            <Input id="first-name" placeholder="Category" required />
-          </div>
-          <div class="grid gap-2">
-            <Label for="last-name">Category Image</Label>
-            <Input id="last-name" type="file" required />
-          </div>
-           <div class="flex gap-4 text-white">
-            <Button type="button" @click="category.isActive  =true " :class="category.isActive == true ? 'bg-blue-600': 'bg-gray-400'">Active</Button>
-            <Button type="button" @click="category.isActive  =false "  :class="category.isActive == false ? 'bg-red-600': 'bg-gray-400'">Inactive</Button>
-           </div>
-        </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="grid gap-2">
+                      <Label for="first-name">Category name</Label>
+                      <Input id="first-name" placeholder="Category" required />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="last-name">Category Image</Label>
+                      <Input id="last-name" type="file" required />
+                    </div>
+                    <div class="flex gap-4 text-white">
+                      <Button
+                        type="button"
+                        @click="category.isActive = true"
+                        :class="
+                          category.isActive == true
+                            ? 'bg-blue-600'
+                            : 'bg-gray-400'
+                        "
+                        >Active</Button
+                      >
+                      <Button
+                        type="button"
+                        @click="category.isActive = false"
+                        :class="
+                          category.isActive == false
+                            ? 'bg-red-600'
+                            : 'bg-gray-400'
+                        "
+                        >Inactive</Button
+                      >
+                    </div>
+                  </div>
                 </CardContent>
                 <CardFooter>
-                    <Button class="text-white" :disabled="creating"> <Loader2 v-if="creating" class="w-4  h-4 mr-2 animate-spin" />
- Add Category</Button>
+                  <Button class="text-white" :disabled="creating">
+                    <Loader2
+                      v-if="creating"
+                      class="w-4 h-4 mr-2 animate-spin"
+                    />
+                    Add Category</Button
+                  >
                 </CardFooter>
-                </form>
+              </form>
             </Card>
-        </div>
+          </div>
           <TabsContent value="all">
             <!-- <Card>
               <CardHeader>

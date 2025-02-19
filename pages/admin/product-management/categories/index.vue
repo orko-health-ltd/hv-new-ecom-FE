@@ -2,49 +2,41 @@
 import {
   CircleUser,
   File,
-  Home,
-  Layout,
-  LineChart,
   ListFilter,
   Loader2,
   MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
   PlusCircle,
   Search,
-  Settings,
-  ShoppingCart,
-  Users2,
 } from 'lucide-vue-next'
 const showCategoryForm = ref(false)
 const creating = ref(false)
 const createCategory = async () => {
-    creating.value = true
-    try {
-        // await createCategoryMutation.mutateAsync({
-        //     name: create
-        // })
-        showCategoryForm.value = false
-    }
-        catch (error) {
-            console.log(error)
-        } finally {
-            creating.value = false
-        }
-    }
+  creating.value = true
+  try {
+    // await createCategoryMutation.mutateAsync({
+    //     name: create
+    // })
+    showCategoryForm.value = false
+  } catch (error) {
+    console.log(error)
+  } finally {
+    creating.value = false
+  }
+}
 
 definePageMeta({
-  layout:'admin'
+  layout: 'admin',
+  middleware: ['auth'],
 })
 </script>
 
 <template>
   <div class="flex min-h-screen w-full flex-col bg-muted/40">
- 
     <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-      <header class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-       <SidebarTrigger class="-ml-1" />
+      <header
+        class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+      >
+        <SidebarTrigger class="-ml-1" />
         <Breadcrumb class="hidden md:flex">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -55,14 +47,17 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/categories">All Categories</nuxt-link>
+                <nuxt-link to="/admin/product-management/categories"
+                  >All Categories</nuxt-link
+                >
               </BreadcrumbLink>
             </BreadcrumbItem>
-           
           </BreadcrumbList>
         </Breadcrumb>
         <div class="relative ml-auto flex-1 md:grow-0">
-          <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search
+            class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
+          />
           <Input
             type="search"
             placeholder="Search..."
@@ -87,19 +82,12 @@ definePageMeta({
         </DropdownMenu>
       </header>
       <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-       
         <Tabs default-value="all">
           <div class="flex items-center">
             <TabsList>
-              <TabsTrigger value="all">
-                All
-              </TabsTrigger>
-              <TabsTrigger value="active">
-                Active
-              </TabsTrigger>
-              <TabsTrigger value="draft">
-                Draft
-              </TabsTrigger>
+              <TabsTrigger value="all"> All </TabsTrigger>
+              <TabsTrigger value="active"> Active </TabsTrigger>
+              <TabsTrigger value="draft"> Draft </TabsTrigger>
               <TabsTrigger value="archived" class="hidden sm:flex">
                 Archived
               </TabsTrigger>
@@ -117,13 +105,9 @@ definePageMeta({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem checked>
-                    Active
-                  </DropdownMenuItem>
+                  <DropdownMenuItem checked> Active </DropdownMenuItem>
                   <DropdownMenuItem>Draft</DropdownMenuItem>
-                  <DropdownMenuItem>
-                    Archived
-                  </DropdownMenuItem>
+                  <DropdownMenuItem> Archived </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button size="sm" variant="outline" class="h-7 gap-1">
@@ -132,7 +116,11 @@ definePageMeta({
                   Export
                 </span>
               </Button>
-              <Button size="sm" @click="showCategoryForm = !showCategoryForm" class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1">
+              <Button
+                size="sm"
+                @click="showCategoryForm = !showCategoryForm"
+                class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1"
+              >
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Add Category
@@ -140,35 +128,47 @@ definePageMeta({
               </Button>
             </div>
           </div>
-           <div class="mt-3" v-if="showCategoryForm">
+          <div class="mt-3" v-if="showCategoryForm">
             <Card>
-                <CardHeader> <CardTitle>Add Category</CardTitle>
+              <CardHeader>
+                <CardTitle>Add Category</CardTitle>
                 <CardDescription>
-                 Add new categories to manage your products.
-                </CardDescription></CardHeader>
-                <form @submit.prevent="createCategory" class="grid gap-4">
+                  Add new categories to manage your products.
+                </CardDescription></CardHeader
+              >
+              <form @submit.prevent="createCategory" class="grid gap-4">
                 <CardContent>
-
-                     <div class="grid grid-cols-2 gap-4">
-          <div class="grid gap-2">
-            <Label for="first-name">Category name</Label>
-            <Input id="first-name" placeholder="Category" required />
-          </div>
-          <div class="grid gap-2">
-            <Label for="last-name">Category Image</Label>
-            <Input id="last-name" type="file" required />
-          </div>
-        </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="grid gap-2">
+                      <Label for="first-name">Category name</Label>
+                      <Input id="first-name" placeholder="Category" required />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="last-name">Category Image</Label>
+                      <Input id="last-name" type="file" required />
+                    </div>
+                  </div>
                 </CardContent>
                 <CardFooter class="gap-3">
-                    <Button class="text-white" :disabled="creating"> <Loader2 v-if="creating" class="w-4  h-4 mr-2 animate-spin" />
- Add Category</Button>
-                    <Button @click="showCategoryForm = !showCategoryForm" class="text-white" type="button" variant="destructive"> 
- Cancel</Button>
+                  <Button class="text-white" :disabled="creating">
+                    <Loader2
+                      v-if="creating"
+                      class="w-4 h-4 mr-2 animate-spin"
+                    />
+                    Add Category</Button
+                  >
+                  <Button
+                    @click="showCategoryForm = !showCategoryForm"
+                    class="text-white"
+                    type="button"
+                    variant="destructive"
+                  >
+                    Cancel</Button
+                  >
                 </CardFooter>
-                </form>
+              </form>
             </Card>
-        </div>
+          </div>
           <TabsContent value="all">
             <Card>
               <CardHeader>
@@ -209,22 +209,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         Laser Lemonade Machine
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Draft
-                        </Badge>
+                        <Badge variant="outline"> Draft </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $499.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        25
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 25 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-07-12 10:42 AM
                       </TableCell>
@@ -256,22 +252,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         Hypernova Headphones
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
+                        <Badge variant="outline"> Active </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $129.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        100
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-10-18 03:21 PM
                       </TableCell>
@@ -289,7 +281,12 @@ definePageMeta({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem><nuxt-link :to="`/admin/product-management/categories/1`">Edit</nuxt-link> </DropdownMenuItem>
+                            <DropdownMenuItem
+                              ><nuxt-link
+                                :to="`/admin/product-management/categories/1`"
+                                >Edit</nuxt-link
+                              >
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -303,22 +300,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         AeroGlow Desk Lamp
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
+                        <Badge variant="outline"> Active </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $39.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        50
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 50 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-11-29 08:15 AM
                       </TableCell>
@@ -350,22 +343,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         TechTonic Energy Drink
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary">
-                          Draft
-                        </Badge>
+                        <Badge variant="secondary"> Draft </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $2.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        0
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 0 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-12-25 11:59 PM
                       </TableCell>
@@ -397,22 +386,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         Gamer Gear Pro Controller
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
+                        <Badge variant="outline"> Active </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $59.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        75
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 75 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2024-01-01 12:00 AM
                       </TableCell>
@@ -444,22 +429,18 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        >
+                        />
                       </TableCell>
                       <TableCell class="font-medium">
                         Luminous VR Headset
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
+                        <Badge variant="outline"> Active </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $199.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        30
-                      </TableCell>
+                      <TableCell class="hidden md:table-cell"> 30 </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2024-02-14 02:14 PM
                       </TableCell>

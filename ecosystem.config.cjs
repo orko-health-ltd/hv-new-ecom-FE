@@ -17,7 +17,8 @@ module.exports = {
       PORT: 3100,  // <-- This is used when --env production is specified
       HOST: '0.0.0.0'
     },
-    node_args: '--experimental-specifier-resolution=node',
+    //node_args: '--experimental-specifier-resolution=node',
+    node_args: '--experimental-specifier-resolution=node --loader ts-node/esm', // Add ESM support
     max_memory_restart: '1G',
     error_file: '/var/log/pm2/nuxt-error.log',
     out_file: '/var/log/pm2/nuxt-out.log'

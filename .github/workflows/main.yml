@@ -33,7 +33,7 @@ jobs:
           with:
             host: ${{ vars.HVECOM_SERVER_IP }}
             username: ${{ vars.HVECOM_SERVER_USERNAME }}
-            key: ${{ vars.HVECOM_SERVER_PRIVATE_KEY }}
+            key: ${{ secrets.HVECOM_SERVER_PRIVATE_KEY }}
             port: ${{ vars.HVECOM_SSH_PORT || 22 }}
             script: |
               # load nvm to set up Node.js and npm 

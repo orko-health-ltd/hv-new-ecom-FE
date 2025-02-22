@@ -10,7 +10,7 @@
         </CardTitle> -->
       </CardHeader>
       <CardContent class="w-full">
-        <form @submit.prevent="login">
+        <form @submit.prevent="handleLogin">
           <div class="grid w-full items-center gap-4">
             <div class="flex flex-col space-y-1.5">
               <Label for="email">Email</Label>
@@ -25,7 +25,10 @@
                                 <Label for="remember">Remember me</Label>
                               </div>              </div>     <div class="flex flex-col space-y-1.5">
 
-                 <Button type="submit" class="w-full">Login</Button>              </div>
+                 <Button type="submit" class="w-full">
+                  <Loader2 v-if="loading" class="w-4 h-4 mr-2 animate-spin" />
+                  Login
+                </Button>              </div>
               </div>
             
             </form>
@@ -49,7 +52,11 @@
 </template>
 
 <script lang="ts" setup>
+import { Loader2 } from 'lucide-vue-next';
 import Checkbox from '~/components/ui/checkbox/Checkbox.vue';
+
+const auth = useAuthStore()
+const loading = ref(false)
 
 const form = ref({
   email: '',
@@ -57,16 +64,17 @@ const form = ref({
   remember: false,
 })
 const remember = ref(false)
-const login = async () => {
-  const { data, error } = await useFetch('/api/auth/login', {
-    method: 'POST',
-    body: form,
-  })
-  if (data.value) {
-    await navigateTo('/')
-  }
-  if (error.value) {
-    console.log(error.value)
+const handleLogin = async () => {
+  try {
+    loading.value = true
+    const login = await auth.login(form.value.email, form.value.password, remember.value)
+    if (login) {
+      navigateTo('/admin/dashboard')
+    }
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
   }
 }
 definePageMeta({

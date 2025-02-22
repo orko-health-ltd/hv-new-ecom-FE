@@ -56,7 +56,9 @@ jobs:
               
               cd /var/www/project/hv-prod-fe
               # Graceful zero-downtime reload
-              NODE_OPTIONS="--require esbuild-register" pm2 reload ecosystem.config.js --env production  || NODE_OPTIONS="--require esbuild-register" pm2 start ecosystem.config.js --env production
+              # NODE_OPTIONS="--require esbuild-register" pm2 reload ecosystem.config.js --env production  || NODE_OPTIONS="--require esbuild-register" pm2 start ecosystem.config.js --env production
+
+              pm2 reload ecosystem.config.cjs --env production  || pm2 start ecosystem.config.cjs --env production
               
               # Save process list (only needed once)
               pm2 save --force

@@ -7,7 +7,12 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    port: process.env.NITRO_PORT || 3000
+    devProxy: {
+      '/api': {
+        target: process.env.NITRO_PORT || 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
   },
   postcss: {
     plugins: {
@@ -18,10 +23,6 @@ export default defineNuxtConfig({
   ssr: false,
 
   modules: [
-    // '@nuxt/icon',
-    // '@nuxtjs/tailwindcss',
-    // // '@nuxt/ui-edge',
-    // '@nuxt/ui',
     '@pinia/nuxt',
     '@nuxt/ui',
     '@vite-pwa/nuxt',
@@ -35,14 +36,7 @@ export default defineNuxtConfig({
     },
   },
   shadcn: {
-    /**
-     * Prefix for all the imported component
-     */
     prefix: '',
-    /**
-     * Directory that the component lives in.
-     * @default "components/ui"
-     */
     componentDir: 'components/ui',
   },
   compatibilityDate: '2024-11-01',

@@ -6,7 +6,8 @@ interface User {
   role: string
 }
 interface AuthResponse {
-  token: string,
+  access_token: string,
+  status: string,
   user: User
 }
 export const useAuthStore = defineStore('auth', {
@@ -23,10 +24,11 @@ export const useAuthStore = defineStore('auth', {
           body: { email, password },
         })
 
-        if (data.value?.token) {
-          this.token = data.value.token
-          useCookie('token').value = data.value.token // Store token in cookie
-          await this.fetchUser()
+        if (data.value?.access_token) {
+          this.token = data.value.access_token
+          this.user = data.value.user
+          useCookie('token').value = data.value.access_token // Store token in cookie
+          // await this.fetchUser()
           return true
         }
       } catch (error) {
@@ -50,9 +52,11 @@ export const useAuthStore = defineStore('auth', {
     },
 
     logout() {
+      console.log('Logout')
       this.token = null
       this.user = <User>{}
       useCookie('token').value = null
     },
   },
+  persist: true,
 })

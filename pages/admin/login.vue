@@ -68,8 +68,9 @@ const handleLogin = async () => {
   try {
     loading.value = true
     const login = await auth.login(form.value.email, form.value.password, remember.value)
+    console.log(login)
     if (login) {
-      navigateTo('/admin/dashboard')
+      navigateTo('/admin')
     }
   } catch (error) {
     console.error(error)

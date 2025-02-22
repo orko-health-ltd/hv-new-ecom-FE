@@ -9,7 +9,7 @@ module.exports = {
     // Default environment (optional)
     env: {
       NODE_ENV: 'development',
-      PORT: 3000,
+      PORT: 3050,
     },
     // Production environment
     env_production: {

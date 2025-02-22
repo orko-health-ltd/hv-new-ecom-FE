@@ -12,7 +12,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  ssr: false,
+  ssr: true,
 
   modules: [
     // '@nuxt/icon',
@@ -26,11 +26,14 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     'shadcn-nuxt',
   ],
+
   app: {
     head: {
       meta: [{ name: 'author', content: 'Ishmam Bin Azim' }],
     },
+
   },
+
   shadcn: {
     /**
      * Prefix for all the imported component

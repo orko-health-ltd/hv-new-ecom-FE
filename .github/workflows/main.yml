@@ -62,7 +62,7 @@ jobs:
               pm2 save --force
               
               # Set up startup script (only needed once)
-              sudo pm2 startup systemd -u $USER --hp $HOME
+              # sudo pm2 startup systemd -u $USER --hp $HOME
 
 
 

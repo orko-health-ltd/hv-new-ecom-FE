@@ -8,47 +8,41 @@ on:
     
 jobs:
     build-and-test:
-        runs-on: ubuntu-latest
-    
-    strategy:
+      runs-on: ubuntu-latest
+      strategy:
         matrix:
-            node-version: [18, 20]
-        
-    steps:
+          node-version: [18, 20]
+      steps:
         - uses: actions/checkout@v3
-
         - name: install node ${{ matrix.node-version }}
           uses: actions/setup-node@v3
           with:
             node-version: ${{ matrix.node-version }}
-            cahce: 'npm' 
-            
+            cache: 'npm' 
         - name: install project dependencies 
           run: npm ci
-
         - name: build project
           run: npm run build 
 
     deploy:
-        needs: build-and-test
-        runs-on: ubuntu-latest
-        if: contains(github.ref, 'refs/head/main')
-        steps:
-            -   uses: appleboy/ssh-action@master
-                with:
-                    host: ${{ vars.HVECOM_SERVER_IP }}
-                    username: ${{ vars.HVECOM_SERVER_USERNAME }}
-                    key: ${{ vars.HVECOM_SERVER_PRIVATE_KEY }}
-                    port: ${{ vars.HVECOM_SSH_PORT || 22 }}
-                script: |
-                    # load nvm to set up Node.js and npm 
-                    source ~/.nvm/nvm.sh 
-                    cd /var/www/project/hv-prod-fe
-                    git pull origin master
-                    npm ci
-                    npm run build 
-                    npm run start
-
+      needs: build-and-test
+      runs-on: ubuntu-latest
+      if: contains(github.ref, 'refs/heads/main')
+      steps:
+        - uses: appleboy/ssh-action@master
+          with:
+            host: ${{ vars.HVECOM_SERVER_IP }}
+            username: ${{ vars.HVECOM_SERVER_USERNAME }}
+            key: ${{ vars.HVECOM_SERVER_PRIVATE_KEY }}
+            port: ${{ vars.HVECOM_SSH_PORT || 22 }}
+            script: |
+              # load nvm to set up Node.js and npm 
+              source ~/.nvm/nvm.sh 
+              cd /var/www/project/hv-prod-fe
+              git pull origin master
+              npm ci
+              npm run build 
+              npm run start
 
 
 

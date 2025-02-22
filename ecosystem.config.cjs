@@ -7,7 +7,7 @@ module.exports = {
       exec_mode: 'cluster',
       env: {
         NODE_ENV: 'production',
-        PORT: 4000, // Change port as needed
+        PORT: 3100, // Change port as needed
       },
       node_args: '--experimental-specifier-resolution=node',
     },

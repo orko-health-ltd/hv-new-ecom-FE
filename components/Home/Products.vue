@@ -31,7 +31,7 @@ Products
 import Grandeur_WT from 'assets/images/home/Grandeur_WT.jpg'
 import PG_00755 from 'assets/images/home/PG_00755.jpg'
 import TheGlamourCollection from 'assets/images/home/The-Glamour-Collection.jpg'
-import TheInspirationCollection from 'assets/images/home/The-Inspiration-Collection-Open.jpg'
+// import TheInspirationCollection from 'assets/images/home/The-Inspiration-Collection-Open.jpg'
 
 const products = [
   {
@@ -52,12 +52,12 @@ const products = [
     slug:'glamour',
     img :TheGlamourCollection
   },
-  {
-    id:4,
-    name: 'The Inspiration Collection',
-    slug:'inspiration',
-    img :TheInspirationCollection
-  }
+  // {
+  //   id:4,
+  //   name: 'The Inspiration Collection',
+  //   slug:'inspiration',
+  //   img :TheInspirationCollection
+  // }
 ]
 </script>
 

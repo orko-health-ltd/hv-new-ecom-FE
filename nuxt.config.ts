@@ -6,14 +6,7 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE_URL,
     },
   },
-  nitro: {
-    devProxy: {
-      '/api': {
-        target: process.env.NITRO_PORT,
-        changeOrigin: true,
-      },
-    },
-  },
+
   postcss: {
     plugins: {
       tailwindcss: {},

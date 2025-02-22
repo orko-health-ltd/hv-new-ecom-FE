@@ -1,0 +1,12 @@
+name: HV ECOM FE
+
+on:
+    push:
+        branches:   [main] # trigger when push to main branch
+    pull_request:
+        branches:   [main]
+    
+jobs:
+    build_and_test:
+        runs_on: ubuntu_latest
+

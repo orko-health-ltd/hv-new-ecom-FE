@@ -6,6 +6,9 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE_URL,
     },
   },
+  nitro: {
+    port: process.env.NITRO_PORT || 3000
+  },
   postcss: {
     plugins: {
       tailwindcss: {},

@@ -2,13 +2,19 @@ module.exports = {
   apps: [{
     name: 'nuxt-app',
     script: '.output/server/index.mjs',
-    instances: 1, // Use 1 instance for Nuxt (cluster mode not needed for Node 18+)
-    exec_mode: 'fork', // Fork mode works better with Nuxt/Nitro
+    instances: 1,
+    exec_mode: 'fork',
     autorestart: true,
     watch: false,
+    // Default environment (optional)
     env: {
+      NODE_ENV: 'development',
+      PORT: 3000,
+    },
+    // Production environment
+    env_production: {
       NODE_ENV: 'production',
-      PORT: 3100,
+      PORT: 3100,  // <-- This is used when --env production is specified
       HOST: '0.0.0.0'
     },
     node_args: '--experimental-specifier-resolution=node',

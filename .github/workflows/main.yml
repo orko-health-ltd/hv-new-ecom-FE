@@ -50,7 +50,7 @@ jobs:
 
               # start or restart with pm2 
               #pm2 startOrReload ecosystem.config.js --env production
-              pm2 startOrReload "node .output/server/index.mjs" --name "nuxt-app"
+              pm2 start "node .output/server/index.mjs" --name "nuxt-app"
               pm2 save
               pm2 startup 2>&1 | grep -v "Already Running"
               

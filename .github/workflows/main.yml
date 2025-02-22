@@ -44,6 +44,15 @@ jobs:
               npm run build 
               npm run start
 
+              if ! command -v pm2 &> /dev/null; then
+                npm install -g pm2
+              fi
+
+              # start or restart with pm2 
+              pm2 startOrReload echosystem.config.js --env production
+              pm2 save
+              pm2 startup 2>&1 | grep -v "Already Running"
+
 
 
     

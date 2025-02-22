@@ -49,11 +49,20 @@ jobs:
               fi
 
               # start or restart with pm2 
-              pm2 start ecosystem.config.cjs --env production
+              #pm2 start ecosystem.config.cjs --env production
               #pm2 start "node .output/server/index.mjs" --name "nuxt-app"
-              pm2 save
-              pm2 startup 2>&1 | grep -v "Already Running"
+              #pm2 save
+              #pm2 startup 2>&1 | grep -v "Already Running"
               
+              
+              # Graceful zero-downtime reload
+              pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
+              
+              # Save process list (only needed once)
+              pm2 save --force
+              
+              # Set up startup script (only needed once)
+              sudo pm2 startup systemd -u $USER --hp $HOME
 
 
 

@@ -88,7 +88,7 @@
                         <SelectItem
                           v-for="brand in brands"
                           :key="brand.id"
-                          :value="brand.id">
+                          :value="String (brand.id)">
                           {{ brand.name }}
                         </SelectItem>
                       </SelectContent>
@@ -105,7 +105,7 @@
                         <SelectItem
                           v-for="category in categories"
                           :key="category.id"
-                          :value="category.id">
+                          :value="String (category.id)">
                           {{ category.name }}
                         </SelectItem>
                       </SelectContent>
@@ -213,11 +213,10 @@
                   </div>
                   <div class="grid gap-2">
                     <Label for="last-name">Image</Label>
-
                     <Input
                       id="last-name"
                       type="file"
-                      @change="(event) => handleFileChange(event, sku, 'image')"
+                      @change="(event: Event) => handleFileChange(event, sku, 'image')"
                       required
                     />
                   </div>
@@ -334,7 +333,7 @@ interface Sku {
 interface Product {
   brand: Brand | Record<string, never>
 }
-const selectedBrandId = ref(null)
+const selectedBrandId = ref(<string>'')
 const modelValue = ref<string[]>([])
 const creating = ref(false)
 const brands = ref<Brand[]>([
@@ -408,7 +407,7 @@ const product = ref<Product>({
   brand: {},
 })
 const selectedBrand = computed(() => {
-  return brands.value.find((brand) => brand.id === selectedBrandId.value)
+  return brands.value.find((brand) => brand.id === Number(selectedBrandId.value))
 })
 const handleFileChange = (
   event: Event,

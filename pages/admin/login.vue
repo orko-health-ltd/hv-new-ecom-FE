@@ -56,6 +56,19 @@ const form = ref({
   password: '',
   remember: false,
 })
+const remember = ref(false)
+const login = async () => {
+  const { data, error } = await useFetch('/api/auth/login', {
+    method: 'POST',
+    body: form,
+  })
+  if (data.value) {
+    await navigateTo('/')
+  }
+  if (error.value) {
+    console.log(error.value)
+  }
+}
 definePageMeta({
   layout: false,
 })

@@ -1,15 +1,22 @@
 import { defineStore } from 'pinia'
-
+interface AuthResponse {
+  token: string
+}
+interface User {
+  name: string
+  email: string
+  role: string
+}
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: useCookie('token'), // Using cookies for SSR
-    user: null,
+    user: <User>{}
   }),
 
   actions: {
     async login(email: string, password: string) {
       try {
-        const { data } = await useFetch('/api/login', {
+        const { data } = await useFetch<AuthResponse>('/api/login', {
           method: 'POST',
           body: { email, password },
         })
@@ -18,8 +25,7 @@ export const useAuthStore = defineStore('auth', {
           this.token = data.value.token
           useCookie('token').value = data.value.token // Store token in cookie
           await this.fetchUser()
-        }
-      } catch (error) {
+        }      } catch (error) {
         console.error('Login failed', error)
       }
     },
@@ -27,10 +33,12 @@ export const useAuthStore = defineStore('auth', {
     async fetchUser() {
       if (!this.token) return
       try {
-        const { data } = await useFetch('/api/me', {
+        const { data } = await useFetch<User>('/api/me', {
           headers: { Authorization: `Bearer ${this.token}` },
         })
-        this.user = data.value
+        if (data.value) {
+          this.user = data.value
+        }
       } catch (error) {
         console.error('Failed to fetch user', error)
       }
@@ -38,7 +46,7 @@ export const useAuthStore = defineStore('auth', {
 
     logout() {
       this.token = null
-      this.user = null
+      this.user = <User>{}
       useCookie('token').value = null
     },
   },

@@ -5,12 +5,12 @@
       <h2 class="text-[20px] font-thin ">Explore</h2>
       <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
-     <h2 class="text-dark font-quattrocento text-[34px]  tracking-[20px] font-serif uppercase">
+     <h2 class="text-dark font-quattrocento py-4 text-xl sm:text-[34px]  tracking-[20px] font-serif uppercase">
 Products
 </h2>
 <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
 <div v-for="product in products" :key="product.id">
-  <img :src="product.img" alt="">
+  <img :src="product.img"  alt="">
    <div class="flex flex-col justify-center items-center  my-5 ">
      <h2 class="text-dark  text-lg font-sans font-[500]">
 {{ product.name }}

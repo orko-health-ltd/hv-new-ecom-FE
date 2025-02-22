@@ -8,11 +8,26 @@
      
       </div>
     </div>
-    <products-grid />
+    <products-grid :products="products" />
   </div>
 </template>
 
 <script lang="ts" setup>
+  interface Product {
+    id: number
+    name: string
+    price: number
+    img: string
+  }
+const products = ref<Product[]>([])
+
+const getProducts = async () => {
+  const { data } = await useFetch<Product[]>('/api/products')
+  products.value = data.value || []
+}
+onMounted(() => {
+  getProducts()
+})
 </script>
 
 

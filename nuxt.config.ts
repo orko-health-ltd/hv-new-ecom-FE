@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/api': {
-        target: process.env.NITRO_PORT || 'http://localhost:3000',
+        target: process.env.NITRO_PORT,
         changeOrigin: true,
       },
     },

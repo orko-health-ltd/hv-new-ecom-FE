@@ -6,6 +6,9 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE_URL,
     },
   },
+  // routeRules: {
+  //   '/api/**': { appMiddleware: ['~/server/middleware/auth.ts'] }, // Apply to all API routes
+  // },
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -15,10 +18,6 @@ export default defineNuxtConfig({
   ssr: true,
 
   modules: [
-    // '@nuxt/icon',
-    // '@nuxtjs/tailwindcss',
-    // // '@nuxt/ui-edge',
-    // '@nuxt/ui',
     '@pinia/nuxt',
     '@nuxt/ui',
     '@vite-pwa/nuxt',
@@ -31,7 +30,6 @@ export default defineNuxtConfig({
     head: {
       meta: [{ name: 'author', content: 'Ishmam Bin Azim' }],
     },
-
   },
 
   shadcn: {

@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
    
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid login credentials',
+      statusMessage: 'Invalid login credentials'+error,
       data: error,
     })
   }

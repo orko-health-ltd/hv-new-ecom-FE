@@ -47,7 +47,6 @@ const addProductToCart = (product: any) => {
   setTimeout(() => (isClicked.value = false), 1500);
   toast.add({ title: 'Product added to cart', color: 'green',timeout: 1500 })
   cart.addToCart(product)
-  console.log(cart.cart)
 }
 </script>
 

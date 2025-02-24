@@ -8,6 +8,7 @@ import {
   PlusCircle,
   Search,
 } from 'lucide-vue-next'
+// const api = useApi()
 const showCategoryForm = ref(false)
 const creating = ref(false)
 const createCategory = async () => {
@@ -23,7 +24,18 @@ const createCategory = async () => {
     creating.value = false
   }
 }
-
+const getUsers = async( ) => {
+  try {
+    const response = await useFetch('/api/admin/users')
+    // return data
+    console.log(response)
+  } catch (error) {
+    console.log(error)
+  }
+}
+onMounted(() => {
+  getUsers()
+  })
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],

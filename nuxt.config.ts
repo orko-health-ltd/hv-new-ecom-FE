@@ -6,7 +6,9 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE_URL,
     },
   },
-
+  // routeRules: {
+  //   '/api/**': { appMiddleware: ['~/server/middleware/auth.ts'] }, // Apply to all API routes
+  // },
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -28,7 +30,6 @@ export default defineNuxtConfig({
     head: {
       meta: [{ name: 'author', content: 'Ishmam Bin Azim' }],
     },
-
   },
 
   shadcn: {

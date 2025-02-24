@@ -53,7 +53,6 @@
 
 <script lang="ts" setup>
 import { Loader2 } from 'lucide-vue-next';
-import Checkbox from '~/components/ui/checkbox/Checkbox.vue';
 
 const auth = useAuthStore()
 const loading = ref(false)
@@ -74,9 +73,8 @@ const handleLogin = async () => {
     }
   } catch (error) {
     console.error(error)
-  } finally {
     loading.value = false
-  }
+  } 
 }
 definePageMeta({
   layout: false,

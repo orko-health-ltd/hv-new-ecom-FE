@@ -9,12 +9,12 @@
       loop
       playsinline
       class="inset-0 max-w-screen w-screen  h-auto md:h-screen object-cover" 
-      src="/assets/videos/halda.mp4"
+      src="~/assets/videos/halda.mp4"
     ></video>
     
 
     <!-- Content Overlay -->
-    <div class="absolute inset-0 w-screen h-1/2 mt-5 md:mt-0 md:h-screen flex flex-col items-center justify-center text-white">
+    <div class="absolute inset-0 h-1/2 mt-5 md:mt-0 md:h-screen flex flex-col items-center justify-center text-white">
      <section class="flex flex-col items-center justify-center mb-5 py-13 px-4">
     <!-- Title Section -->
     <div class="flex w-full items-center space-x-5 mb-2">

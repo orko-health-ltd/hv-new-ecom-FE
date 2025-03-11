@@ -2,14 +2,14 @@
 import { defineStore } from 'pinia'
 type CartItem = {
     id: number
-    product: object
-    price: number
+  product: { name: string, img: string, price: number , category: string},
+  price: number
     quantity: number
 }
 export const useMyCartStore = defineStore('myCartStore', {
   state: () => ({
     cart: [] as CartItem[],
-    total: 0,
+    subtotal: 0,
     isOpen: false,
     isLoading: false,
     isError: false,
@@ -26,18 +26,31 @@ export const useMyCartStore = defineStore('myCartStore', {
   actions: {
     addToCart(product: CartItem) {
       if (!this.cart.some((item) => item.id === product.id)) {
-        this.cart.push({id:product.id,product:product, price: product.price, quantity: 1})
+        let data = {
+          id: product.id,
+          product: product.product,
+          price: product.price,
+          quantity: 1
+        }
+        this.cart.push(data)
       }
       else {
-        this.cart.find((item) => item.id === product.id).quantity++
+        const item = this.cart.find((item) => item.id === product.id)
+        if (item) {
+          item.quantity++
+        }
       }
     },
     increment(product: CartItem) {
-      this.cart.find((item) => item.id === product.id).quantity++
+      const item = this.cart.find((item) => item.id === product.id)
+      if (item) {
+        item.quantity++
+      }
     },
     decrement(product: CartItem) {
-      if (this.cart.find((item) => item.id === product.id).quantity > 1) {
-        this.cart.find((item) => item.id === product.id).quantity--
+      const item = this.cart.find((item) => item.id === product.id)
+      if (item && item.quantity > 1) {
+        item.quantity--
       }
     },
     removeFromCart(product: CartItem) {

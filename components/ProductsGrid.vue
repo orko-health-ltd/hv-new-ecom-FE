@@ -33,44 +33,49 @@ interface Product {
   price: number;
   img: string;
 }
-
-const products: Product[] = [
-  {    id: 1,
-    name: 'Product 1',
-    price: 210,
-    img: Prod
-  },
-  {
-    id: 2,
-    price: 310,
-    name: 'Product 2',
-    img: Prod
-  },
-  {
-    id: 3,
-    price: 410,
-    name: 'Product 3',
-    img: Prod
-  },
-  {
-    id: 4,
-    price: 510,
-    name: 'Product 4',
-    img: Prod
-  },
-  {
-    id: 5,
-    price: 610,
-    name: 'Product 5',
-    img: Prod
-  },
-  {
-    id: 6,
-    price: 710,
-    name: 'Product 6',
-    img: Prod
-  },
-]
+defineProps({
+  products: {
+    type: Array as PropType<Product[]>,
+    required: true
+  }
+})
+// const products: Product[] = [
+//   {    id: 1,
+//     name: 'Product 1',
+//     price: 210,
+//     img: Prod
+//   },
+//   {
+//     id: 2,
+//     price: 310,
+//     name: 'Product 2',
+//     img: Prod
+//   },
+//   {
+//     id: 3,
+//     price: 410,
+//     name: 'Product 3',
+//     img: Prod
+//   },
+//   {
+//     id: 4,
+//     price: 510,
+//     name: 'Product 4',
+//     img: Prod
+//   },
+//   {
+//     id: 5,
+//     price: 610,
+//     name: 'Product 5',
+//     img: Prod
+//   },
+//   {
+//     id: 6,
+//     price: 710,
+//     name: 'Product 6',
+//     img: Prod
+//   },
+// ]
 </script>
 
 <style scoped>

@@ -14,7 +14,7 @@
     
 
     <!-- Content Overlay -->
-    <div class="absolute inset-0 h-1/2 mt-5 md:mt-0 md:h-screen flex flex-col items-center justify-center text-white">
+    <div class="absolute inset-0   h-1/2 mt-5 md:mt-0 md:h-screen flex flex-col items-center justify-center text-white">
      <section class="flex flex-col items-center justify-center mb-5 py-13 px-4">
     <!-- Title Section -->
     <div class="flex w-full items-center space-x-5 mb-2">

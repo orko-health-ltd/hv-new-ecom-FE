@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE_URL,
-    }
+    },
   },
   postcss: {
     plugins: {
@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     },
   },
   ssr: false,
+
   modules: [
     // '@nuxt/icon',
     // '@nuxtjs/tailwindcss',
@@ -24,7 +25,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     'shadcn-nuxt',
-    
   ],
   app: {
     head: {
@@ -43,5 +43,9 @@ export default defineNuxtConfig({
     componentDir: 'components/ui',
   },
   compatibilityDate: '2024-11-01',
-  devtools: { enabled: false },
+  devtools: { enabled: true },
+  typescript: {
+    typeCheck: true,
+    strict: true,
+  },
 })

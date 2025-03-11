@@ -83,19 +83,19 @@
           <nuxt-link class="px-1.5 py-2.5" to="/admin">Admin Dashboard</nuxt-link>
         </ul>
       </div>
-      <div class="flex items-center">
+      <div class="flex gap-2 items-center">
         <div @click="isCartOpen = !isCartOpen">
           <UChip :text="cart.totalItems" size="2xl" color="yellow" class="mx-2">
             <UIcon name="mdi:cart" class="text-white text-3xl" />
           </UChip>
         </div>
         <UButton
-          class="block md:hidden"
+          class="block md:hidden text-white"
           icon="pajamas:hamburger"
           size="xl"
-          color="primary-700"
-          square
-          variant="solid"
+           :padded="false"
+         
+          variant="link"
           @click="isOpen = true"
         />
       </div>
@@ -385,7 +385,7 @@
 
 <script lang="ts" setup>
 const route = useRoute()
-const cart = useMyCartStore()
+const cart = useMyCartStore() as ReturnType<typeof useMyCartStore>
 const toast = useToast()
 const isOpen = ref(false)
 const isCartOpen = ref(false)

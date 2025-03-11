@@ -158,10 +158,14 @@ const product = {
  } ]
 }
 const selectedImage = ref(product.images[0])
-const changeImage = (src) => {
-            document.getElementById('mainImage').src = src;
-        }
-</script>
+
+const changeImage = (src: string) => {
+            // document.getElementById('mainImage').src = src;
+   const mainImage = document.getElementById('mainImage');
+            if (mainImage) {
+                (mainImage as HTMLImageElement).src = src;
+            }
+        }</script>
 
 <style>
 

@@ -8,17 +8,17 @@
     <div class="bg-white">
       <div class="grid grid-cols-3 md:flex px-5 md:px-10 mx-auto justify-center py-5 items-center gap-3">
        
-        <button @click="selectedCategory = category" class="px-3 w-full text-nowrap py-2" :class="selectedCategory.name == category.name ? 'border-2 border-gray-500 rounded-lg':''" v-for="category in categories" :key="category">{{ category.name }}</button>
+        <button @click="selectedCategory = category" class="px-3 w-full text-nowrap py-2" :class="selectedCategory.name == category.name ? 'border-2 border-gray-500 rounded-lg':''" v-for="category in categories" :key="category.name">{{ category.name }}</button>
       </div>
 
       <div  v-if="selectedCategory.name == 'All'" class="grid grid-cols-5 px-[10%] gap-3">
-        <div v-for="client in categories.flatMap(category=>category.clients)" :key="client">
+        <div v-for="client in categories.flatMap(category=>category.clients)" :key="client.name">
           <img  :src="client.img" alt="">
          
         </div>
         </div>
         <div v-else class="grid grid-cols-5 px-[10%] gap-3">
-        <div  v-for="client in selectedCategory.clients" :key="client">
+        <div  v-for="client in selectedCategory.clients" :key="client.name">
           <img  :src="client.img" alt="">
          
         </div>
@@ -31,11 +31,18 @@
 </template>
 
 <script lang="ts" setup>
+interface Category {
+  name: string;
+  clients: Array<{
+    name: string;
+    img: string;
+  }>;
+}
 const images = import.meta.glob("~/assets/images/clients/*", { eager: true });
-const categories = [
+const categories: Category[] = [
   {
     name: 'All',
-    clients :[]
+    clients: []
   },
 
   {
@@ -43,96 +50,95 @@ const categories = [
     clients: [
       {
         name: 'City Bank',
-        img: images["/assets/images/clients/city.png"].default,
+        img: (images["/assets/images/clients/city.png"] as { default: string }).default,
       },
       {
         name: 'HSBC Bank',
-        img:images["/assets/images/clients/hsbc.png"].default
+        img: (images["/assets/images/clients/hsbc.png"] as { default: string }).default
       },
       {
         name: 'EBL Bank',
-        img:images["/assets/images/clients/ebl.png"].default
+        img: (images["/assets/images/clients/ebl.png"] as { default: string }).default
       },
       {
         name: 'Union Bank',
-        img:images["/assets/images/clients/unionbank.png"].default
+        img: (images["/assets/images/clients/unionbank.png"] as { default: string }).default
       },
       {
         name: 'SIBL Bank',
-        img:images["/assets/images/clients/sibl.png"].default
+        img: (images["/assets/images/clients/sibl.png"] as { default: string }).default
       },
       {
         name: 'AIBL Bank',
-        img:images["/assets/images/clients/aibl.png"].default
+        img: (images["/assets/images/clients/aibl.png"] as { default: string }).default
       },
       {
         name: 'Prime Bank',
-        img:images["/assets/images/clients/primebank.png"].default
+        img: (images["/assets/images/clients/primebank.png"] as { default: string }).default
       },
       {
         name: 'NRB Bank',
-        img:images["/assets/images/clients/nrbc.png"].default
+        img: (images["/assets/images/clients/nrbc.png"] as { default: string }).default
       },
       {
         name: 'Bkash',
-        img:images["/assets/images/clients/bkash.png"].default
+        img: (images["/assets/images/clients/bkash.png"] as { default: string }).default
       },
       {
         name: 'Upay',
-        img:images["/assets/images/clients/upay.png"].default
+        img: (images["/assets/images/clients/upay.png"] as { default: string }).default
       },
       {
         name: 'Nagad',
-        img:images["/assets/images/clients/nagad.png"].default
+        img: (images["/assets/images/clients/nagad.png"] as { default: string }).default
       },
       {
         name: 'IDLC',
-        img:images["/assets/images/clients/idlc.png"].default
+        img: (images["/assets/images/clients/idlc.png"] as { default: string }).default
       },
       {
         name: 'Brac Bank',
-        img:images["/assets/images/clients/brac-bank.png"].default
+        img: (images["/assets/images/clients/brac-bank.png"] as { default: string }).default
       },
     ]
   },
   {
     name: 'Pharma',
-    clients:[]
+    clients: []
   },
   {
     name: 'Auto Mobile',
-    clients:[]
+    clients: []
   },
   {
     name: 'Steel',
-    clients:[]
+    clients: []
   },
   {
     name: 'Telecom',
-    clients:[]
+    clients: []
   },
   {
     name: 'Insurance',
-    clients:[]
+    clients: []
   },
   {
     name: 'EE & IT',
-    clients:[]
+    clients: []
   },
   {
     name: 'Hotel',
-    clients:[]
+    clients: []
   },
   {
     name: 'Others',
-    clients:[]
+    clients: []
   },
 ]
-const selectedCategory = ref({ 
+const selectedCategory = ref({
   name: 'All',
-    clients :[]
-  })
-</script>
+  clients: []
+} as Category)</script>
 
 
 

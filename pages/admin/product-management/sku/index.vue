@@ -6,48 +6,39 @@ import {
   Loader2,
   MoreHorizontal,
   PlusCircle,
-  Search,
+  Search
 } from 'lucide-vue-next'
-interface Category {
-  _id: string
-  name: string
-  image: string
-  is_active: boolean
+interface Sku {
+  _id:string,
+  name: string,
+  is_active:boolean
 }
 const toast = useToast()
 const showCreateForm = ref(false)
 const showEditForm = ref(false)
 const creating = ref(false)
 const loading = ref(false)
-const category = ref<Category>({
-  _id: '',
+const sku = ref<Sku>({
+  _id:'',
   name: '',
-  image: '',
-  is_active: true,
+  is_active: true,  
 })
-const { data, refresh } = useFetch<{ data: Category[] }>(
-  '/api/admin/categories'
-)
-const categories = computed(() => data.value?.data || [])
-const createCategory = async () => {
+const { data, refresh } = useFetch<{ data: Sku[] }>('/api/admin/sku')
+const skus = computed(() => data.value?.data || [])
+const createSku = async () => {
   loading.value = true
   try {
-    await $fetch('/api/admin/categories/create', {
+    await $fetch('/api/admin/sku/create', {
       method: 'POST',
-      body: category.value,
+      body: sku.value,
     })
-    category.value = {
-      _id: '',
+    sku.value = {
+      _id:'',
       name: '',
-      image: '',
       is_active: true,
     }
-    toast.add({
-      title: 'Category Added Successfully',
-      color: 'green',
-      timeout: 1500,
-    })
-
+    toast.add({ title: 'SKU Added Successfully', color: 'green', timeout: 1500 })
+    
     refresh()
     setTimeout(() => {
       showCreateForm.value = false
@@ -55,28 +46,22 @@ const createCategory = async () => {
   } catch (error) {
     console.log(error)
   }
-  loading.value = true
+   loading.value = true 
 }
-const updateCategory = async () => {
-  console.log('xsc')
+const updateSku = async () => {
   loading.value = true
   try {
-    await $fetch('/api/admin/categories/' + category.value._id, {
+    await $fetch('/api/admin/sku/'+sku.value._id, {
       method: 'POST',
-      body: category.value,
+      body: sku.value,
     })
-    category.value = {
-      _id: '',
+    sku.value = {
+      _id:'',
       name: '',
-      image: '',
       is_active: true,
     }
-    toast.add({
-      title: 'Category Updated Successfully',
-      color: 'green',
-      timeout: 1500,
-    })
-
+    toast.add({ title: 'SKU Updated Successfully', color: 'green', timeout: 1500 })
+    
     refresh()
     setTimeout(() => {
       showEditForm.value = false
@@ -84,21 +69,20 @@ const updateCategory = async () => {
   } catch (error) {
     console.log(error)
   }
-  loading.value = true
+   loading.value = true 
 }
 definePageMeta({
   layout: 'admin',
-  middleware: ['auth'],
+  middleware: ['auth']
 })
 </script>
 
 <template>
   <div class="flex min-h-screen w-full flex-col bg-muted/40">
+ 
     <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-      <header
-        class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
-      >
-        <SidebarTrigger class="-ml-1" />
+      <header class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+       <SidebarTrigger class="-ml-1" />
         <Breadcrumb class="hidden md:flex">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -109,17 +93,14 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/brands"
-                  >All Brands</nuxt-link
-                >
+                <nuxt-link to="/admin/product-management/sku">All SKU List</nuxt-link>
               </BreadcrumbLink>
             </BreadcrumbItem>
+           
           </BreadcrumbList>
         </Breadcrumb>
         <div class="relative ml-auto flex-1 md:grow-0">
-          <Search
-            class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
-          />
+          <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
             placeholder="Search..."
@@ -144,17 +125,24 @@ definePageMeta({
         </DropdownMenu>
       </header>
       <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+       
         <Tabs default-value="all">
           <div class="flex items-center">
             <TabsList>
-              <TabsTrigger value="all"> All </TabsTrigger>
-              <TabsTrigger value="active"> Active </TabsTrigger>
-              <TabsTrigger value="draft"> Draft </TabsTrigger>
+              <TabsTrigger value="all">
+                All
+              </TabsTrigger>
+              <TabsTrigger value="active">
+                Active
+              </TabsTrigger>
+              <TabsTrigger value="draft">
+                Draft
+              </TabsTrigger>
               <TabsTrigger value="archived" class="hidden sm:flex">
                 Archived
               </TabsTrigger>
             </TabsList>
-
+       
             <div class="ml-auto flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
@@ -168,9 +156,13 @@ definePageMeta({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem checked> Active </DropdownMenuItem>
+                  <DropdownMenuItem checked>
+                    Active
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Draft</DropdownMenuItem>
-                  <DropdownMenuItem> Archived </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    Archived
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button size="sm" variant="outline" class="h-7 gap-1">
@@ -179,94 +171,47 @@ definePageMeta({
                   Export
                 </span>
               </Button>
-              <Button
-                size="sm"
-                :disabled="showEditForm"
-                @click="showCreateForm = !showCreateForm"
-                class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1"
-              >
+              <Button size="sm" :disabled="showEditForm" @click="showCreateForm = !showCreateForm" class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1">
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Category
+                  Add SKU
                 </span>
               </Button>
             </div>
           </div>
-          <div class="mt-3" v-if="showCreateForm || showEditForm">
+           <div class="mt-3" v-if="showCreateForm || showEditForm">
             <Card>
-              <CardHeader>
-                <CardTitle>{{
-                  showEditForm ? 'Update Category' : 'Add Category'
-                }}</CardTitle>
+                <CardHeader>
+                   <CardTitle>{{showEditForm ? 'Update SKU' : 'Add SKU'}}</CardTitle>
                 <CardDescription>
-                  {{
-                    showEditForm
-                      ? 'Update Category data to manage and identify products'
-                      : 'Add new categories to manage your products.'
-                  }}
-                </CardDescription></CardHeader
-              >
-              <form
-                @submit.prevent="
-                  showEditForm ? updateCategory() : createCategory()
-                "
-                class="grid gap-4"
-              >
+                {{ showEditForm ? 'Update SKU data to manage and identify products':'Add new skus to manage your products.' }} 
+                </CardDescription></CardHeader>
+                <form @submit.prevent="showEditForm ? updateSku() : createSku()" class="grid gap-4">
                 <CardContent>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div class="grid gap-2">
-                      <Label for="first-name">Category name</Label>
-                      <Input
-                        id="first-name"
-                        v-model="category.name"
-                        required
-                        placeholder="Brand"
-                      />
-                    </div>
 
-                    <div class="grid gap-2">
-                      <Label for="last-name">Category Image</Label>
-                      <Input
-                        id="last-name"
-                        v-model="category.image"
-                        type="file"
-                      />
-                    </div>
-                  </div>
+                     <div class="grid grid-cols-2 gap-4">
+          <div class="grid gap-2">
+            <Label for="first-name">SKU name</Label>
+            <Input id="first-name" v-model="sku.name"  required placeholder="Brand"  />
+          </div>
+        
+         
+        </div>
                 </CardContent>
                 <CardFooter class="gap-3">
-                  <Button type="submit" class="text-white" :disabled="creating">
-                    <Loader2
-                      v-if="creating"
-                      class="w-4 h-4 mr-2 animate-spin"
-                    />
-                    {{ showEditForm ? 'Update Brand' : 'Add Brand' }}</Button
-                  >
-                  <Button
-                    type="button"
-                    variant="outline"
-                    @click="
-                      ;(showEditForm = false),
-                        (showCreateForm = false),
-                        (category = {
-                          _id: '',
-                          name: '',
-                          image: '',
-                          is_active: false,
-                        })
-                    "
-                    >Cancel</Button
-                  >
+                    <Button type="submit" class="text-white" :disabled="creating"> <Loader2 v-if="creating" class="w-4  h-4 mr-2 animate-spin" />
+                      {{ showEditForm ? 'Update SKU' : 'Add SKU' }}</Button>
+                      <Button type="button" variant="outline" @click="showEditForm = false, showCreateForm = false, sku={_id: '', name: '',   is_active: false}">Cancel</Button>
                 </CardFooter>
-              </form>
+                </form>
             </Card>
-          </div>
+        </div>
           <TabsContent value="all">
             <Card>
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>SKUs </CardTitle>
                 <CardDescription>
-                  Manage your categories and view their sales performance.
+                  Manage your SKUs and view their sales performance.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -293,10 +238,8 @@ definePageMeta({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow
-                      v-for="categoryData in categories"
-                      :key="categoryData._id"
-                    >
+                  
+                    <TableRow v-for="skuData in skus" :key="skuData._id">
                       <TableCell class="hidden sm:table-cell">
                         <img
                           alt="Product image"
@@ -304,24 +247,22 @@ definePageMeta({
                           height="64"
                           src="/assets/images/GEBT.jpg"
                           width="64"
-                        />
+                        >
                       </TableCell>
                       <TableCell class="font-medium">
-                        {{ categoryData.name }}
+                        {{  skuData.name }}
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          :variant="
-                            categoryData.is_active ? null : 'destructive'
-                          "
-                        >
-                          {{ categoryData.is_active ? 'Active' : 'Inactive' }}
+                        <Badge :variant="skuData.is_active?null:'destructive'">
+                         {{ skuData.is_active?'Active':'Inactive' }}
                         </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
                         $129.99
                       </TableCell>
-                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
+                      <TableCell class="hidden md:table-cell">
+                        100
+                      </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-10-18 03:21 PM
                       </TableCell>
@@ -339,18 +280,13 @@ definePageMeta({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              @click="
-                                ;(category = categoryData),
-                                  (showEditForm = true)
-                              "
-                              >Edit</DropdownMenuItem
-                            >
+                            <DropdownMenuItem @click="sku = skuData, showEditForm = true">Edit</DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
+                    
                   </TableBody>
                 </Table>
               </CardContent>

@@ -1,5 +1,6 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  console.log(to, from)
+   const { isTokenValid } = useAuth()
   const token = useCookie('token').value
-  if (!token) return navigateTo('/admin/login')
+  console.log(isTokenValid())
+  if (!token || !isTokenValid()) return navigateTo('/admin/login')
 })

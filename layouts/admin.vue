@@ -107,7 +107,7 @@ const data = {
       { title: 'Categories', url: '/admin/product-management/categories' , icon: 'tabler:category-2'},
       { title: 'Brands', url: '/admin/product-management/brands',icon:'tabler:brand-airtable' },
       { title: 'Products', url: '/admin/product-management/products' , icon:'streamline:shopping-bag-suitcase-1-product-business-briefcase' },
-      { title: 'Attributes', url: '/admin/product-management/attributes' ,icon:'ic:round-edit-attributes'},
+      { title: 'SKU', url: '/admin/product-management/sku' ,icon:'ic:round-edit-attributes'},
       { title: 'Media Library', url: '/admin/product-management/media-library',icon:'iconoir:media-image-folder' },
       { title: 'Reviews & Ratings', url: '/admin/product-management/reviews',icon:'ic:outline-star-half' },
     ],
@@ -281,7 +281,7 @@ watchEffect(()=>{
                   class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar class="h-8 w-8 rounded-lg">
-                    <AvatarImage :src="auth.user.avatar" :alt="auth.user.name" />
+                    <AvatarImage :src="auth.user.avatar??''" :alt="auth.user.name" />
                     <AvatarFallback class="rounded-lg">
                      SA
                     </AvatarFallback>
@@ -344,7 +344,7 @@ watchEffect(()=>{
     </Sidebar>
     <SidebarInset>
      
-     
+      <UNotifications />
       <slot />
     </SidebarInset>
   </SidebarProvider>

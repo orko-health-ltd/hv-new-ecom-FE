@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="overflow-hidden">
-       <div class="h-screen w-full bg-[url('/assets/images/slides/Slide-2-scaled.jpg')] bg-cover bg-fixed top-0 flex items-center justify-center overflow-x-hidden animate-breath">
+       <div class="h-[85vh] w-full bg-[url('/assets/images/slides/Slide-2-scaled.jpg')] bg-cover bg-fixed top-0 flex items-center justify-center overflow-x-hidden animate-breath">
         <div>
             <div class="flex w-[350px] items-center space-x-5  text-[#b4a345]">
       <div class="w-full border-t-2 border-[#b4a345]"></div>

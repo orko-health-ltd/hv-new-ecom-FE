@@ -8,23 +8,78 @@ import {
   PlusCircle,
   Search
 } from 'lucide-vue-next'
-const showCategoryForm = ref(false)
+interface Brand {
+  _id:string,
+  name: string,
+  short_name: string,
+  image: string,
+  is_active:boolean
+}
+const toast = useToast()
+const showCreateForm = ref(false)
+const showEditForm = ref(false)
 const creating = ref(false)
-const createCategory = async () => {
-    creating.value = true
-    try {
-        // await createCategoryMutation.mutateAsync({
-        //     name: create
-        // })
-        showCategoryForm.value = false
+const loading = ref(false)
+const brand = ref<Brand>({
+  _id:'',
+  name: '',
+  short_name: '',
+  image:'',
+  is_active: true,  
+})
+const { data, refresh } = useFetch<{ data: Brand[] }>('/api/admin/brands')
+const brands = computed(() => data.value?.data || [])
+const createBrand = async () => {
+  loading.value = true
+  try {
+    await $fetch('/api/admin/brands/create', {
+      method: 'POST',
+      body: brand.value,
+    })
+    brand.value = {
+      _id:'',
+      name: '',
+      image: '',
+      short_name: '',
+      is_active: true,
     }
-        catch (error) {
-            console.log(error)
-        } finally {
-            creating.value = false
-        }
+    toast.add({ title: 'Brand Added Successfully', color: 'green', timeout: 1500 })
+    
+    refresh()
+    setTimeout(() => {
+      showCreateForm.value = false
+    }, 1000)
+  } catch (error) {
+    console.log(error)
+  }
+   loading.value = true 
+}
+const updateBrand = async () => {
+  console.log('xsc')
+  loading.value = true
+  try {
+    await $fetch('/api/admin/brands/'+brand.value._id, {
+      method: 'POST',
+      body: brand.value,
+    })
+    brand.value = {
+      _id:'',
+      name: '',
+      image: '',
+      short_name: '',
+      is_active: true,
     }
-
+    toast.add({ title: 'Brand Updated Successfully', color: 'green', timeout: 1500 })
+    
+    refresh()
+    setTimeout(() => {
+      showEditForm.value = false
+    }, 1000)
+  } catch (error) {
+    console.log(error)
+  }
+   loading.value = true 
+}
 definePageMeta({
   layout: 'admin',
   middleware: ['auth']
@@ -96,6 +151,7 @@ definePageMeta({
                 Archived
               </TabsTrigger>
             </TabsList>
+       
             <div class="ml-auto flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
@@ -124,7 +180,7 @@ definePageMeta({
                   Export
                 </span>
               </Button>
-              <Button size="sm" @click="showCategoryForm = !showCategoryForm" class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1">
+              <Button size="sm" :disabled="showEditForm" @click="showCreateForm = !showCreateForm" class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1">
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Add Brand
@@ -132,29 +188,35 @@ definePageMeta({
               </Button>
             </div>
           </div>
-           <div class="mt-3" v-if="showCategoryForm">
+           <div class="mt-3" v-if="showCreateForm || showEditForm">
             <Card>
-                <CardHeader> <CardTitle>Add Brands</CardTitle>
+                <CardHeader>
+                   <CardTitle>{{showEditForm ? 'Update Brand' : 'Add Brands'}}</CardTitle>
                 <CardDescription>
-                 Add new brands to manage your products.
+                {{ showEditForm ? 'Update Brand data to manage and identify products':'Add new brands to manage your products.' }} 
                 </CardDescription></CardHeader>
-                <form @submit.prevent="createCategory" class="grid gap-4">
+                <form @submit.prevent="showEditForm ? updateBrand() : createBrand()" class="grid gap-4">
                 <CardContent>
 
                      <div class="grid grid-cols-2 gap-4">
           <div class="grid gap-2">
             <Label for="first-name">Brand name</Label>
-            <Input id="first-name" placeholder="Brand" required />
+            <Input id="first-name" v-model="brand.name" @change="brand.short_name = brand.name.split(' ').map(word => word.charAt(0).toUpperCase()).join('')" required placeholder="Brand"  />
+          </div>
+          <div class="grid gap-2">
+            <Label for="last-name">Short Name</Label>
+            <Input id="last-name" v-model="brand.short_name" disabled placeholder="Short Name"  />
           </div>
           <div class="grid gap-2">
             <Label for="last-name">Brand Image</Label>
-            <Input id="last-name" type="file" required />
+            <Input id="last-name" v-model="brand.image" type="file"  />
           </div>
         </div>
                 </CardContent>
-                <CardFooter>
-                    <Button class="text-white" :disabled="creating"> <Loader2 v-if="creating" class="w-4  h-4 mr-2 animate-spin" />
- Add Brand</Button>
+                <CardFooter class="gap-3">
+                    <Button type="submit" class="text-white" :disabled="creating"> <Loader2 v-if="creating" class="w-4  h-4 mr-2 animate-spin" />
+                      {{ showEditForm ? 'Update Brand' : 'Add Brand' }}</Button>
+                      <Button type="button" variant="outline" @click="showEditForm = false, showCreateForm = false, brand={_id: '', name: '', short_name: '', image: '', is_active: false}">Cancel</Button>
                 </CardFooter>
                 </form>
             </Card>
@@ -191,7 +253,8 @@ definePageMeta({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
+                  
+                    <TableRow v-for="brandData in brands" :key="brandData._id">
                       <TableCell class="hidden sm:table-cell">
                         <img
                           alt="Product image"
@@ -202,58 +265,11 @@ definePageMeta({
                         >
                       </TableCell>
                       <TableCell class="font-medium">
-                        Laser Lemonade Machine
+                        {{  brandData.name }}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">
-                          Draft
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $499.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        25
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-07-12 10:42 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Hypernova Headphones
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Active
+                        <Badge :variant="brandData.is_active?null:'destructive'">
+                         {{ brandData.is_active?'Active':'Inactive' }}
                         </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
@@ -279,200 +295,13 @@ definePageMeta({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem @click="brand = brandData, showEditForm = true">Edit</DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        AeroGlow Desk Lamp
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $39.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        50
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-11-29 08:15 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        TechTonic Energy Drink
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">
-                          Draft
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $2.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        0
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-12-25 11:59 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Gamer Gear Pro Controller
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $59.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        75
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-01-01 12:00 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Luminous VR Headset
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $199.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        30
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-02-14 02:14 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                    
                   </TableBody>
                 </Table>
               </CardContent>

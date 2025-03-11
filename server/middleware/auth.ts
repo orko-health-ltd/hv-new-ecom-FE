@@ -1,5 +1,5 @@
 export default defineEventHandler((event) => {
-  event.context.auth = { user: 123 }
-  console.log(event.context.auth)
+  // event.context.auth = { user: 123 }
+  // console.log(event.context.auth)
   // return event.context.auth
 })

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-[#01251a] z-10 fixed flex md:flex-col lg:flex-row md:items-start lg:items-center justify-between items-center w-full px-3 py-7"
+    class="bg-[#01251a] z-10  top-0 fixed flex md:flex-col lg:flex-row md:items-start lg:items-center justify-between items-center w-full px-3 py-7 "
   >
     <nuxt-link to="/" class="w-[200px]">
       <img

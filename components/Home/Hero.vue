@@ -1,6 +1,6 @@
 <template>
   
- <div class="z-0 max-w-screen  h-auto pt-[100px] md:h-screen top-0 overflow-hidden">
+ <div class="z-0 max-w-screen  h-auto  md:h-[87vh] top-0 overflow-hidden">
     <!-- Background Video -->
 
     <video
@@ -8,7 +8,7 @@
       muted
       loop
       playsinline
-      class="inset-0 max-w-screen w-screen  h-auto md:h-screen object-cover" 
+      class="inset-0 max-w-screen w-screen  h-auto md:h-[87vh] object-cover" 
       src="/assets/videos/halda.mp4"
     ></video>
     

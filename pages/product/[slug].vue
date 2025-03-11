@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="overflow-hidden">
+    <!-- <div class="overflow-hidden">
       <div
         class="h-[70vh] w-full bg-[url('/assets/images/Cover-scaled.jpg')] bg-cover bg-fixed top-0 overflow-x-hidden animate-breathout"
       >
@@ -12,7 +12,7 @@
           </h1>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="bg-gray-100">
       <div class="container mx-auto px-4 py-8">
         <div class="flex flex-wrap -mx-4">

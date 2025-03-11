@@ -43,10 +43,24 @@ import {
   PlusCircle,
   Search,
 } from 'lucide-vue-next'
+interface Product {
+  id: number
+  name: string
+  description: string
+  price: number
+  stock: number
+  is_active: boolean
+  created_at: string
+}
+const { data, refresh } = useFetch<{ data: Product[] }>(
+  '/api/admin/products'
+)
+const products = computed(() => data.value?.data || [])
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
 })
+
 </script>
 
 <template>
@@ -177,7 +191,7 @@ definePageMeta({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
+                    <TableRow v-for="product in products" :key="product.id">  
                       <TableCell class="hidden sm:table-cell">
                         <img
                           alt="Product image"
@@ -188,13 +202,13 @@ definePageMeta({
                         />
                       </TableCell>
                       <TableCell class="font-medium">
-                        Laser Lemonade Machine
+                       {{ product.name }}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline"> Draft </Badge>
                       </TableCell>
                       <TableCell class="hidden md:table-cell">
-                        $499.99
+                        {{ product.price }}
                       </TableCell>
                       <TableCell class="hidden md:table-cell"> 25 </TableCell>
                       <TableCell class="hidden md:table-cell">
@@ -220,221 +234,7 @@ definePageMeta({
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Hypernova Headphones
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $129.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        AeroGlow Desk Lamp
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $39.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 50 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-11-29 08:15 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        TechTonic Energy Drink
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary"> Draft </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $2.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 0 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-12-25 11:59 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Gamer Gear Pro Controller
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $59.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 75 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-01-01 12:00 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Luminous VR Headset
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $199.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 30 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-02-14 02:14 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                   
                   </TableBody>
                 </Table>
               </CardContent>

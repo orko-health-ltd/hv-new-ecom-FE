@@ -68,35 +68,31 @@
               </CardDescription></CardHeader
             >
 
-            <div class="grid gap-4">
+            <form @submit.prevent="createProduct()" class="grid gap-4">
               <CardContent>
                 <div class="grid grid-cols-2 gap-4">
                   <div class="grid gap-2">
                     <Label for="first-name">Brand</Label>
-                    <Select v-model="selectedBrandId">
+                    <Select v-model="product.brand_id">
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a brand">
-                          {{
-                            selectedBrand
-                              ? selectedBrand.name
-                              : 'Select a brand'
-                          }}</SelectValue
-                        >
+                        <SelectValue placeholder="Select a brand" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectLabel>Brands</SelectLabel>
                         <SelectItem
                           v-for="brand in brands"
-                          :key="brand.id"
-                          :value="String (brand.id)">
+                          :key="brand._id"
+                          :value="brand._id"
+                        >
                           {{ brand.name }}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+
                   <div class="grid gap-2">
                     <Label for="first-name">Category</Label>
-                    <Select>
+                    <Select v-model="product.category_id">
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
@@ -104,27 +100,133 @@
                         <SelectLabel>Category</SelectLabel>
                         <SelectItem
                           v-for="category in categories"
-                          :key="category.id"
-                          :value="String (category.id)">
+                          :key="category._id"
+                          :value="category._id"
+                        >
                           {{ category.name }}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div class="grid gap-2">
+                    <Label for="first-name">SKU</Label>
+                    <Select v-model="product.sku_id">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a SKU" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectLabel>SKU</SelectLabel>
+                        <SelectItem
+                          v-for="sku in skus"
+                          :key="sku._id"
+                          :value="sku._id"
+                        >
+                          {{ sku.name }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Name</Label>
+                    <Input
+                      v-model="productName"
+                      id="last-name"
+                      type="text"
+                      required
+                      disabled
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Specification</Label>
+                    <Textarea
+                      v-model="product.specification"
+                      placeholder="Product Details."
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Color</Label>
+                    <Input
+                      v-model="product.color"
+                      id="last-name"
+                      type="text"
+                      required
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Price</Label>
+                    <Input
+                      v-model="product.price"
+                      id="last-name"
+                      type="number"
+                      required
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Discount</Label>
+                    <Input
+                      v-model="product.discount"
+                      id="last-name"
+                      type="number"
+                      required
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Discount Unit</Label>
+                    <Select v-model="product.discount_unit">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Discount Unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectLabel>Unit</SelectLabel>
+                        <SelectItem value="percentage"> Percentage </SelectItem>
+                        <SelectItem value="amount"> Amount </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Is Active</Label>
+                    <Switch
+                      @update:checked="product.is_active = !product.is_active"
+                      :checked="product.is_active"
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Is Featured</Label>
+                    <Switch
+                      :checked="product.is_featured"
+                      @update:checked="
+                        product.is_featured = !product.is_featured
+                      "
+                    />
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Is Combo</Label>
+                    <Switch
+                      :checked="product.is_combo"
+                      @update:checked="product.is_combo = !product.is_combo"
+                    />
+                  </div>
+                  <div class="grid gap-2">
                     <Label for="last-name">Image</Label>
-                    <Input id="last-name" type="file" required />
+                    <Input
+                      id="last-name" multiple
+                      type="file"
+                      @change="(event: Event) => handleFileChange(event, product, 'product_images')"
+                      required
+                    />
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Cover Image</Label>
-                    <Input id="last-name" type="file" required />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Details</Label>
-                    <Textarea placeholder="Product Details." />
-                  </div>
-
-                  <div class="grid gap-2">
+                  {{ product.product_images }}
+                  <img v-for="image in images"
+                    :src="
+                      image
+                        ? image
+                        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
+                    "
+                    alt="Product Image"
+                    class="w-auto h-20"
+                  />
+                  
+                  <!-- <div class="grid gap-2">
                     <Label for="sku">Tags</Label>
                     <TagsInput v-model="modelValue">
                       <TagsInputItem
@@ -138,150 +240,9 @@
 
                       <TagsInputInput placeholder="Product Tags..." />
                     </TagsInput>
-                  </div>
+                  </div> -->
+               
                 </div>
-                <Separator class="my-4 col-span-2" label="SKU Section" />
-                <div class="grid grid-cols-2">
-                  <Label for="sku" class="text-gray-500">Add SKU</Label>
-                </div>
-                <form
-                  @submit.prevent="addEmptySku"
-                  class="grid grid-cols-4 gap-2 justify-between items-center"
-                >
-                  <div class="grid gap-2">
-                    <Label for="last-name">SKU Name</Label>
-                    <Input
-                      v-model="sku.name"
-                      id="last-name"
-                      type="text"
-                      required/>
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Color</Label>
-                    <Input
-                      v-model="sku.color"
-                      id="last-name"
-                      type="text"
-                      required
-                    />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Selling Price</Label>
-                    <Input
-                      v-model="sku.selling_price"
-                      id="last-name"
-                      type="number"
-                      required
-                    />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Discount</Label>
-                    <Input
-                      v-model="sku.discount"
-                      id="last-name"
-                      type="text"
-                      required
-                    />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Is Active</Label>
-                    <Switch @update:checked="sku.is_active = !sku.is_active" 
-                      :checked="sku.is_active" />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Is Featured</Label>
-                    <Switch
-                      :checked="sku.is_featured"
-                      @update:checked="sku.is_featured = !sku.is_featured" />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Is Combo</Label>
-                    <Switch
-                      :checked="sku.is_combo"
-                      @update:checked="sku.is_combo = !sku.is_combo"
-                    />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Packing Type</Label>
-                    <URadioGroup
-                      :options="[
-                        { value: 'sachet', label: 'Sachet' },
-                        { value: 'pouch', label: 'Pouch' },
-                      ]"
-                      v-model="sku.packaging_type"
-                    />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Image</Label>
-                    <Input
-                      id="last-name"
-                      type="file"
-                      @change="(event: Event) => handleFileChange(event, sku, 'image')"
-                      required
-                    />
-                  </div>
-                  <img
-                    :src="
-                      sku.image
-                        ? sku.image
-                        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
-                    "
-                    alt="SKU Image"
-                    class="w-auto h-20"
-                  />
-                  <Button class="bg-violet-500 mt-7 text-white" type="submit"
-                    ><PlusIcon /> Add SKU</Button
-                  >
-                </form>
-                <div
-                  class="border space-y-2 p-2 rounded-xl"
-                  v-if="skus.length > 0">
-                  <div
-                    class="grid grid-cols-10 pt-4 justify-between items-center"
-                  >
-                    <Label for="last-name">Name</Label>
-                    <Label for="last-name">Color</Label>
-                    <Label for="last-name">Selling Price</Label>
-                    <Label for="last-name">Discount</Label>
-                    <Label for="last-name">Is Active</Label>
-                    <Label for="last-name">Is Featured</Label>
-                    <Label for="last-name">Is Combo</Label>
-                    <Label for="last-name">Packing Type</Label>
-                    <Label for="last-name">Image</Label>
-                    <Label for="last-name">Action</Label>
-                  </div>
-                  <Separator />
-                  <div
-                    v-for="(skuData, index) in skus"
-                    :key="skuData.name"
-                    class="flex flex-col"
-                  >
-                    <div
-                      class="grid grid-cols-10 pt-4 justify-between items-center">
-                      <p>{{ skuData.name }}</p>
-                      <p>{{ skuData.color }}</p>
-                      <p>{{ skuData.selling_price }}</p>
-                      <p>{{ skuData.discount }}</p>
-                      <Switch :checked="skuData.is_active" />
-                      <Switch :checked="skuData.is_featured" />
-                      <Switch :checked="skuData.is_combo" />
-                      <p>{{ skuData.packaging_type }}</p>
-                      <img
-                        v-if="skuData.image"
-                        :src="skuData.image"
-                        alt="SKU Image"
-                        class="w-auto h-20"/>
-                      <Button
-                        class="bg-red-500 text-white"
-                        type="button"
-                        @click="skus.splice(index, 1)"><Trash2 /> Remove</Button
-                      >
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="grid justify-center items-center py-3 mx-auto gap-2"
-                ></div>
               </CardContent>
               <CardFooter>
                 <Button class="text-white" :disabled="creating">
@@ -289,7 +250,7 @@
                   Create Product</Button
                 >
               </CardFooter>
-            </div>
+            </form>
           </Card>
         </div>
       </div>
@@ -297,157 +258,256 @@
   </ClientOnly>
 </template>
 <script lang="ts" setup>
-import {
-  PlusIcon,
-  Trash,
-  Trash2,
-  Search,
-  Loader2,
-  CircleUser,
-} from 'lucide-vue-next'
+import { CircleUser, Loader2, Search } from 'lucide-vue-next'
 import Label from '~/components/ui/label/Label.vue'
+
 
 interface Brand {
   name: string
-  id: number
-  slug: string
+  _id: string
+  is_active: boolean
+}
+interface Sku {
+  name: string
+  _id: string
+  is_active: boolean
 }
 
 interface Category {
   name: string
-  id: number
-}
-
-interface Sku {
-  name: string
-  color: string
-  selling_price: number
-  discount: number
+  _id: string
   is_active: boolean
-  is_featured: boolean
-  is_combo: boolean
-  image: string
-  packaging_type: string
 }
 
 interface Product {
-  brand: Brand | Record<string, never>
+  name: string
+  color: string
+  price: number
+  specification: string
+  discount: number
+  discount_unit: string
+  is_active: boolean
+  is_featured: boolean
+  is_combo: boolean
+  product_images: Array<never>
+  brand_id: string
+  sku_id: string
+  category_id: string
 }
-const selectedBrandId = ref(<string>'')
-const modelValue = ref<string[]>([])
+const toast = useToast()
 const creating = ref(false)
-const brands = ref<Brand[]>([
-  {
-    name: 'Sokal Sondha Cha',
-    id: 1,
-    slug: 'ssc',
-  },
-  {
-    name: 'Bikal Bondhu Cha',
-    id: 2,
-    slug: 'bbc',
-  },
-  {
-    name: 'Dragon Well Green Tea',
-    id: 3,
-    slug: 'dwgt',
-  },
-  {
-    name: 'Silver Needle White Tea',
-    id: 4,
-    slug: 'sewt',
-  },
-  {
-    name: 'Red Lebel Olong Tea',
-    id: 5,
-    slug: 'rbot',
-  },
-  {
-    name: 'Gift Box',
-    id: 6,
-    slug: 'bg',
-  },
-  {
-    name: 'Halda Valley Black Tea',
-    id: 7,
-    slug: 'hvbt',
-  },
-])
+const brands = ref<Brand[]>([])
+const skus = ref<Sku[]>([])
+const categories = ref<Category[]>([])
+const images = ref<Array<never>>([])
+const getSkus = async () => {
+  try {
+    const { data, refresh } = await useFetch<{ data: Sku[] }>(
+      '/api/admin/sku',
+      {
+        immediate: true,
+        watch: false,
+      }
+    )
+    await nextTick()
+    if (data.value?.data?.length) {
+      skus.value = data.value.data
+    }
+  } catch (error) {
+    console.error('Error fetching SKUs:', error)
+  }
+}
 
-const categories = ref<Category[]>([
-  {
-    name: 'Black Tea',
-    id: 1,
-  },
-  {
-    name: 'Special Tea',
-    id: 2,
-  },
-  {
-    name: 'Green Tea',
-    id: 3,
-  },
-])
+const productName = computed(() => {
+  const brandName =
+    brands.value.find((brand) => brand._id === product.value.brand_id)?.name ||
+    ''
+  const skuName =
+    skus.value.find((sku) => sku._id === product.value.sku_id)?.name || ''
+  const name = `${brandName} ${skuName}`.trim()
+  product.value.name = name
+  return name
+})
+const getBrands = async () => {
+  try {
+    const { data, refresh } = await useFetch<{ data: Sku[] }>(
+      '/api/admin/brands',
+      {
+        immediate: true,
+        watch: false,
+      }
+    )
 
-const sku = ref<Sku>({
+    if (data.value?.data?.length) {
+      brands.value = data.value.data
+    } else {
+      console.log('No Brands found')
+      await refresh()
+    }
+  } catch (error) {
+    console.error('Error fetching Brands:', error)
+  }
+}
+
+const getCategories = async () => {
+  try {
+    const { data, refresh } = await useFetch<{ data: Sku[] }>(
+      '/api/admin/categories',
+      {
+        immediate: true,
+        watch: false,
+      }
+    )
+
+    if (data.value?.data?.length) {
+      categories.value = data.value.data
+    } else {
+      console.log('No Categories found')
+      await refresh()
+    }
+  } catch (error) {
+    console.error('Error fetching Categories:', error)
+  }
+}
+// const createProduct = async () => {
+//   try {
+//     creating.value = true
+//     const formData = new FormData()
+
+//     Object.entries(product.value).forEach(([key, value]) => {
+//       if (value !== null && value !== undefined) {
+//         if (
+//           typeof value === 'string' ||
+//           typeof value === 'number' ||
+//           typeof value === 'boolean'
+//         ) {
+//           formData.append(key, value.toString())
+//         }
+//          else if (
+//           Object.prototype.toString.call(value) === '[object Blob]' ||
+//           Object.prototype.toString.call(value) === '[object File]'
+//         ) {
+//           if (key === 'product_images' && Array.isArray(value)) {
+//             value.forEach((image) => {
+//               console.log(image)
+//               if (image instanceof Blob) {
+//                 formData.append('product_images', image)
+//               }
+//             })
+//           } else if (value instanceof Blob) {
+//             formData.append(key, value)
+//           }
+//         }
+//       }
+//     })
+//     console.log(formData)
+//     const { data, error } = await useFetch('/api/admin/products/create', {
+//       method: 'POST',
+//       body: formData,
+
+//     })
+//     console.log(data.value,error)
+//   } catch (error) {
+//     console.error('Error creating product:', error)
+//     toast.add({ title: 'Error creating product', color: 'red', timeout: 1500 })
+//   }
+//   creating.value = false
+// }
+const createProduct = async () => {
+  try {
+    creating.value = true;
+    const formData = new FormData();
+
+    Object.entries(product.value).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (
+          typeof value === "string" ||
+          typeof value === "number" ||
+          typeof value === "boolean"
+        ) {
+          formData.append(key, value.toString());
+        } else if (value instanceof Blob || value instanceof File) {
+          formData.append(key, value);
+        } else if (key === "product_images" && Array.isArray(value)) {
+          value.forEach((image, index) => {
+            if (image instanceof Blob || image instanceof File) {
+              formData.append(`product_images[]`, image); // Ensure array notation
+            }
+          });
+        }
+      }
+    });
+
+    console.log("FormData Entries:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]); // Debugging log
+    }
+
+    const { data, error } = await useFetch("/api/admin/products/create", {
+      method: "POST",
+      body: formData,
+      headers: {
+        // Let the browser set Content-Type for FormData
+        Accept: "application/json",
+      },
+    });
+
+    console.log(data.value, error);
+  } catch (error) {
+    console.error("Error creating product:", error);
+    toast.add({ title: "Error creating product", color: "red", timeout: 1500 });
+  }
+  creating.value = false;
+};
+
+const product = ref<Product>({
   name: '',
   color: '',
-  selling_price: 0,
+  price: 0,
   discount: 0,
+  discount_unit: 'percentage',
   is_active: false,
   is_featured: false,
   is_combo: false,
-  image: '',
-  packaging_type: 'pouch',
+  product_images: [],
+  brand_id: '',
+  sku_id: '',
+  category_id: '',
+  specification: '',
 })
 
-const skus = ref<Sku[]>([])
-
-const product = ref<Product>({
-  brand: {},
-})
-const selectedBrand = computed(() => {
-  return brands.value.find((brand) => brand.id === Number(selectedBrandId.value))
-})
 const handleFileChange = (
   event: Event,
   targetObject: Record<string, any>,
   property: string
 ): void => {
   const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      if (e.target?.result) {
-        targetObject[property] = e.target.result
+  const files = target.files
+  if (files && files.length > 0) {
+    targetObject[property] = Array.from(files)
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result && typeof e.target.result === 'string') {
+          if (!Array.isArray(images.value)) {
+            images.value = []
+          }
+          images.value.push(e.target.result)
+        }
       }
-    }
-    reader.readAsDataURL(file)
+      reader.readAsDataURL(file)
+    })
   }
 }
-
-const addEmptySku = (): void => {
-  if (selectedBrand.value) {
-    sku.value.name = selectedBrand.value.name + '-' + sku.value.name
-    skus.value.push({ ...sku.value })
-    sku.value = {
-      name: '',
-      color: '',
-      selling_price: 0,
-      discount: 0,
-      is_active: false,
-      is_featured: false,
-      is_combo: false,
-      image: '',
-      packaging_type: 'pouch',
-    }
-  }
-}
-
+onMounted(() => {
+  getSkus()
+  getBrands()
+  getCategories()
+})
 definePageMeta({
   layout: 'admin',
-  middleware: ['auth']
+  middleware: ['auth'],
 })
 </script>
 <style></style>

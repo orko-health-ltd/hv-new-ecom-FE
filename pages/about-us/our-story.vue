@@ -1,7 +1,7 @@
 <template>
   <div>
     
-      <div class="flex font-serif flex-col items-center  z-0 justify-center w-full bg-[url('/assets/images/home/about_us-scaled.jpg')] bg-cover pt-28 top-0 h-[60vh] md:h-[100vh]">
+      <div class="flex font-serif flex-col items-center  z-0 justify-center w-full bg-[url('/assets/images/home/about_us-scaled.jpg')] bg-cover pt-28 top-0 h-[60vh] md:h-[85vh]">
          <div class="flex w-[350px] items-center space-x-5  text-[#b4a345]">
       <div class="w-full border-t-2 border-[#b4a345]"></div>
       <h2 class=" text-lg ">Discover</h2>

@@ -299,7 +299,7 @@ const creating = ref(false)
 const brands = ref<Brand[]>([])
 const skus = ref<Sku[]>([])
 const categories = ref<Category[]>([])
-const images = ref<Array<never>>([])
+const images = ref<Array<string>>([])
 const getSkus = async () => {
   try {
     const { data, refresh } = await useFetch<{ data: Sku[] }>(
@@ -418,23 +418,32 @@ const createProduct = async () => {
     creating.value = true;
     const formData = new FormData();
 
+    // Object.entries(product.value).forEach(([key, value]) => {
+    //   if (value !== null && value !== undefined) {
+    //     if (
+    //       typeof value === "string" ||
+    //       typeof value === "number" ||
+    //       typeof value === "boolean"
+    //     ) {
+    //       formData.append(key, value.toString());
+    //     } else if (value instanceof Blob || value instanceof File) {
+    //       formData.append(key, value);
+    //     } else if (key === "product_images" && Array.isArray(value)) {
+    //       value.forEach((image, index) => {
+    //         if (image instanceof Blob || image instanceof File) {
+    //           formData.append(`product_images[]`, image); // Ensure array notation
+    //         }
+    //       });
+    //     }
+    //   }
+    // });
     Object.entries(product.value).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        if (
-          typeof value === "string" ||
-          typeof value === "number" ||
-          typeof value === "boolean"
-        ) {
-          formData.append(key, value.toString());
-        } else if (value instanceof Blob || value instanceof File) {
-          formData.append(key, value);
-        } else if (key === "product_images" && Array.isArray(value)) {
-          value.forEach((image, index) => {
-            if (image instanceof Blob || image instanceof File) {
-              formData.append(`product_images[]`, image); // Ensure array notation
-            }
-          });
-        }
+      if (Array.isArray(value)) {
+        value.forEach((file, index) => {
+          formData.append(`${key}[${index}]`, file);
+        });
+      } else if (value !== null && value !== undefined) {
+        formData.append(key, value.toString());
       }
     });
 
@@ -446,12 +455,11 @@ const createProduct = async () => {
     const { data, error } = await useFetch("/api/admin/products/create", {
       method: "POST",
       body: formData,
-      headers: {
-        // Let the browser set Content-Type for FormData
-        Accept: "application/json",
-      },
+     
     });
-
+    // if (error) {
+    //   toast.add({ title: "Error creating product", color: "red", timeout: 1500 });
+    // }
     console.log(data.value, error);
   } catch (error) {
     console.error("Error creating product:", error);

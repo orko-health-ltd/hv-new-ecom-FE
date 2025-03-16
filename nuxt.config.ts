@@ -6,14 +6,16 @@ export default defineNuxtConfig({
       apiBase: process.env.API_BASE_URL,
     },
   },
-
+  // routeRules: {
+  //   '/api/**': { appMiddleware: ['~/server/middleware/auth.ts'] }, // Apply to all API routes
+  // },
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
   },
-  ssr: false,
+  ssr: true,
 
   modules: [
     '@pinia/nuxt',
@@ -23,11 +25,13 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     'shadcn-nuxt',
   ],
+
   app: {
     head: {
       meta: [{ name: 'author', content: 'Ishmam Bin Azim' }],
     },
   },
+
   shadcn: {
     prefix: '',
     componentDir: 'components/ui',

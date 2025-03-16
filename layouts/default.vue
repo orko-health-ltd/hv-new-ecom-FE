@@ -6,7 +6,10 @@
     </div>
     <div > -->
     <Navbar />
-    <slot />
+    <div class="pt-[100px]">
+<slot  />
+    </div>
+    
     <Footer />
         <UNotifications /></div>
   <!-- </div> -->

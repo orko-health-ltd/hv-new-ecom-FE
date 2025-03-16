@@ -8,6 +8,12 @@ import {
   PlusCircle,
   Search,
 } from 'lucide-vue-next'
+interface User {
+  _id: string
+  name: string
+  email: string
+  role: string
+}
 const showCategoryForm = ref(false)
 const creating = ref(false)
 const createCategory = async () => {
@@ -23,7 +29,28 @@ const createCategory = async () => {
     creating.value = false
   }
 }
+// const users = ref<User[]>([])
+const { data, refresh } = useFetch<{ user: User[] }>('/api/admin/users')
+const users = computed(() => data.value?.user || [])
 
+// const getUsers = async () => {
+//   try {
+//     const { data, error } = await useFetch<{ user: User[] }>('/api/admin/users')
+
+//     if (error.value) {
+//       console.error('Error fetching users:', error.value)
+//       return
+//     }
+
+//     users.value = data.value?.user || []
+//   } catch (err) {
+//     console.error('Unexpected error:', err)
+//   }
+// }
+
+// onMounted(()=>{
+//   getUsers()
+// })
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -48,7 +75,7 @@ definePageMeta({
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
                 <nuxt-link to="/admin/product-management/categories"
-                  >All Categories</nuxt-link
+                  >All Users</nuxt-link
                 >
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -123,7 +150,7 @@ definePageMeta({
               >
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Category
+                  Add User
                 </span>
               </Button>
             </div>
@@ -131,7 +158,7 @@ definePageMeta({
           <div class="mt-3" v-if="showCategoryForm">
             <Card>
               <CardHeader>
-                <CardTitle>Add Category</CardTitle>
+                <CardTitle>Add User</CardTitle>
                 <CardDescription>
                   Add new categories to manage your products.
                 </CardDescription></CardHeader
@@ -140,11 +167,11 @@ definePageMeta({
                 <CardContent>
                   <div class="grid grid-cols-2 gap-4">
                     <div class="grid gap-2">
-                      <Label for="first-name">Category name</Label>
+                      <Label for="first-name">User name</Label>
                       <Input id="first-name" placeholder="Category" required />
                     </div>
                     <div class="grid gap-2">
-                      <Label for="last-name">Category Image</Label>
+                      <Label for="last-name">User Image</Label>
                       <Input id="last-name" type="file" required />
                     </div>
                   </div>
@@ -155,7 +182,7 @@ definePageMeta({
                       v-if="creating"
                       class="w-4 h-4 mr-2 animate-spin"
                     />
-                    Add Category</Button
+                    Add User</Button
                   >
                   <Button
                     @click="showCategoryForm = !showCategoryForm"
@@ -170,11 +197,12 @@ definePageMeta({
             </Card>
           </div>
           <TabsContent value="all">
+           <!-- {{data}} -->
             <Card>
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>Users</CardTitle>
                 <CardDescription>
-                  Manage your categories and view their sales performance.
+                  Manage your users and view their details.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -201,7 +229,8 @@ definePageMeta({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
+                   
+                    <TableRow v-for="user in users" :key="user._id">
                       <TableCell class="hidden sm:table-cell">
                         <img
                           alt="Product image"
@@ -212,7 +241,7 @@ definePageMeta({
                         />
                       </TableCell>
                       <TableCell class="font-medium">
-                        Laser Lemonade Machine
+                       {{user.name}}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline"> Draft </Badge>
@@ -244,226 +273,7 @@ definePageMeta({
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Hypernova Headphones
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $129.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              ><nuxt-link
-                                :to="`/admin/product-management/categories/1`"
-                                >Edit</nuxt-link
-                              >
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        AeroGlow Desk Lamp
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $39.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 50 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-11-29 08:15 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        TechTonic Energy Drink
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary"> Draft </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $2.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 0 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-12-25 11:59 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Gamer Gear Pro Controller
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $59.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 75 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-01-01 12:00 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Luminous VR Headset
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $199.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 30 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-02-14 02:14 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                    
                   </TableBody>
                 </Table>
               </CardContent>

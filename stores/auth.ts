@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
-interface AuthResponse {
-  token: string
-}
+
 interface User {
   name: string
   email: string
   role: string
+}
+interface AuthResponse {
+  access_token: string,
+  status: string,
+  user: User
 }
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -14,19 +17,23 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    async login(email: string, password: string) {
+    async login(email: string, password: string,remember: boolean = false) {
       try {
         const { data } = await useFetch<AuthResponse>('/api/login', {
           method: 'POST',
           body: { email, password },
         })
 
-        if (data.value?.token) {
-          this.token = data.value.token
-          useCookie('token').value = data.value.token // Store token in cookie
-          await this.fetchUser()
-        }      } catch (error) {
+        if (data.value?.access_token) {
+          this.token = data.value.access_token
+          this.user = data.value.user
+          useCookie('token').value = data.value.access_token // Store token in cookie
+          // await this.fetchUser()
+          return true
+        }
+      } catch (error) {
         console.error('Login failed', error)
+        return false
       }
     },
 
@@ -45,9 +52,11 @@ export const useAuthStore = defineStore('auth', {
     },
 
     logout() {
+      console.log('Logout')
       this.token = null
       this.user = <User>{}
       useCookie('token').value = null
     },
   },
+  persist: true,
 })

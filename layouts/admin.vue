@@ -82,6 +82,7 @@ import {
 } from 'lucide-vue-next'
 import { ref } from 'vue'
 const route = useRoute()
+const auth: any = useAuthStore()
 // This is sample data.
 const data = {
   user: {
@@ -104,11 +105,11 @@ const data = {
     isActive: true,
     items: [
       { title: 'Categories', url: '/admin/product-management/categories' , icon: 'tabler:category-2'},
-      { title: 'Brands', url: '/admin/product-management/brands',icon:'material-symbols:branding-watermark' },
+      { title: 'Brands', url: '/admin/product-management/brands',icon:'tabler:brand-airtable' },
       { title: 'Products', url: '/admin/product-management/products' , icon:'streamline:shopping-bag-suitcase-1-product-business-briefcase' },
-      { title: 'Attributes', url: '/admin/product-management/attributes' ,icon:'material-symbols:edit-attributes'},
-      { title: 'Media Library', url: '/admin/product-management/media-library',icon:'material-symbols:perm-media' },
-      { title: 'Reviews & Ratings', url: '/admin/product-management/reviews',icon:'material-symbols:star-rate-outline' },
+      { title: 'SKU', url: '/admin/product-management/sku' ,icon:'ic:round-edit-attributes'},
+      { title: 'Media Library', url: '/admin/product-management/media-library',icon:'iconoir:media-image-folder' },
+      { title: 'Reviews & Ratings', url: '/admin/product-management/reviews',icon:'ic:outline-star-half' },
     ],
   },
   {
@@ -181,6 +182,12 @@ const data = {
 
  
 }
+watchEffect(()=>{
+  if(!auth.user)
+  {
+  navigateTo('/admin/login')
+}
+})
 
 </script>
 
@@ -274,14 +281,14 @@ const data = {
                   class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar class="h-8 w-8 rounded-lg">
-                    <AvatarImage :src="data.user.avatar" :alt="data.user.name" />
+                    <AvatarImage :src="auth.user.avatar??''" :alt="auth.user.name" />
                     <AvatarFallback class="rounded-lg">
                      SA
                     </AvatarFallback>
                   </Avatar>
                   <div class="grid flex-1 text-left text-sm leading-tight">
-                    <span class="truncate font-semibold">{{ data.user.name }}</span>
-                    <span class="truncate text-xs">{{ data.user.email }}</span>
+                    <span class="truncate font-semibold">{{ auth.user.name }}</span>
+                    <span class="truncate text-xs">{{ auth.user.email }}</span>
                   </div>
                   <ChevronsUpDown class="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -290,14 +297,14 @@ const data = {
                 <DropdownMenuLabel class="p-0 font-normal">
                   <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar class="h-8 w-8 rounded-lg">
-                      <AvatarImage :src="data.user.avatar" :alt="data.user.name" />
+                      <AvatarImage :src="auth.user.avatar??''" :alt="auth.user.name" />
                       <AvatarFallback class="rounded-lg">
                         SA
                       </AvatarFallback>
                     </Avatar>
                     <div class="grid flex-1 text-left text-sm leading-tight">
-                      <span class="truncate font-semibold">{{ data.user.name }}</span>
-                      <span class="truncate text-xs">{{ data.user.email }}</span>
+                      <span class="truncate font-semibold">{{ auth.user.name }}</span>
+                      <span class="truncate text-xs">{{ auth.user.email }}</span>
                     </div>
                   </div>
                 </DropdownMenuLabel>
@@ -324,7 +331,7 @@ const data = {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem @click="auth.logout()">
                   <LogOut />
                   Log out
                 </DropdownMenuItem>
@@ -337,7 +344,7 @@ const data = {
     </Sidebar>
     <SidebarInset>
      
-     
+      <UNotifications />
       <slot />
     </SidebarInset>
   </SidebarProvider>

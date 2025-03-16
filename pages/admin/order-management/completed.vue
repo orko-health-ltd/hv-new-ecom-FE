@@ -47,8 +47,8 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/categories"
-                  >All Categories</nuxt-link
+                <nuxt-link to="/admin/order-management/completed"
+                  >All Completed Orders</nuxt-link
                 >
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -123,7 +123,7 @@ definePageMeta({
               >
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Category
+                  Add Completed Order
                 </span>
               </Button>
             </div>
@@ -131,20 +131,20 @@ definePageMeta({
           <div class="mt-3" v-if="showCategoryForm">
             <Card>
               <CardHeader>
-                <CardTitle>Add Category</CardTitle>
+                <CardTitle>Add Completed Order</CardTitle>
                 <CardDescription>
-                  Add new categories to manage your products.
+                  Add new completed order to manage your products.
                 </CardDescription></CardHeader
               >
               <form @submit.prevent="createCategory" class="grid gap-4">
                 <CardContent>
                   <div class="grid grid-cols-2 gap-4">
                     <div class="grid gap-2">
-                      <Label for="first-name">Category name</Label>
-                      <Input id="first-name" placeholder="Category" required />
+                      <Label for="first-name">Completed Order name</Label>
+                      <Input id="first-name" placeholder="Completed Order" required />
                     </div>
                     <div class="grid gap-2">
-                      <Label for="last-name">Category Image</Label>
+                      <Label for="last-name">Completed Order Image</Label>
                       <Input id="last-name" type="file" required />
                     </div>
                   </div>
@@ -155,7 +155,7 @@ definePageMeta({
                       v-if="creating"
                       class="w-4 h-4 mr-2 animate-spin"
                     />
-                    Add Category</Button
+                    Add Completed Order</Button
                   >
                   <Button
                     @click="showCategoryForm = !showCategoryForm"
@@ -172,9 +172,9 @@ definePageMeta({
           <TabsContent value="all">
             <Card>
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>Completed Orders</CardTitle>
                 <CardDescription>
-                  Manage your categories and view their sales performance.
+                  Manage your orders and view their sales performance.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -283,7 +283,7 @@ definePageMeta({
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
                               ><nuxt-link
-                                :to="`/admin/product-management/categories/1`"
+                                :to="`/admin/order-management/completed/1`"
                                 >Edit</nuxt-link
                               >
                             </DropdownMenuItem>

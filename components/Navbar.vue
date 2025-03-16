@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-[#01251a] z-10 fixed flex md:flex-col lg:flex-row md:items-start lg:items-center justify-between items-center w-full px-3 py-7"
+    class="bg-[#01251a] z-20  top-0 fixed flex md:flex-col lg:flex-row md:items-start lg:items-center justify-between items-center w-full px-3 py-7 "
   >
     <nuxt-link to="/" class="w-[200px]">
       <img
@@ -56,7 +56,7 @@
               />
             </UDropdown>
           </li>
-          <nuxt-link class="px-1.5 py-2.5" to="/springflush">Springflush</nuxt-link>
+          <!-- <nuxt-link class="px-1.5 py-2.5" to="/springflush">Springflush</nuxt-link> -->
           <a class="px-1.5 py-2.5" href="https://tealounge.haldavalley.com/">Tea Lounge</a>
           <li>
             <UDropdown
@@ -363,10 +363,10 @@
               <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                 <p>
                   or
-                  <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">
+                  <nuxt-link to="/shop"  class="font-medium text-indigo-600 hover:text-indigo-500">
                     Continue Shopping
                     <span aria-hidden="true"> &rarr;</span>
-                  </button>
+                  </nuxt-link>
                 </p>
               </div>
             </div>
@@ -435,10 +435,10 @@ const abouts = [
 ]
 const medias = [
   [
-    {
-      label: 'Media & Events',
-      to: '/media/media-events',
-    },
+    // {
+    //   label: 'Media & Events',
+    //   to: '/media/media-events',
+    // },
     {
       label: 'Brochure',
       to: '/media/brochure',

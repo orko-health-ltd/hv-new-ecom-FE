@@ -23,7 +23,7 @@ module.exports = {
       '--experimental-specifier-resolution=node',
       '--no-warnings'
     ],
-    max_memory_restart: '1G',
+    max_memory_restart: '4G',
     error_file: '/var/log/pm2/nuxt-error.log',
     out_file: '/var/log/pm2/nuxt-out.log'
   }]

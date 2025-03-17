@@ -41,28 +41,44 @@ jobs:
               cd /var/www/project/hv-prod-fe
               git pull origin master
               npm ci
-              npm run build 
-              # npm run start
+                npm run build
 
-              if ! command -v pm2 &> /dev/null; then
-                npm install -g pm2
-              fi
+                # Install PM2 if not already installed
+                if ! command -v pm2 &> /dev/null; then
+                  npm install -g pm2
+                fi
 
-              # start or restart with pm2 
-              #pm2 start ecosystem.config.cjs --env production
-              #pm2 start "node .output/server/index.mjs" --name "nuxt-app"
-              #pm2 save
-              #pm2 startup 2>&1 | grep -v "Already Running"
+                # Reload or start the PM2 process
+                pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
+
+                # Save the PM2 process list
+                pm2 save --force
+
+
+
+              # # npm run build 
               
-              cd /var/www/project/hv-prod-fe
-              # Graceful zero-downtime reload
-              NODE_OPTIONS="--require esbuild-register" pm2 reload ecosystem.config.cjs --env production  || NODE_OPTIONS="--require esbuild-register" pm2 start ecosystem.config.cjs --env production
+              # # npm run start
+
+              # if ! command -v pm2 &> /dev/null; then
+              #   npm install -g pm2
+              # fi
+
+              # # start or restart with pm2 
+              # #pm2 start ecosystem.config.cjs --env production
+              # #pm2 start "node .output/server/index.mjs" --name "nuxt-app"
+              # #pm2 save
+              # #pm2 startup 2>&1 | grep -v "Already Running"
               
-              # Save process list (only needed once)
-              pm2 save --force
+              # cd /var/www/project/hv-prod-fe
+              # # Graceful zero-downtime reload
+              # NODE_OPTIONS="--require esbuild-register" pm2 reload ecosystem.config.cjs --env production  || NODE_OPTIONS="--require esbuild-register" pm2 start ecosystem.config.cjs --env production
               
-              # Set up startup script (only needed once)
-              sudo pm2 startup systemd -u $USER --hp $HOME
+              # # Save process list (only needed once)
+              # pm2 save --force
+              
+              # # Set up startup script (only needed once)
+              # sudo pm2 startup systemd -u $USER --hp $HOME
 
 
 

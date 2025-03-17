@@ -15,7 +15,7 @@
       <div class="flex flex-col space-y-2 mt-4">
        <nuxt-link :to="'/product/'+props.product.slug" class="w-full font-semibold text-black">{{ props.product.name }}
          <p>
-        <div class="text-gray-500 flex items-center gap-2 text-xs"><UIcon name="fluent:leaf-two-16-regular" class="text-lg"/> {{ props.product.category }}</div>
+        <div class="text-gray-500 flex items-center text-xs"><UIcon name="fluent:leaf-two-16-regular" class="text-lg"/> {{ props.product.category }}</div>
        </p>
        </nuxt-link>
       

@@ -1,69 +1,70 @@
 name: HV ECOM FE
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
+    push:
+        branches:   [main] # trigger when push to main branch
+    pull_request:
+        branches:   [main]
+    
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Install Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+    build-and-test:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          node-version: [18, 20]
+      steps:
+        - uses: actions/checkout@v3
+        - name: install node ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+            cache: 'npm' 
+        - name: install project dependencies 
+          run: npm ci
+        - name: build project
+          run: NODE_OPTIONS=--max-old-space-size=4096 npm run build
 
-      # - name: Set Node.js memory limit
-      #   run: echo "NODE_OPTIONS=--max-old-space-size=4096" >> $GITHUB_ENV
+    deploy:
+      needs: build-and-test
+      runs-on: ubuntu-latest
+      if: contains(github.ref, 'refs/heads/main')
+      steps:
+        - uses: appleboy/ssh-action@master
+          with:
+            host: ${{ vars.HVECOM_SERVER_IP }}
+            username: ${{ vars.HVECOM_SERVER_USERNAME }}
+            key: ${{ secrets.HVECOM_SERVER_PRIVATE_KEY }}
+            port: ${{ vars.HVECOM_SSH_PORT || 22 }}
+            script: |
+              # load nvm to set up Node.js and npm 
+              source ~/.nvm/nvm.sh 
+              cd /var/www/project/hv-prod-fe
+              git pull origin master
+              npm ci
+              npm run build 
+              # npm run start
 
-      - name: Install project dependencies
-        run: npm ci
+              if ! command -v pm2 &> /dev/null; then
+                npm install -g pm2
+              fi
 
-      - name: Build project
-        run: NODE_OPTIONS=--max-old-space-size=4096 npm run build
+              # start or restart with pm2 
+              #pm2 start ecosystem.config.cjs --env production
+              #pm2 start "node .output/server/index.mjs" --name "nuxt-app"
+              #pm2 save
+              #pm2 startup 2>&1 | grep -v "Already Running"
+              
+              cd /var/www/project/hv-prod-fe
+              # Graceful zero-downtime reload
+              NODE_OPTIONS="--require esbuild-register" pm2 reload ecosystem.config.js --env production  || NODE_OPTIONS="--require esbuild-register" pm2 start ecosystem.config.js --env production
+              
+              # Save process list (only needed once)
+              pm2 save --force
+              
+              # Set up startup script (only needed once)
+              sudo pm2 startup systemd -u $USER --hp $HOME
 
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: contains(github.ref, 'refs/heads/main')
-    steps:
-      - uses: appleboy/ssh-action@master
-        with:
-          host: ${{ vars.HVECOM_SERVER_IP }}
-          username: ${{ vars.HVECOM_SERVER_USERNAME }}
-          key: ${{ secrets.HVECOM_SERVER_PRIVATE_KEY }}
-          port: ${{ vars.HVECOM_SSH_PORT || 22 }}
-          script: |
-            # Load NVM to set up Node.js and npm
-            source ~/.nvm/nvm.sh
 
-            # Navigate to the project directory
-            cd /var/www/project/hv-prod-fe
 
-            # Pull the latest changes
-            git pull origin main
-
-            # Install dependencies
-            npm ci
-
-            # Build the project
-            npm run build
-
-            # Install PM2 if not already installed
-            if ! command -v pm2 &> /dev/null; then
-              npm install -g pm2
-            fi
-
-            # Reload or start the PM2 process
-            pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
-
-            # Save the PM2 process list
-            pm2 save --force
+    
+    

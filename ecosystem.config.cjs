@@ -22,6 +22,6 @@ module.exports = {
     max_memory_restart: '1G',
     error_file: '/var/log/pm2/nuxt-error.log',
     out_file: '/var/log/pm2/nuxt-out.log'
-    //Ishmam
+    //Ishmam Bin Azim
   }]
 }

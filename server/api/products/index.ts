@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
     slug: string
     category: string
   }
-const Prod = '/_nuxt/assets/images/Web-image-04.jpg'
+const Prod =
+  'https://i3.wp.com/haldavalley.com/wp-content/uploads/2025/02/Web-Page-2-05.jpg'
 const Prod2 =
   'https://cdn.intelligencebank.com/au/share/NOrD/2lPAP/dMgDY/size=408&quality=70&compresstype=WebP&ext=png/image-hero-banner'
   const products: Product[] = [

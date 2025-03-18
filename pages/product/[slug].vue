@@ -13,31 +13,37 @@
         </div>
       </div>
     </div> -->
-    <div class="bg-gray-100">
+    <div class="bg-white">
       <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-wrap -mx-4">
+        <div class="flex items-start">
           <!-- Product Images -->
-          <div class="w-full md:w-1/2 px-4 mb-8">
-            <img
-              :src="selectedImage"
+          <!-- <div class="flex w-full"> -->
+            <div class="sticky top-20">
+           <div class="flex w-auto flex-col gap-4 py-4 px-2 justify-center">
+            <div class="p-2 w-20 h-20 border rounded-md bg-gray-100" @click="scrollToImage(image.id)"   v-for="image in product.images"
+                :key="image.image">
+              <img
+              
+                :src="image.image"
+                alt="Thumbnail 1"
+                class="object-cover rounded-md cursor-pointer transition duration-300"
+                             />
+              </div>
+            </div>
+            </div>
+          <div class="w-full mx-10 px-4 mb-8">
+            <img  v-for="image in product.images"
+             :key="image.image"
+                :src="image.image"
               alt="Product"
               class="w-full h-auto rounded-lg shadow-md mb-4"
-              id="mainImage"
+              :id="image.id"
             />
-            <div class="flex gap-4 py-4 justify-center overflow-x-auto">
-              <img
-                v-for="image in product.images"
-                :key="image"
-                :src="image"
-                alt="Thumbnail 1"
-                class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                @click="selectedImage = image"
-              />
-            </div>
-          </div>
+           </div>
+          <!-- </div> -->
 
           <!-- Product Details -->
-          <div class="w-full md:w-1/2 px-4">
+          <div class="w-full  px-4">
             <h2 class="text-3xl font-bold mb-2">Premium Wireless Headphones</h2>
             <p class="text-gray-600 mb-4">SKU: WH1000XM4</p>
             <div class="mb-4">
@@ -209,7 +215,7 @@ const product = {
   name: 'Halda Valley Tea',
   description:
     'Halda Valley Tea is a premium tea brand that offers a wide range of high-quality teas. Our teas are carefully sourced from the finest tea gardens in the world, and are expertly blended to create a unique and delicious taste. Whether you are a tea connoisseur or just looking for a delicious cup of tea, Halda Valley Tea has something for everyone.',
-  images: [img1, img2, img3],
+  images: [{ id: '1', image: img1 }, { id: '2', image: img2 }, { id: '3', image: img3 },{ id: '4', image: img1 }, { id: '5', image: img2 }, { id: '6', image: img3 }],
   price: 10.99,
   category: 'Tea',
   rating: 4.5,
@@ -231,7 +237,12 @@ const product = {
   ],
 }
 const selectedImage = ref(product.images[0])
-
+const scrollToImage = (id:string) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+};
 const changeImage = (src: string) => {
   // document.getElementById('mainImage').src = src;
   const mainImage = document.getElementById('mainImage')

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-auto bg-gray-100 rounded   p-4">
+  <div class="w-full h-auto bg-white rounded   p-4">
    <div class="flex py-2 justify-end items-center w-full">
     <div class="relative group">
      <UIcon name="material-symbols:favorite-outline" class="text-lg transition-opacity duration-300 group-hover:opacity-0" />

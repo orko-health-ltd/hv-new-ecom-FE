@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     const formData = new FormData()
     formData.append('email', email)
     formData.append('password', password)
-
+    console.log(config.public.apiBase)
     const data = await $fetch<{ token: string; user: any }>(
       `${config.public.apiBase}/login`,
       {

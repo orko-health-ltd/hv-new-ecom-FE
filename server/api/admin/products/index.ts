@@ -3,13 +3,12 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
   try {
-    const skus = await $fetch(`${config.public.apiBase}/product/list`, {
+    const {data} = await $fetch<{ data: unknown }>(`${config.public.apiBase}/product/list`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-
-    return skus
+    return data
   } catch (error: unknown) {
     const statusCode =
       error instanceof Error && 'statusCode' in error
@@ -21,4 +20,5 @@ export default defineEventHandler(async (event) => {
       message: 'Failed to fetch user data',
     })
   }
+
 })

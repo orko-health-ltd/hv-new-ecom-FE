@@ -44,18 +44,17 @@ import {
   Search,
 } from 'lucide-vue-next'
 interface Product {
-  id: number
+  _id: string
   name: string
   description: string
   price: number
   stock: number
   is_active: boolean
+  product_images:[{url:string}]
   created_at: string
 }
-const { data, refresh } = useFetch<{ data: Product[] }>(
-  '/api/admin/products'
-)
-const products = computed(() => data.value?.data || [])
+const { data } = useFetch<Product[]>('/api/admin/products')
+const products = computed(() => data.value || [])
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -191,15 +190,9 @@ definePageMeta({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow v-for="product in products" :key="product.id">  
+                    <TableRow v-for="product in products" :key="product._id">  
                       <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
+                       <AdminTableImage :image="product.product_images[0]?.url" />
                       </TableCell>
                       <TableCell class="font-medium">
                        {{ product.name }}
@@ -247,7 +240,5 @@ definePageMeta({
             </Card>
           </TabsContent>
         </Tabs>
-      </main>
-    </div>
-  </div>
+      </main>    </div>  </div>
 </template>

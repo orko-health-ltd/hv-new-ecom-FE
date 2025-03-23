@@ -182,6 +182,10 @@ const data = {
 
  
 }
+const logout = async () => {
+  await auth.logout()
+  navigateTo('/admin/login')
+}
 watchEffect(()=>{
   if(!auth.user)
   {
@@ -331,7 +335,7 @@ watchEffect(()=>{
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem @click="auth.logout()">
+                <DropdownMenuItem @click="logout()">
                   <LogOut />
                   Log out
                 </DropdownMenuItem>

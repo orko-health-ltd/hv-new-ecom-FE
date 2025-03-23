@@ -34,6 +34,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   CircleUser,
@@ -53,8 +64,19 @@ interface Product {
   product_images:[{url:string}]
   created_at: string
 }
-const { data } = useFetch<Product[]>('/api/admin/products')
+const emit = defineEmits<{ close: [boolean] }>()
+const { data, refresh } = useFetch<Product[]>('/api/admin/products')
 const products = computed(() => data.value || [])
+const deleteProduct = async (id: string) => {
+  const { error } = await useFetch('/api/admin/products/'+id, {
+    method: 'DELETE',
+   
+  })
+  if (error.value) {
+    console.log(error.value)
+  }
+  refresh()
+}
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -207,7 +229,7 @@ definePageMeta({
                       <TableCell class="hidden md:table-cell">
                         2023-07-12 10:42 AM
                       </TableCell>
-                      <TableCell>
+                      <TableCell><AlertDialog>
                         <DropdownMenu>
                           <DropdownMenuTrigger as-child>
                             <Button
@@ -221,10 +243,28 @@ definePageMeta({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <nuxt-link :to="`/admin/product-management/products/edit/${product._id}`">Edit</nuxt-link>                              </DropdownMenuItem>
+                            <DropdownMenuItem>
+                            
+                              <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                             
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
-                        </DropdownMenu>
+                        </DropdownMenu> <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete your account
+                                    and remove your data from our servers.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction  class="bg-red-500 text-white" @click="deleteProduct(product._id)" variant="destructive">Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                              </AlertDialog>
                       </TableCell>
                     </TableRow>
                    

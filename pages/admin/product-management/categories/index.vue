@@ -12,6 +12,7 @@ interface Category {
   _id: string
   name: string
   image: string
+  description: string
   is_active: boolean
 }
 const toast = useToast()
@@ -23,8 +24,29 @@ const category = ref<Category>({
   _id: '',
   name: '',
   image: '',
+  description: '',
   is_active: true,
 })
+const image = ref('')
+const handleFileChange = (
+  event: Event,
+  targetObject: Record<string, any>,
+  property: string
+): void => {
+  const target = event.target as HTMLInputElement
+  const files = target.files
+  if (files && files.length > 0) {
+    targetObject[property] = files[0]
+
+    const reader = new FileReader()
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (e.target?.result && typeof e.target.result === 'string') {
+        image.value = e.target.result
+      }
+    }
+    reader.readAsDataURL(files[0])
+  }
+}
 const { data, refresh } = useFetch<{ data: Category[] }>(
   '/api/admin/categories'
 )
@@ -32,13 +54,20 @@ const categories = computed(() => data.value?.data || [])
 const createCategory = async () => {
   loading.value = true
   try {
+    const formData = new FormData()
+
+    formData.append('name', category.value.name)
+    formData.append('image', category.value.image)
+    formData.append('description', category.value.description)
+    formData.append('is_active', category.value.is_active.toString())
     await $fetch('/api/admin/categories/create', {
       method: 'POST',
-      body: category.value,
+      body: formData,
     })
     category.value = {
       _id: '',
       name: '',
+      description: '',
       image: '',
       is_active: true,
     }
@@ -68,6 +97,7 @@ const updateCategory = async () => {
     category.value = {
       _id: '',
       name: '',
+      description: '',
       image: '',
       is_active: true,
     }
@@ -109,8 +139,8 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/brands"
-                  >All Brands</nuxt-link
+                <nuxt-link to="/admin/product-management/categories"
+                  >All Categories</nuxt-link
                 >
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -220,18 +250,37 @@ definePageMeta({
                         id="first-name"
                         v-model="category.name"
                         required
-                        placeholder="Brand"
+                        placeholder="Category"
+                      />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="description">Category Description</Label>
+                      <Textarea
+                        id="description"
+                        v-model="category.description"
+                        required
+                        placeholder="Category"
                       />
                     </div>
 
                     <div class="grid gap-2">
-                      <Label for="last-name">Category Image</Label>
+                      <Label for="last-name">Image</Label>
                       <Input
                         id="last-name"
-                        v-model="category.image"
                         type="file"
+                        @change="(event: Event) => handleFileChange(event, category, 'image')"
+                        required
                       />
                     </div>
+                    <img
+                      :src="
+                        image
+                          ? image
+                          : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
+                      "
+                      alt="Product Image"
+                      class="w-auto h-20"
+                    />
                   </div>
                 </CardContent>
                 <CardFooter class="gap-3">
@@ -240,7 +289,9 @@ definePageMeta({
                       v-if="creating"
                       class="w-4 h-4 mr-2 animate-spin"
                     />
-                    {{ showEditForm ? 'Update Brand' : 'Add Brand' }}</Button
+                    {{
+                      showEditForm ? 'Update Category' : 'Add Category'
+                    }}</Button
                   >
                   <Button
                     type="button"
@@ -250,7 +301,8 @@ definePageMeta({
                         (showCreateForm = false),
                         (category = {
                           _id: '',
-                          name: '',
+                        name: '',
+                          description: '',
                           image: '',
                           is_active: false,
                         })
@@ -278,14 +330,9 @@ definePageMeta({
                       </TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Status</TableHead>
+                    
                       <TableHead class="hidden md:table-cell">
-                        Price
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Total Sales
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Created at
+                        Description
                       </TableHead>
                       <TableHead>
                         <span class="sr-only">Actions</span>
@@ -302,7 +349,7 @@ definePageMeta({
                           alt="Product image"
                           class="aspect-square rounded-md object-cover"
                           height="64"
-                          src="/assets/images/GEBT.jpg"
+                          :src="categoryData.image ? $config.public.apiBase+'/'+categoryData.image :'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'"
                           width="64"
                         />
                       </TableCell>
@@ -318,13 +365,9 @@ definePageMeta({
                           {{ categoryData.is_active ? 'Active' : 'Inactive' }}
                         </Badge>
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $129.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
+                   
+                      <TableCell class="hidden md:table-cell"> {{ categoryData.description }} </TableCell>
+                    
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger as-child>

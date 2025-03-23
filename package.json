@@ -33,7 +33,7 @@
     "pinia": "^2.3.1",
     "pinia-plugin-persistedstate": "^4.2.0",
     "radix-vue": "^1.9.13",
-    "reka-ui": "^2.1.0",
+    "reka-ui": "^2.1.1",
     "shadcn-nuxt": "^0.11.3",
     "swiper": "^11.2.2",
     "tailwind-merge": "^3.0.2",

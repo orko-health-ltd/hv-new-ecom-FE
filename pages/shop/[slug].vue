@@ -325,7 +325,7 @@
         <ShopProductCardNew
           class="hover:border border-gray-700"
           v-for="product in products"
-          :key="product.id"
+          :key="product._id"
           :product="product"
         />
       </div>
@@ -334,26 +334,20 @@
 </template>
 
 <script lang="ts" setup>
-interface Product {
-  id: number
-  name: string
-  price: number
-  img: string
-  category: string
-}
+import type { Category, Product } from '~/types'
+
 
 const route = useRoute()
-
+const category = ref(<Category>{})
 const products = ref<Product[]>([])
 const showFilters = ref(false)
 // Replace the getProducts function and onMounted with useAsyncData
-const { data: productData } = await useAsyncData('products', () =>
-  $fetch<Product[]>('/api/products')
+const { data: responseData } = await useAsyncData('products', () =>
+  $fetch<{ status: string, data: { category: any, products: Product[] } }>('/api/categories/products?category=' + route.params.slug)
 )
-
 watchEffect(() => {
-  if (productData.value) {
-    products.value = productData.value
+  if (responseData.value) {
+    products.value = responseData.value.data?.products
   }
 })
 </script>

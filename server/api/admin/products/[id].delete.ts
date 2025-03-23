@@ -3,12 +3,16 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
   try {
-    const {data} = await $fetch<{ data: unknown }>(`${config.public.apiBase}/product/list`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    return data
+    const response = await $fetch(
+      `${config.public.apiBase}/product/delete/${event.context.params?.id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    return { data: response }
   } catch (error: unknown) {
     const statusCode =
       error instanceof Error && 'statusCode' in error

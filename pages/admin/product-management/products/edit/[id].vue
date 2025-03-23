@@ -25,8 +25,8 @@
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink as-child>
-                  <nuxt-link to="/admin/product-management/products/create"
-                    >Create Product</nuxt-link
+                  <nuxt-link to="/admin/product-management/products/edit"
+                    >Edit Product</nuxt-link
                   >
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -62,13 +62,13 @@
         <div class="mt-3">
           <Card>
             <CardHeader>
-              <CardTitle>Create Product</CardTitle>
+              <CardTitle>Edit Product</CardTitle>
               <CardDescription>
-                Create product to manage your stocks.
+                Edit product to manage your stocks.
               </CardDescription></CardHeader
             >
-
-            <form @submit.prevent="createProduct()" class="grid gap-4">
+            
+            <form @submit.prevent="updateProduct()" class="grid gap-4">
               <CardContent>
                 <div class="grid grid-cols-2 gap-4">
                   <div class="grid gap-2">
@@ -127,24 +127,6 @@
                     </Select>
                   </div>
                   <div class="grid gap-2">
-                    <Label for="first-name">Format</Label>
-                    <Select v-model="product.format">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a Format" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectLabel>Format</SelectLabel>
-                        <SelectItem
-                          v-for="format in formats"
-                          :key="format"
-                          :value="format"
-                        >
-                          {{ format }}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div class="grid gap-2">
                     <Label for="last-name">Name</Label>
                     <Input
                       v-model="productName"
@@ -161,7 +143,7 @@
                       placeholder="Product Details."
                     />
                   </div>
-                  <!-- <div class="grid gap-2">
+                  <div class="grid gap-2">
                     <Label for="last-name">Color</Label>
                     <Input
                       v-model="product.color"
@@ -169,7 +151,7 @@
                       type="text"
                       required
                     />
-                  </div> -->
+                  </div>
                   <div class="grid gap-2">
                     <Label for="last-name">Price</Label>
                     <Input
@@ -224,114 +206,32 @@
                       @update:checked="product.is_combo = !product.is_combo"
                     />
                   </div>
-                 
                   <div class="grid gap-2">
-                    <Label for="sku">Features</Label>
-                    <TagsInput v-model="product.features">
-                      <TagsInputItem
-                        v-for="item in product.features"
-                        :key="item"
-                        :value="item"
-                      >
-                        <TagsInputItemText />
-                        <TagsInputItemDelete />
-                      </TagsInputItem>
-
-                      <TagsInputInput placeholder="Product Tags..." />
-                    </TagsInput>
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="sku">Ingredients</Label>
-                    <TagsInput v-model="product.ingredients">
-                      <TagsInputItem
-                        v-for="item in product.ingredients"
-                        :key="item"
-                        :value="item"
-                      >
-                        <TagsInputItemText />
-                        <TagsInputItemDelete />
-                      </TagsInputItem>
-
-                      <TagsInputInput placeholder="Product Tags..." />
-                    </TagsInput>
-                  </div>
-                  <div class="col-span-2 gap-2">
-                    <Label for="sku">Brewing Guides</Label>
-                    <TagsInput v-model="product.brewing_guide" class="h-[90px] items-start">
-                      <TagsInputItem
-                        v-for="item in product.brewing_guide"
-                        :key="item"
-                        :value="item"
-                      >
-                        <TagsInputItemText />
-                        <TagsInputItemDelete />
-                      </TagsInputItem>
-
-                      <TagsInputInput placeholder="Brewing Guides..." />
-                    </TagsInput>
-                  </div>
-                <div class="grid gap-2">
-                    <Label for="last-name">Front Image</Label>
-                    <Input
-                      id="last-name" 
-                      type="file"
-                      @change="(event: Event) => handleFileChange(event, product, 'front_image')"
-                      required
-                    />
-                  </div>
-                  <img 
-                    :src="
-                      front_image
-                        ? front_image
-                        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
-                    "
-                    alt="Product Front Image"
-                    class="w-auto h-20"
-                  />
-                <div class="grid gap-2">
-                    <Label for="last-name">Back Image</Label>
-                    <Input
-                      id="last-name" 
-                      type="file"
-                      @change="(event: Event) => handleFileChange(event, product, 'back_image')"
-                      required
-                    />
-                  </div>
-                  <img 
-                    :src="
-                      back_image
-                        ? back_image
-                        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
-                    "
-                    alt="Product Image"
-                    class="w-auto h-20"
-                  />
-                <div class="grid gap-2">
                     <Label for="last-name">Image</Label>
                     <Input
                       id="last-name" multiple
                       type="file"
                       @change="(event: Event) => handleFileChange(event, product, 'product_images')"
-                      required
                     />
                   </div>
-                  <div class="grid grid-cols-4 gap-2">
+                  <!-- {{ product.product_images }} -->
+                     <AdminTableImage v-for="image in (product.product_images as Array<{url: string}>)" :image="image.url" :key="image.url" />
                   <img v-for="image in images"
                     :src="
                       image
-                        ? image
+                        ? $config.public.apiBase+'/'+image
                         : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
                     "
+
                     alt="Product Image"
                     class="w-auto h-20"
                   />
-                  </div>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button class="text-white" :disabled="creating">
-                  <Loader2 v-if="creating" class="w-4 h-4 mr-2 animate-spin" />
-                  Create Product</Button
+                <Button class="text-white" :disabled="updating">
+                  <Loader2 v-if="updating" class="w-4 h-4 mr-2 animate-spin" />
+                  Update Product</Button
                 >
               </CardFooter>
             </form>
@@ -339,13 +239,12 @@
         </div>
       </div>
     </div>
-  </ClientOnly>
+  </ClientOnly> 
 </template>
 <script lang="ts" setup>
+import { get } from '@vueuse/core'
 import { CircleUser, Loader2, Search } from 'lucide-vue-next'
 import Label from '~/components/ui/label/Label.vue'
-import type { Category, Product } from '~/types'
-
 
 interface Brand {
   name: string
@@ -358,47 +257,74 @@ interface Sku {
   is_active: boolean
 }
 
-// interface Category {
-//   name: string
-//   _id: string
-//   is_active: boolean
-// }
+interface Category {
+  name: string
+  _id: string
+  is_active: boolean
+}
 
-// interface Product {
-//   name: string
-//   color: string
-//   price: number
-//   specification: string
-//   discount: number
-//   discount_unit: string
-//   is_active: boolean
-//   is_featured: boolean
-//   is_combo: boolean
-//   product_images: string[]
-//   brand_id: string
-//   sku_id: string
-//   category_id: string
-//   format: string
-//   features: string[]
-//   description: string
-//   ingredients: string[]
-//   brewing_guide: string[]
-// }
+interface Product {
+  _id: string
+  name: string
+  color: string
+  price: number
+  specification: string
+  discount: number
+  discount_unit: string
+  is_active: boolean
+  is_featured: boolean
+  is_combo: boolean
+  product_images: Array<never>
+  brand_id: string
+  sku_id: string
+  category_id: string
+}
+
 const toast = useToast()
-const creating = ref(false)
+const route = useRoute()
+const updating = ref(false)
 const brands = ref<Brand[]>([])
 const skus = ref<Sku[]>([])
 const categories = ref<Category[]>([])
 const images = ref<Array<string>>([])
-const front_image = ref<string>('')
-const back_image = ref<string>('')
-  const formats = ['Loose Leaf e','Tea Bag']
+const product = ref<Product>({
+  _id: '',
+  name: '',
+  color: '',
+  price: 0,
+  specification: '',
+  discount: 0,
+  discount_unit: 'percentage',
+  is_active: false,
+  is_featured: false,
+  is_combo: false,
+  product_images: [],
+  brand_id: '',
+  sku_id: '',
+  category_id: '',
+ 
+})
+const getProduct = async () => {
+  try {
+    const { data } = await useFetch<{ data: Product }>(`/api/admin/products/${route.params.id}`)
+    console.log(data)
+    if (data.value?.data) {
+      product.value = data.value.data
+      console.log(product.value)
+      // if (data.value.data.product_images) {
+      //   console.log(data.value.data.product_images)
+      //   images.value = data.value.data.product_images
+      // }
+    }
+  } catch (error) {
+    console.error('Error fetching product:', error)
+  }
+}
 const getSkus = async () => {
   try {
     const { data, refresh } = await useFetch<{ data: Sku[] }>(
       '/api/admin/sku',
-      {
-        immediate: true,
+      { immediate: true,
         watch: false,
       }
     )
@@ -421,6 +347,7 @@ const productName = computed(() => {
   product.value.name = name
   return name
 })
+
 const getBrands = async () => {
   try {
     const { data, refresh } = await useFetch<{ data: Sku[] }>(
@@ -444,7 +371,7 @@ const getBrands = async () => {
 
 const getCategories = async () => {
   try {
-    const { data, refresh } = await useFetch<{ data: Category[] }>(
+    const { data, refresh } = await useFetch<{ data: Sku[] }>(
       '/api/admin/categories',
       {
         immediate: true,
@@ -462,75 +389,36 @@ const getCategories = async () => {
     console.error('Error fetching Categories:', error)
   }
 }
-const createProduct = async () => {
+
+const updateProduct = async () => {
   try {
-    creating.value = true;
+    updating.value = true;
     const formData = new FormData();
 
     Object.entries(product.value).forEach(([key, value]) => {
-      console.log(key, value); // Debugging log
-              if (key == 'front_image' || key == 'back_image') {
-                if (value instanceof File || value instanceof Blob) {
-                  formData.append(key, value);
-                }
-              }
-        else if (key == 'product_images' && Array.isArray(value)) {
+      if (Array.isArray(value)) {
         value.forEach((file, index) => {
           formData.append(`${key}[${index}]`, file);
         });
-      }
-     
-      else if (Array.isArray(value)) {
-        formData.append(key, JSON.stringify(value));
-      }
-      else if (value !== null && value !== undefined) {
+      } else if (value !== null && value !== undefined) {
         formData.append(key, value.toString());
       }
     });
 
-    console.log("FormData Entries:");
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]); // Debugging log
-    }
-    console.log("FormData Contents:",formData);
-    const { data, error } = await useFetch("/api/admin/products/create", {
+    const { data, error } = await useFetch(`/api/admin/products/edit`, {
       method: "POST",
       body: formData,
-     
     });
-    toast.add({ title: "Product created successfully", color: "green", timeout: 1500 });
-   navigateTo("/admin/product-management/products");
-    // console.log(data.value, error);
+    getProduct();
+    toast.add({ title: "Product updated successfully", color: "green", timeout: 1500 });
+    // navigateTo("/admin/product-management/products");
   } catch (error) {
-    console.error("Error creating product:", error);
-    toast.add({ title: "Error creating product", color: "red", timeout: 1500 });
+    console.error("Error updating product:", error);
+    toast.add({ title: "Error updating product", color: "red", timeout: 1500 });
   }
-  creating.value = false;
+  updating.value = false;
 };
 
-const product = ref({
-  name: '',
-  // color: '',
-  price: 0,
-  specification: '',
-  discount: 0,
-  discount_unit: '',
-  is_active: true,
-  is_featured: false,
-  is_combo: false,
-  front_image: {},
-  back_image: {},
-  product_images: [],
-  brand_id: '',
-  sku_id: '',
-  category_id: '',
-  format: '',
-  features: [],
-  description: '',
-  ingredients: [],
-  brewing_guide: [],
-
-})
 const handleFileChange = (
   event: Event,
   targetObject: Record<string, any>,
@@ -538,8 +426,7 @@ const handleFileChange = (
 ): void => {
   const target = event.target as HTMLInputElement
   const files = target.files
-  console.log(files, property)
-  if (property == 'product_images' &&files && files.length > 0) {
+  if (files && files.length > 0) {
     targetObject[property] = Array.from(files)
 
     Array.from(files).forEach((file) => {
@@ -555,36 +442,17 @@ const handleFileChange = (
       reader.readAsDataURL(file)
     })
   }
-  else if(property == 'front_image' && files && files.length > 0) {
-    targetObject[property] = files[0]
-    const reader = new FileReader()
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      if (e.target?.result && typeof e.target.result === 'string') {
-        front_image.value = e.target.result
-      }
-    }
-    reader.readAsDataURL(files[0])
-     }
-  else if(property == 'back_image' && files && files.length > 0) {
-    targetObject[property] = files[0]
-    const reader = new FileReader()
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      if (e.target?.result && typeof e.target.result === 'string') {
-        back_image.value = e.target.result
-      }
-    }
-    reader.readAsDataURL(files[0])
-  }
-     console.log(typeof(targetObject[property]),product.value)
 }
+
 onMounted(() => {
+  getProduct()
   getSkus()
   getBrands()
   getCategories()
 })
+
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
 })
 </script>
-<style></style>

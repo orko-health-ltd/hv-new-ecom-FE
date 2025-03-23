@@ -7,9 +7,10 @@
     </div>
    
    </div>
+ 
        <nuxt-link :to="'/product/'+props.product.slug" class="relative group">
-        <img :src="props.product.img" class="transition-opacity duration-300 group-hover:opacity-0" alt="">
-        <img :src="props.product.img2" class="absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" alt="">
+        <img :src="$config.public.apiBase+'/'+props.product.front_image" class="transition-opacity duration-300 group-hover:opacity-0" alt="">
+        <img :src="$config.public.apiBase+'/'+props.product.back_image" class="absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" alt="">
        </nuxt-link>  
       
       <div class="flex flex-col space-y-2 mt-4">

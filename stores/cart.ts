@@ -1,15 +1,16 @@
 
 import { defineStore } from 'pinia'
-type product = {
-  id: number
-  name: string
-  img: string
-  price: number
-  category: string
-}
+import type { Product } from '~/types'
+// type product = {
+//   id: number
+//   name: string
+//   img: string
+//   price: number
+//   category: string
+// }
 type CartItem = {
-    id: number
-  product: product,
+    id: string
+  product: Product,
   price: number
     quantity: number
 }
@@ -55,10 +56,10 @@ export const useMyCartStore = defineStore('myCartStore', {
     },
   },
   actions: {
-    addToCart(product: product) {
-      if (!this.cart.some((item) => item.id === product.id)) {
+    addToCart(product: Product) {
+      if (!this.cart.some((item) => item.id === product._id)) {
         let data = {
-          id: product.id,
+          id: product._id,
           product: product,
           price: product.price,
           quantity: 1,
@@ -66,7 +67,7 @@ export const useMyCartStore = defineStore('myCartStore', {
         console.log(data)
         this.cart.push(data)
       } else {
-        const item = this.cart.find((item) => item.id === product.id)
+        const item = this.cart.find((item) => item.id === product._id)
         if (item) {
           item.quantity++
         }

@@ -304,7 +304,7 @@
                   <ul role="list" class="-my-6 divide-y divide-gray-200">
                     <li v-for="item in cart.cart" :key="item.id" class="flex py-6">
                       <div class="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                        <img :src="item.product.img" alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="size-full object-cover">
+                        <img :src="$config.public.apiBase+'/'+item.product.front_image" alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="size-full object-cover">
                       </div>
 
                       <div class="ml-4 flex flex-1 flex-col">

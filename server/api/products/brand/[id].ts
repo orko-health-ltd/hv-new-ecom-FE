@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   try {
     const response = await $fetch(
-      `${config.public.apiBase}/product/details/${event.context.params?.id}`
+      `${config.public.apiBase}/product/listByBrand/${event.context.params?.id}`
     )
     
     return { data: response }

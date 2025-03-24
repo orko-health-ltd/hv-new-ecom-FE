@@ -31,7 +31,8 @@ export default defineNuxtConfig({
     
           meta: [
             { name: 'author', content: 'Ishmam Bin Azim' },
-            { name: 'title', content: 'Halda Valley' },
+        { name: 'title', content: 'Halda Valley' },
+            { name: 'description', content: 'Halda Valley' },
           ],    },
   },
 

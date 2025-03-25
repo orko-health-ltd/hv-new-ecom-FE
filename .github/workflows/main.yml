@@ -39,7 +39,8 @@ jobs:
               # load nvm to set up Node.js and npm 
               source ~/.nvm/nvm.sh 
               cd /var/www/project/hv-prod-fe
-              git pull origin main
+              git fetch origin
+              git reset --hard origin/main
               npm ci
               npm run build 
               # npm run start

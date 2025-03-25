@@ -32,8 +32,7 @@ export default defineNuxtConfig({
           meta: [
             { name: 'author', content: 'Ishmam Bin Azim' },
         { name: 'title', content: 'Halda Valley' },
-            { name: 'description', content: 'Halda Valley' },
-          ],    },
+            { name: 'description', content: 'Halda Valley is a premium tea company offering the finest quality teas sourced from the pristine Halda Valley region. We are committed to delivering exceptional tea experiences through our carefully curated selection of premium teas.' },          ],    },
   },
 
   shadcn: {

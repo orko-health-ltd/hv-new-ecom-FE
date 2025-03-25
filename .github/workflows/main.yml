@@ -36,36 +36,40 @@ jobs:
             key: ${{ secrets.HVECOM_SERVER_PRIVATE_KEY }}
             port: ${{ vars.HVECOM_SSH_PORT || 22 }}
             script: |
-              # load nvm to set up Node.js and npm 
-              source ~/.nvm/nvm.sh 
-              cd /var/www/project/hv-prod-fe
-              git fetch origin
-              git reset --hard origin/main
-              npm ci
-              npm run build 
-              # npm run start
+                # Load NVM to set up Node.js and npm 
+                source ~/.nvm/nvm.sh 
 
-              if ! command -v pm2 &> /dev/null; then
-                npm install -g pm2
-              fi
+                # Navigate to project directory
+                cd /var/www/project/hv-prod-fe
 
-              # start or restart with pm2 
-              #pm2 start ecosystem.config.cjs --env production
-              #pm2 start "node .output/server/index.mjs" --name "nuxt-app"
-              #pm2 save
-              #pm2 startup 2>&1 | grep -v "Already Running"
-              
-              cd /var/www/project/hv-prod-fe
-              # Graceful zero-downtime reload
-              NODE_OPTIONS="--require esbuild-register" pm2 reload ecosystem.config.cjs --env production  || NODE_OPTIONS="--require esbuild-register" pm2 start ecosystem.config.cjs --env production
-              
-              # Save process list (only needed once)
-              # pm2 save --force
-              pm2 restart ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
-              # pm2 save --force
-              # Set up startup script (only needed once)
-              # sudo pm2 startup systemd -u $USER --hp $HOME
+                # Fetch latest changes
+                git fetch origin
+                git pull --ff-only origin main  # Safer alternative to reset --hard
 
+                # Install dependencies
+                npm ci
+
+                # Build the project
+                npm run build 
+
+                # Ensure PM2 is installed
+                if ! command -v pm2 &> /dev/null; then
+                  npm install -g pm2
+                fi
+
+                # Ensure PM2 starts the correct Nuxt output file
+                pm2 describe nuxt-app > /dev/null 2>&1
+                if [ $? -eq 0 ]; then
+                  pm2 reload nuxt-app --update-env
+                else
+                  pm2 start "node .output/server/index.mjs" --name "nuxt-app"
+                fi
+
+                # Save PM2 process list (only needed once)
+                pm2 save --force
+
+                # Ensure PM2 starts on boot
+                pm2 startup systemd -u $USER --hp $HOME
 
 
     

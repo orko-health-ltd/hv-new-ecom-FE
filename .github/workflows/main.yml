@@ -66,10 +66,10 @@ jobs:
                 fi
 
                 # Save PM2 process list (only needed once)
-                pm2 save --force
+                # pm2 save --force
 
                 # Ensure PM2 starts on boot
-                pm2 startup systemd -u $USER --hp $HOME
+                # pm2 startup systemd -u $USER --hp $HOME
 
 
     

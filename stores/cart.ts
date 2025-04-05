@@ -24,23 +24,18 @@ export const useMyCartStore = defineStore('myCartStore', {
     errorMessage: '',
     promoCode: '',
     discount: 0,
-    shippingMethod: '',
+    shippingMethod: 0,
     shippingMethods: [
       {
         id: 1,
-        name: 'Free Shipping',
-        price: 0,
+        name: 'Inside Dhaka',
+        price: 60,
       },
       {
         id: 2,
-        name: 'Standard Shipping',
-        price: 10,
-      },
-      {
-        id: 3,
-        name: 'Express Shipping',
-        price: 20,
-      },
+        name: 'Outside Dhaka',
+        price: 120,
+      }
     ],
   }),
   getters: {
@@ -72,24 +67,28 @@ export const useMyCartStore = defineStore('myCartStore', {
           item.quantity++
         }
       }
+      this.calculateSubtotal()
     },
     increment(product: CartItem) {
       const item = this.cart.find((item) => item.id === product.id)
       if (item) {
         item.quantity++
       }
+       this.calculateSubtotal()
     },
     decrement(product: CartItem) {
       const item = this.cart.find((item) => item.id === product.id)
       if (item && item.quantity > 1) {
         item.quantity--
       }
+      this.calculateSubtotal()
     },
     removeFromCart(product: CartItem) {
       const index = this.cart.indexOf(product)
       if (index !== -1) {
         this.cart.splice(index, 1)
       }
+       this.calculateSubtotal()
     },
     applyPromo() {
       if (this.promoCode === 'DISCOUNT') {
@@ -97,6 +96,10 @@ export const useMyCartStore = defineStore('myCartStore', {
       } else {
         this.discount = 0
       }
+    },
+    calculateSubtotal() {
+      
+      this.subtotal = this.total + this.shippingMethod
     },
     checkout() {
       this.isLoading = true

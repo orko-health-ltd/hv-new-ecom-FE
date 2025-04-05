@@ -293,7 +293,7 @@
         </div>
         <div class="w-full container py-20 px-[15%] bg-gray-200">
           <h1 class="text-2xl font-sans font-semibold">
-            How to brew Dragon Well Green Tea
+            How to brew {{ product.brand.name }}
           </h1>
           <div  class="flex w-1/2 justify-between text-sm py-10">
             <p><UIcon name="mdi:spoon-sugar" /> 1 tsp per cup</p>
@@ -413,9 +413,9 @@ const products = ref<Product[]>([])
 const price = ref(0)
 const discountPrice = ref(0)
 const getProduct = async (slug: string | string[]) => {
-  const { data: responseData } = await useFetch<{ data: Product }>('/api/products/' + slug)
+  const { data: responseData } = await $fetch<{ data: Product }>('/api/products/' + slug)
   console.log('hello',responseData)
-  product.value = responseData?.value?.data
+  product.value = responseData
   if (product.value?.discount && product.value?.discount > 0 && product.value?.price) {
     if (product.value.discount_unit === 'percent') {
       price.value = product.value.price - (product.value.price * product.value.discount) / 100
@@ -429,7 +429,7 @@ const getProduct = async (slug: string | string[]) => {
   }
   discountPrice.value = product?.value?.price ? product?.value?.price : 0
 
-  if(products.value.length === 0) {
+  if(product.value.brand_id) {
     getSkuProducts()
   }
   }
@@ -448,11 +448,11 @@ const changeImage = (src: string) => {
   }
 }
 const getSkuProducts = async () => {
-  const { data: responseData } = await useFetch<{ data: Product[] }>(
+  const { data: responseData } = await $fetch<{ data: Product[] }>(
     '/api/products/brand/' + product.value?.brand_id
   )
 
-  products.value = responseData?.value?.data || []
+  products.value = responseData || []
 }
 onMounted(() => {
   getProduct(route.params?.slug)

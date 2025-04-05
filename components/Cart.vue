@@ -22,7 +22,7 @@
             <div class="flex items-center mb-2 sm:mb-0">
               <p @click="cartStore.removeFromCart(item)" class="text-xs leading-3 underline text-red-500 cursor-pointer">Remove</p>
             </div>
-            <p class="text-base font-black leading-none text-gray-800">${{ item.price }}</p>
+            <p class="text-base font-black leading-none text-gray-800">৳{{ item.price }}</p>
           </div>
         </div>
       </div>
@@ -38,14 +38,14 @@
       <h1 class="font-semibold text-2xl border-b pb-8">Order Summary</h1>
       <div class="flex justify-between mt-10 mb-5">
         <span class="font-semibold text-sm uppercase">Items {{ cartStore.cart.length }}</span>
-        <span class="font-semibold text-sm">${{ cartStore.subtotal }}</span>
+        <span class="font-semibold text-sm">৳{{ cartStore.total }}</span>
       </div>
       <div>
         <label class="font-medium inline-block mb-3 text-sm uppercase">
           Shipping
         </label>
-        <select v-model="cartStore.shippingMethod" class="block p-2 text-gray-600 w-full text-sm">
-          <option v-for="method in cartStore.shippingMethods" :key="method.id" :value="method.price">{{ method.name }} - ${{ method.price }}</option>
+        <select @change="cartStore.calculateSubtotal()" v-model="cartStore.shippingMethod" class="block p-2 text-gray-600 w-full text-sm">
+          <option v-for="method in cartStore.shippingMethods" :key="method.id" :value="method.price">{{ method.name }} - ৳ {{ method.price }}</option>
         </select>
       </div>
       <div class="py-10">
@@ -60,11 +60,11 @@
       <div class="border-t mt-8">
         <div class="flex font-semibold justify-between py-6 text-sm uppercase">
           <span>Total cost</span>
-          <span>${{ cartStore.total }}</span>
+          <span>৳ {{ cartStore.subtotal }}</span>
         </div>
-        <button @click="cartStore.checkout" class="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
+        <nuxt-link to="/billing"  class="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
           Checkout
-        </button>
+        </nuxt-link>
       </div>
     </div>
   </div>

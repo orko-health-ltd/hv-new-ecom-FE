@@ -12,7 +12,7 @@ interface Brand {
   _id:string,
   name: string,
   short_name: string,
-  image: string,
+  // image: string,
   is_active:boolean
 }
 const toast = useToast()
@@ -24,11 +24,15 @@ const brand = ref<Brand>({
   _id:'',
   name: '',
   short_name: '',
-  image:'',
+  // image:'',
   is_active: true,  
 })
 const { data, refresh } = useFetch<{ data: Brand[] }>('/api/admin/brands')
 const brands = computed(() => data.value?.data || [])
+const setShortName = () => {
+  console.log(brand.value.name)
+  brand.value.short_name = brand.value.name.split(' ').map(word => word.charAt(0).toUpperCase()).join('')
+}
 const createBrand = async () => {
   loading.value = true
   try {
@@ -39,7 +43,7 @@ const createBrand = async () => {
     brand.value = {
       _id:'',
       name: '',
-      image: '',
+      // image: '',
       short_name: '',
       is_active: true,
     }
@@ -55,7 +59,7 @@ const createBrand = async () => {
    loading.value = true 
 }
 const updateBrand = async () => {
-  console.log('xsc')
+ setShortName()
   loading.value = true
   try {
     await $fetch('/api/admin/brands/'+brand.value._id, {
@@ -65,7 +69,7 @@ const updateBrand = async () => {
     brand.value = {
       _id:'',
       name: '',
-      image: '',
+      // image: '',
       short_name: '',
       is_active: true,
     }
@@ -198,25 +202,32 @@ definePageMeta({
                 <form @submit.prevent="showEditForm ? updateBrand() : createBrand()" class="grid gap-4">
                 <CardContent>
 
-                     <div class="grid grid-cols-2 gap-4">
+                     <div class="grid grid-cols-3 gap-4">
           <div class="grid gap-2">
             <Label for="first-name">Brand name</Label>
-            <Input id="first-name" v-model="brand.name" @change="brand.short_name = brand.name.split(' ').map(word => word.charAt(0).toUpperCase()).join('')" required placeholder="Brand"  />
+            <Input id="first-name" v-model="brand.name" @change="setShortName()" required placeholder="Brand"  />
           </div>
           <div class="grid gap-2">
             <Label for="last-name">Short Name</Label>
             <Input id="last-name" v-model="brand.short_name" disabled placeholder="Short Name"  />
           </div>
-          <div class="grid gap-2">
+            <div class="grid ps-10 gap-2">
+               <Label for="airplane-mode">Is Active</Label>
+               <Switch id="airplane-mode"  v-model="brand.is_active"
+                @update:model-value="brand.is_active = !brand.is_active" />
+                {{ brand.is_active }}
+             
+            </div>
+          <!-- <div class="grid gap-2">
             <Label for="last-name">Brand Image</Label>
             <Input id="last-name" v-model="brand.image" type="file"  />
-          </div>
+          </div> -->
         </div>
                 </CardContent>
                 <CardFooter class="gap-3">
                     <Button type="submit" class="text-white" :disabled="creating"> <Loader2 v-if="creating" class="w-4  h-4 mr-2 animate-spin" />
                       {{ showEditForm ? 'Update Brand' : 'Add Brand' }}</Button>
-                      <Button type="button" variant="outline" @click="showEditForm = false, showCreateForm = false, brand={_id: '', name: '', short_name: '', image: '', is_active: false}">Cancel</Button>
+                      <Button type="button" variant="outline" @click="showEditForm = false, showCreateForm = false, brand={_id: '', name: '', short_name: '', is_active: false}">Cancel</Button>
                 </CardFooter>
                 </form>
             </Card>
@@ -233,20 +244,11 @@ definePageMeta({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead class="hidden w-[100px] sm:table-cell">
-                        <span class="sr-only">img</span>
-                      </TableHead>
+                     
                       <TableHead>Name</TableHead>
+                      <TableHead>Short Name</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Price
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Total Sales
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Created at
-                      </TableHead>
+                     
                       <TableHead>
                         <span class="sr-only">Actions</span>
                       </TableHead>
@@ -255,32 +257,19 @@ definePageMeta({
                   <TableBody>
                   
                     <TableRow v-for="brandData in brands" :key="brandData._id">
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
+                    
                       <TableCell class="font-medium">
                         {{  brandData.name }}
+                      </TableCell>
+                      <TableCell class="font-medium">
+                        {{  brandData.short_name }}
                       </TableCell>
                       <TableCell>
                         <Badge :variant="brandData.is_active?null:'destructive'">
                          {{ brandData.is_active?'Active':'Inactive' }}
                         </Badge>
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $129.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        100
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
+                    
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger as-child>

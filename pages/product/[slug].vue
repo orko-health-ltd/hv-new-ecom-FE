@@ -121,7 +121,8 @@
                     class="right-[-40px] relative"
                     name="material-symbols:check-circle"
                   />
-                  <img :src="img1" class="size-20" alt="" />
+                  {{ product.front_image }}
+                  <img :src="$config.public.apiBase + '/' +product.front_image" class="size-20" alt="" />
                   <p class="flex text-sm items-center justify-center gap-2">
                     {{ sku.sku }}
                   </p>

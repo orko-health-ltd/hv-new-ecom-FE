@@ -2,13 +2,14 @@ export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'token')
   try {
     const body = await readBody(event)
-    const { name } = body
+    const { name ,short_name} = body
 
     const config = useRuntimeConfig()
 
     // Create FormData object
     const formData = new FormData()
     formData.append('name', name)
+    formData.append('short_name', short_name)
 
     const data = await $fetch<{ token: string; user: any }>(
       `${config.public.apiBase}/brand/create`,

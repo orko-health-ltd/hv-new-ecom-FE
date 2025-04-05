@@ -358,7 +358,13 @@
               </div>
               <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
               <div class="mt-6">
-                <nuxt-link to="/checkout" class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700">Checkout</nuxt-link>
+                <!-- <nuxt-link to="/checkout" class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700">Checkout</nuxt-link> -->
+                   <nuxt-link v-if="cart.cart.length > 0" to="/billing"  class="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
+          Checkout
+        </nuxt-link>
+        <button v-else  disabled  class="bg-indigo-300 font-semibold py-3 text-sm text-white uppercase w-full">
+          Checkout
+        </button>
               </div>
               <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                 <p>

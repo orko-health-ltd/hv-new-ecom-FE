@@ -243,8 +243,8 @@ definePageMeta({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <nuxt-link :to="`/admin/product-management/products/edit/${product._id}`">Edit</nuxt-link>                              </DropdownMenuItem>
+                            
+                              <nuxt-link :to="`/admin/product-management/products/edit/${product._id}`"><DropdownMenuItem>Edit            </DropdownMenuItem></nuxt-link>                  
                             <DropdownMenuItem>
                             
                               <AlertDialogTrigger>Delete</AlertDialogTrigger>

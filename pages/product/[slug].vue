@@ -217,8 +217,7 @@
                 <AccordionTrigger>Brewing Guide</AccordionTrigger>
                 <AccordionContent>
                   <li v-for="item in product.brewing_guide">
-                    Pre heat your cup with hot water for 1 minute then pour the
-                    water out
+                   {{ item }}
                   </li>
                  
                 </AccordionContent>

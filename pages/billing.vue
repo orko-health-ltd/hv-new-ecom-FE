@@ -90,7 +90,7 @@
           <i class="fab fa-paypal"></i>
           <span>Nagad</span>
         </div>
-        <div class="payment-option" :class="{ active: selectedPayment === 'cod' }" @click="selectedPayment = 'cod'">
+        <div v-if="customerInfo.city == 'Dhaka'" class="payment-option" :class="{ active: selectedPayment === 'cod' }" @click="selectedPayment = 'cod'">
           <i class="fab fa-paypal"></i>
           <span>Cash on delivery</span>
         </div>

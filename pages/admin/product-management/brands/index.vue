@@ -213,8 +213,12 @@ definePageMeta({
           </div>
             <div class="grid ps-10 gap-2">
                <Label for="airplane-mode">Is Active</Label>
-               <Switch id="airplane-mode"  v-model="brand.is_active"
-                @update:model-value="brand.is_active = !brand.is_active" />
+                <Switch
+             
+              @click=" brand.is_active = !brand.is_active"
+              class="h-5 w-11"
+              :checked="brand.is_active "
+            />
                 {{ brand.is_active }}
              
             </div>

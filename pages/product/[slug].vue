@@ -122,7 +122,7 @@
                     name="material-symbols:check-circle"
                   />
               
-                  <img :src="$config.public.apiBase + '/' +product.front_image" class="size-20" alt="" />
+                  <img :src="$config.public.apiBase + '/' +sku.front_image" class="size-20" alt="" />
                   <p class="flex text-sm items-center justify-center gap-2">
                     {{ sku.sku }}
                   </p>

@@ -392,7 +392,7 @@ const categories = ref<Category[]>([])
 const images = ref<Array<string>>([])
 const front_image = ref<string>('')
 const back_image = ref<string>('')
-  const formats = ['Loose Leaf e','Tea Bag']
+  const formats = ['Loose Leaf','Tea Bag']
 const getSkus = async () => {
   try {
     const { data, refresh } = await useFetch<{ data: Sku[] }>(
@@ -468,7 +468,6 @@ const createProduct = async () => {
     const formData = new FormData();
 
     Object.entries(product.value).forEach(([key, value]) => {
-      console.log(key, value); // Debugging log
               if (key == 'front_image' || key == 'back_image') {
                 if (value instanceof File || value instanceof Blob) {
                   formData.append(key, value);

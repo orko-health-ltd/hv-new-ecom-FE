@@ -127,6 +127,24 @@
                     </Select>
                   </div>
                   <div class="grid gap-2">
+                    <Label for="first-name">Format</Label>
+                    <Select v-model="product.format">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a Format" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectLabel>Format</SelectLabel>
+                        <SelectItem
+                          v-for="format in formats"
+                          :key="format"
+                          :value="format"
+                        >
+                          {{ format }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div class="grid gap-2">
                     <Label for="last-name">Name</Label>
                     <Input
                       v-model="productName"
@@ -141,15 +159,6 @@
                     <Textarea
                       v-model="product.specification"
                       placeholder="Product Details."
-                    />
-                  </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Color</Label>
-                    <Input
-                      v-model="product.color"
-                      id="last-name"
-                      type="text"
-                      required
                     />
                   </div>
                   <div class="grid gap-2">
@@ -207,25 +216,110 @@
                     />
                   </div>
                   <div class="grid gap-2">
-                    <Label for="last-name">Image</Label>
+                    <Label for="sku">Features</Label>
+                    <TagsInput v-model="product.features">
+                      <TagsInputItem
+                        v-for="item in product.features"
+                        :key="item"
+                        :value="item"
+                      >
+                        <TagsInputItemText />
+                        <TagsInputItemDelete />
+                      </TagsInputItem>
+                      
+                      <TagsInputInput placeholder="Product Tags..." />
+                    </TagsInput>
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="sku">Ingredients</Label>
+                    <TagsInput v-model="product.ingredients">
+                      <TagsInputItem
+                        v-for="item in product.ingredients"
+                        :key="item"
+                        :value="item"
+                      >
+                        <TagsInputItemText />
+                        <TagsInputItemDelete />
+                      </TagsInputItem>
+                      
+                      <TagsInputInput placeholder="Product Tags..." />
+                    </TagsInput>
+                  </div>
+                  <div class="col-span-2 gap-2">
+                    <Label for="sku">Brewing Guides</Label>
+                    <TagsInput v-model="product.brewing_guide" class="h-[90px] items-start">
+                      <TagsInputItem
+                        v-for="item in product.brewing_guide"
+                        :key="item"
+                        :value="item"
+                      >
+                        <TagsInputItemText />
+                        <TagsInputItemDelete />
+                      </TagsInputItem>
+                      
+                      <TagsInputInput placeholder="Brewing Guides..." />
+                    </TagsInput>
+                  </div>
+                  <div class="grid gap-2">
+                    <Label for="last-name">Front Image</Label>
                     <Input
-                      id="last-name" multiple
+                      id="last-name"
                       type="file"
-                      @change="(event: Event) => handleFileChange(event, product, 'product_images')"
+                      @change="(event: Event) => handleFileChange(event, product, 'front_image')"
                     />
                   </div>
-                  <!-- {{ product.product_images }} -->
-                     <AdminTableImage v-for="image in (product.product_images as Array<{url: string}>)" :image="image.url" :key="image.url" />
-                  <img v-for="image in images"
+                  <img
                     :src="
-                      image
-                        ? $config.public.apiBase+'/'+image
-                        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
+                      front_image
+                        ? front_image
+                        : $config.public.apiBase+'/'+product.front_image
                     "
-
+                    alt="Product Front Image"
+                    class="w-auto h-20"
+                  />
+                  <div class="grid gap-2">
+                    <Label for="last-name">Back Image</Label>
+                    <Input
+                      id="last-name"
+                      type="file"
+                      @change="(event: Event) => handleFileChange(event, product, 'back_image')"
+                    />
+                  </div>
+                  <img
+                    :src="
+                      back_image
+                        ? back_image
+                        : $config.public.apiBase+'/'+product.back_image
+                    "
                     alt="Product Image"
                     class="w-auto h-20"
                   />
+                  <div class="grid gap-2">
+                    <Label for="last-name">Thumbnail Images</Label>
+                    <Input
+                      id="last-name" multiple
+                      type="file"
+                      @change="(event: Event) => uploadImage(event)"
+                    />
+                  </div>
+                  <div class="grid grid-cols-4 gap-2">
+                     <div v-for="image in (product.product_images as Array<{url: string,_id:string}>)" class="relative">
+                    <button @click="deleteImage(image)" type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                        x
+                      </button>
+                    <AdminTableImage  :image="image.url" :key="image.url" />
+                   
+                      
+                      <!-- <img
+                        :src="
+                          image
+                            ? image
+                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
+                        "
+                        alt="Product Image"
+                        class="w-auto h-20"
+                      /> -->
+                    </div>                  </div>
                 </div>
               </CardContent>
               <CardFooter>
@@ -278,6 +372,13 @@ interface Product {
   brand_id: string
   sku_id: string
   category_id: string
+  format: string
+  features: string[]
+  description: string
+  ingredients: string[]
+  brewing_guide: string[]
+  front_image: string
+  back_image: string
 }
 
 const toast = useToast()
@@ -287,6 +388,10 @@ const brands = ref<Brand[]>([])
 const skus = ref<Sku[]>([])
 const categories = ref<Category[]>([])
 const images = ref<Array<string>>([])
+const front_image = ref<string>('')
+const back_image = ref<string>('')
+const formats = ['Loose Leaf', 'Tea Bag']
+
 const product = ref<Product>({
   _id: '',
   name: '',
@@ -302,19 +407,22 @@ const product = ref<Product>({
   brand_id: '',
   sku_id: '',
   category_id: '',
- 
+  format: '',
+  features: [],
+  description: '',
+  ingredients: [],
+  brewing_guide: [],
+  front_image: '',
+  back_image: ''
 })
+
 const getProduct = async () => {
   try {
-    const { data } = await useFetch<{ data: Product }>(`/api/admin/products/${route.params.id}`)
+    const { data } = await $fetch<{ data: Product }>(`/api/admin/products/${route.params.id}`)
     console.log(data)
-    if (data.value?.data) {
-      product.value = data.value.data
+    if (data) {
+      product.value = data
       console.log(product.value)
-      // if (data.value.data.product_images) {
-      //   console.log(data.value.data.product_images)
-      //   images.value = data.value.data.product_images
-      // }
     }
   } catch (error) {
     console.error('Error fetching product:', error)
@@ -394,21 +502,46 @@ const updateProduct = async () => {
   try {
     updating.value = true;
     const formData = new FormData();
-
+    console.log(images.value.length)
     Object.entries(product.value).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((file, index) => {
-          formData.append(`${key}[${index}]`, file);
-        });
-      } else if (value !== null && value !== undefined) {
+      // if (Array.isArray(value)) {
+      //   value.forEach((file, index) => {
+      //     formData.append(`${key}[${index}]`, file);
+      //   });
+      // } else if (value !== null && value !== undefined) {
+      //   formData.append(key, value.toString());
+      // }
+      if (key == 'front_image' || key == 'back_image') {
+                if (value instanceof File || value instanceof Blob) {
+                  formData.append(key, value);
+                }
+              }
+      //   else if (key == 'product_images' && Array.isArray(value) && images.value.length > 0) {
+      //   value.forEach((file, index) => {
+      //     formData.append(`${key}[${index}]`, file);
+      //   });
+      // }
+     
+      else if (Array.isArray(value)) {
+        formData.append(key, JSON.stringify(value));
+      }
+      else if (value !== null && value !== undefined) {
         formData.append(key, value.toString());
       }
     });
 
-    const { data, error } = await useFetch(`/api/admin/products/edit`, {
+    const {data,error} = await useFetch(`/api/admin/products/edit`, {
       method: "POST",
       body: formData,
     });
+    // console.log(response)
+    if (error.value)
+    {
+      toast.add({ title: "Error updating product", color: "red", timeout: 1500 });
+      updating.value = false;
+      return 0
+    }
+   
     getProduct();
     toast.add({ title: "Product updated successfully", color: "green", timeout: 1500 });
     // navigateTo("/admin/product-management/products");
@@ -426,7 +559,8 @@ const handleFileChange = (
 ): void => {
   const target = event.target as HTMLInputElement
   const files = target.files
-  if (files && files.length > 0) {
+  console.log(files, property)
+  if (property == 'product_images' &&files && files.length > 0) {
     targetObject[property] = Array.from(files)
 
     Array.from(files).forEach((file) => {
@@ -441,6 +575,87 @@ const handleFileChange = (
       }
       reader.readAsDataURL(file)
     })
+  }
+  else if(property == 'front_image' && files && files.length > 0) {
+    targetObject[property] = files[0]
+    const reader = new FileReader()
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (e.target?.result && typeof e.target.result === 'string') {
+        front_image.value = e.target.result
+      }
+    }
+    reader.readAsDataURL(files[0])
+     }
+  else if(property == 'back_image' && files && files.length > 0) {
+    targetObject[property] = files[0]
+    const reader = new FileReader()
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (e.target?.result && typeof e.target.result === 'string') {
+        back_image.value = e.target.result
+      }
+    }
+    reader.readAsDataURL(files[0])
+  }
+     console.log(typeof(targetObject[property]),product.value)
+}
+const uploadImage = async (
+  event: Event,
+) => {
+  const formData = new FormData();
+  const target = event.target as HTMLInputElement
+  const files = target.files
+
+  if (files && files.length > 0) {
+    Array.from(files).forEach((file: File, index: number) => {
+      formData.append(`product_images[${index}]`, file);
+      formData.append(`product_id`, product.value._id);
+      const reader = new FileReader()
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result && typeof e.target.result === 'string') {
+          if (!Array.isArray(images.value)) {
+            images.value = []
+          }
+          images.value.push(e.target.result)
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+
+    try {
+      const response = await fetch(`/api/admin/products/addImage`, {
+        method: 'POST',
+        body: formData
+      });
+      if (!response.ok) {
+        throw new Error('Failed to upload images');
+      }
+      getProduct()
+    } catch (error) {
+      console.error('Error uploading images:', error);
+    }
+  }
+} 
+ const deleteImage =async(image: {_id:string}) => {
+   try {
+     const formData = new FormData();
+     console.log(image._id,product.value._id)
+     formData.append('image_id', image._id);
+    formData.append('product_id', product.value._id);
+    const response = await useFetch(`/api/admin/products/imageDelete`, {
+      method: 'POST',
+      body: {
+        image_id: image._id,
+        product_id: product.value._id
+      
+      }
+    });
+    // if (!response.ok) {
+    //   throw new Error('Failed to delete image');
+    // }
+    // else
+    getProduct()
+  } catch (error) {
+    console.error('Error deleting image:', error);
   }
 }
 

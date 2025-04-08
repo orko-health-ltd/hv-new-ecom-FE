@@ -63,11 +63,14 @@ interface Product {
   is_active: boolean
   product_images:[{url:string}]
   created_at: string
+  front_image: string
 }
+const showMod = ref(false)
 const emit = defineEmits<{ close: [boolean] }>()
 const { data, refresh } = useFetch<Product[]>('/api/admin/products')
 const products = computed(() => data.value || [])
 const deleteProduct = async (id: string) => {
+  showMod.value = false
   const { error } = await useFetch('/api/admin/products/'+id, {
     method: 'DELETE',
    
@@ -214,7 +217,7 @@ definePageMeta({
                   <TableBody>
                     <TableRow v-for="product in products" :key="product._id">  
                       <TableCell class="hidden sm:table-cell">
-                       <AdminTableImage :image="product.product_images[0]?.url" />
+                       <AdminTableImage :image="product.front_image" />
                       </TableCell>
                       <TableCell class="font-medium">
                        {{ product.name }}
@@ -230,7 +233,7 @@ definePageMeta({
                         2023-07-12 10:42 AM
                       </TableCell>
                       <TableCell><AlertDialog>
-                        <DropdownMenu>
+                        <DropdownMenu :modal="showMod">
                           <DropdownMenuTrigger as-child>
                             <Button
                               aria-haspopup="true"

@@ -175,6 +175,7 @@
             <div class="mb-6">
               <NumberField
                 id="Quantity"
+                v-model="quantity"
                 class="flex items-center justify-between"
                 :default-value="1"
                 :min="0"
@@ -189,7 +190,7 @@
             </div>
 
             <div class="flex space-x-4 mb-6">
-              <button
+              <button @click="addToCart()" v-if="!addingToCart"
                 class="bg-indigo-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 <svg
@@ -208,6 +209,17 @@
                 </svg>
                 Add to Cart
               </button>
+              <UButton 
+                  v-else
+                  icon="material-symbols:check-circle-outline-rounded"
+                  size="sm"
+                  color="blue"
+                  variant="soft"
+                  label="Added to cart"
+                  :class="{'animate-click': addingToCart }"
+                  :trailing="false"
+                  
+                /> 
               <button
                 class="bg-gray-200 flex gap-2 items-center text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
               >
@@ -426,6 +438,7 @@
 
 <script lang="ts" setup>
 import { getPreciseStringLengthPx } from '@unovis/ts'
+import { set } from '@vueuse/core'
 import Accordion from '~/components/ui/accordion/Accordion.vue'
 import AccordionContent from '~/components/ui/accordion/AccordionContent.vue'
 import AccordionItem from '~/components/ui/accordion/AccordionItem.vue'
@@ -444,12 +457,16 @@ const img1 =
 const img3 =
   'https://i3.wp.com/haldavalley.com/wp-content/uploads/2025/02/Web-Page-2-05.jpg'
 const format = ref('loose')
-
+const quantity = ref(1)
 const route = useRoute()
 const product = ref<Product>()
 const products = ref<Product[]>([])
 const price = ref(0)
 const discountPrice = ref(0)
+const addingToCart = ref(false)
+const cart = useMyCartStore()
+
+const toast = useToast()
 const getProduct = async (slug: string | string[]) => {
   const { data: responseData } = await $fetch<{ data: Product }>('/api/products/' + slug)
   console.log('hello',responseData)
@@ -471,7 +488,18 @@ const getProduct = async (slug: string | string[]) => {
     getSkuProducts()
   }
   }
-  const selectedImage = ref('')
+const selectedImage = ref('')
+const addToCart = () => {
+  if (product.value) {
+      addingToCart.value = true
+      cart.addToCart(product.value, quantity.value)
+    console.log(quantity.value)
+    toast.add({ title: 'Product added to cart', color: 'green',timeout: 1500 })
+      setTimeout(() => {
+        addingToCart.value = false
+      }, 3000)
+    }
+}
 const scrollToImage = (id: string) => {
   const element = document.getElementById(id)
   if (element) {

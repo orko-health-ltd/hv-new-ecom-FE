@@ -51,20 +51,20 @@ export const useMyCartStore = defineStore('myCartStore', {
     },
   },
   actions: {
-    addToCart(product: Product) {
+    addToCart(product: Product,quantity:number = 1) {
       if (!this.cart.some((item) => item.id === product._id)) {
         let data = {
           id: product._id,
           product: product,
           price: product.price,
-          quantity: 1,
+          quantity: quantity,
         }
         console.log(data)
         this.cart.push(data)
       } else {
         const item = this.cart.find((item) => item.id === product._id)
         if (item) {
-          item.quantity++
+          item.quantity+=quantity
         }
       }
       this.calculateSubtotal()

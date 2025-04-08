@@ -33,7 +33,7 @@
               
             </SelectContent>
           </Select >
-           <Select v-model="customerInfo.city">
+           <Select v-model="customerInfo.city" @update:model-value="handleCityUpdate()">
             <SelectTrigger>
               <SelectValue placeholder="Select City" />
             </SelectTrigger>
@@ -187,7 +187,11 @@ const subtotal = computed(() => '$69.98')
 const shipping = computed(() => '$5.99')
 const tax = computed(() => '$7.50')
 const total = computed(() => '$83.47')
-
+const handleCityUpdate = () => {
+  customerInfo.value.city == 'Dhaka' ? cartStore.shippingMethod = 0 : cartStore.shippingMethod = 120
+  cartStore.calculateSubtotal()
+  
+}
 const processCheckout = async() => {
   // Implement checkout logic here
   let form = {

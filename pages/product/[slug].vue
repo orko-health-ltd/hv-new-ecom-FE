@@ -14,6 +14,30 @@
             <div class="flex w-auto flex-col gap-4 py-4 px-2 justify-center">
               <div
                 class="p-2 w-20 h-20 border rounded-md bg-gray-100"
+                @click="scrollToImage(product.front_image)"
+               
+              >
+                <img
+                  :src="$config.public.apiBase + '/' + product.front_image"
+                  alt="Thumbnail 1"
+                  class="object-cover rounded-md cursor-pointer transition duration-300"
+                />
+              </div>
+              <div
+                class="p-2 w-20 h-20 border rounded-md bg-gray-100"
+                @click="scrollToImage(product.back_image)"
+               
+              >
+                <img
+                  :src="$config.public.apiBase + '/' + product.back_image"
+                  alt="Thumbnail 1"
+                  class="object-cover rounded-md cursor-pointer transition duration-300"
+                />
+              </div>
+            </div>
+            <div class="flex w-auto flex-col gap-4 py-4 px-2 justify-center">
+              <div
+                class="p-2 w-20 h-20 border rounded-md bg-gray-100"
                 @click="scrollToImage(image._id)"
                 v-for="image in product.product_images"
                 :key="image._id"
@@ -27,6 +51,20 @@
             </div>
           </div>
           <div class="w-full mx-10 px-4 mb-8">
+            <img
+              
+              :src="$config.public.apiBase + '/' + product.front_image"
+              alt="Product"
+              class="w-full h-auto rounded-lg shadow-md mb-4"
+              :id="product.front_image"
+            />
+            <img
+              
+              :src="$config.public.apiBase + '/' + product.back_image"
+              alt="Product"
+              class="w-full h-auto rounded-lg shadow-md mb-4"
+              :id="product.back_image"
+            />
             <img
               v-for="image in product.product_images"
               :key="image._id"

@@ -302,8 +302,8 @@
                       @change="(event: Event) => uploadImage(event)"
                     />
                   </div>
-                  <div class="grid grid-cols-4 gap-2">
-                     <div v-for="image in (product.product_images as Array<{url: string,_id:string}>)" class="relative">
+                  <div class="grid items-center justify-center grid-cols-4 gap-2">
+                     <div v-for="image in (product.product_images as Array<{url: string,_id:string}>)" class="relative w-20 h-20" :class="deleting == image._id ? 'opacity-50 animate-pulse' : ''">
                     <button @click="deleteImage(image)" type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
                         x
                       </button>
@@ -391,7 +391,7 @@ const images = ref<Array<string>>([])
 const front_image = ref<string>('')
 const back_image = ref<string>('')
 const formats = ['Loose Leaf', 'Tea Bag']
-
+const deleting = ref('')
 const product = ref<Product>({
   _id: '',
   name: '',
@@ -430,15 +430,12 @@ const getProduct = async () => {
 }
 const getSkus = async () => {
   try {
-    const { data, refresh } = await useFetch<{ data: Sku[] }>(
-      '/api/admin/sku',
-      { immediate: true,
-        watch: false,
-      }
+    const { data } = await $fetch<{ data: Sku[] }>(
+      '/api/admin/sku'
     )
     await nextTick()
-    if (data.value?.data?.length) {
-      skus.value = data.value.data
+    if (data.length) {
+      skus.value = data
     }
   } catch (error) {
     console.error('Error fetching SKUs:', error)
@@ -458,19 +455,15 @@ const productName = computed(() => {
 
 const getBrands = async () => {
   try {
-    const { data, refresh } = await useFetch<{ data: Sku[] }>(
-      '/api/admin/brands',
-      {
-        immediate: true,
-        watch: false,
-      }
+    const { data } = await $fetch<{ data: Brand[] }>(
+      '/api/admin/brands'
     )
 
-    if (data.value?.data?.length) {
-      brands.value = data.value.data
+    if (data.length) {
+      brands.value = data
     } else {
       console.log('No Brands found')
-      await refresh()
+     
     }
   } catch (error) {
     console.error('Error fetching Brands:', error)
@@ -479,19 +472,15 @@ const getBrands = async () => {
 
 const getCategories = async () => {
   try {
-    const { data, refresh } = await useFetch<{ data: Sku[] }>(
-      '/api/admin/categories',
-      {
-        immediate: true,
-        watch: false,
-      }
+    const { data } = await $fetch<{ data: Sku[] }>(
+      '/api/admin/categories'
     )
 
-    if (data.value?.data?.length) {
-      categories.value = data.value.data
+    if (data.length) {
+      categories.value = data
     } else {
       console.log('No Categories found')
-      await refresh()
+    
     }
   } catch (error) {
     console.error('Error fetching Categories:', error)
@@ -635,7 +624,8 @@ const uploadImage = async (
     }
   }
 } 
- const deleteImage =async(image: {_id:string}) => {
+const deleteImage = async (image: { _id: string }) => {
+  deleting.value = image._id;
    try {
      const formData = new FormData();
      console.log(image._id,product.value._id)
@@ -653,7 +643,11 @@ const uploadImage = async (
     //   throw new Error('Failed to delete image');
     // }
     // else
-    getProduct()
+     getProduct()
+     setTimeout(() => {
+      deleting.value = '';
+    }, 5000);
+    // deleting.value = '';
   } catch (error) {
     console.error('Error deleting image:', error);
   }

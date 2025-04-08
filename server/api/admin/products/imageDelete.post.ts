@@ -19,10 +19,11 @@ export default defineEventHandler(async (event) => {
       error instanceof Error && 'statusCode' in error
         ? (error as { statusCode: number }).statusCode
         : 500
-
+    const errorData = error
     throw createError({
       statusCode,
-      message: 'Failed to fetch user data',
+      message: 'Failed to fetch user data' + errorData,
+      
     })
   }
 })

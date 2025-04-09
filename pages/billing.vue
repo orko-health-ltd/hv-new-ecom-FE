@@ -141,6 +141,26 @@
     </section>
 
     <button class="checkout-button" @click="processCheckout">Complete Purchase</button>
+    <button class="checkout-button" @click="pay">Pay</button>
+    <!-- <button
+  id="sslczPayBtn"
+  class="bg-blue-600 text-white px-4 py-2 rounded"
+  token="test_token"
+  postdata='{
+    "amount": 500,
+    "customer": {
+      "name": "Ishmam",
+      "email": "ishmam@example.com",
+      "address": "Dhaka",
+      "phone": "017xxxxxxxx"
+    }
+  }'
+    order="TXN_{{ Date.now() }}"
+  endpoint="/api/payment/initiate"
+>
+  Pay with SSLCommerz
+</button> -->
+
   </div>
 </template>
 
@@ -226,6 +246,45 @@ const processCheckout = async() => {
   })
   console.log('Processing checkout...',form)
 }
+const pay = async () => {
+  const data = await $fetch('/api/payment/initiate', {
+    method: 'POST',
+    body: {
+      amount: 500,
+      customer: {
+        name: 'Ishmam',
+        email: 'ishmam@example.com',
+        address: 'Dhaka',
+        phone: '017xxxxxxxx',
+      },
+    },
+  })
+  console.log(data)
+   const tempBtn = document.createElement('button')
+  tempBtn.id = 'sslczPayBtn'
+  tempBtn.setAttribute('endpoint', '/api/payment/initiate')
+  tempBtn.setAttribute('postdata', JSON.stringify({
+    name: 'Ishmam',
+    email: 'ishmam@example.com',
+    phone: '017xxxxxxxx',
+    address: 'Dhaka'
+  }))
+  document.body.appendChild(tempBtn)
+  tempBtn.click()
+  // window.location.href = data.GatewayPageURL;
+  //  window.open(data.GatewayPageURL, "_self");
+  //  if (data?.GatewayPageURL) {
+    
+  // } else {
+  //   alert('Something went wrong with SSLCommerz');
+  // }
+}
+onMounted(() => {
+  const script = document.createElement('script')
+  script.src = 'https://sandbox.sslcommerz.com/embed.min.js?' + Math.random().toString(36).substring(7)
+  script.id = 'sslcz-script'
+  document.body.appendChild(script)
+})
 </script>
 
 <style>

@@ -5,22 +5,25 @@
     <img class="w-32 h-30 object-cover" src="/assets/images/logo/golden_logo.png" alt="">
      <h1 class="text-3xl font-semibold">Billing & Payment Info</h1></div>
     <!-- Customer Information -->
-    <section class="shadow-lg p-4 rounded-lg mb-4">
+     
+    <form  @submit.prevent="pay">
+      <section class="shadow-lg p-4 rounded-lg mb-4">
+        <div class="info-form">
       <h2>Customer & Billing Information</h2>
-      <form class="info-form">
+     
         <div class="form-group">
-          <Input type="text" v-model="customerInfo.firstName" placeholder="First Name" />
-          <Input type="text" v-model="customerInfo.lastName" placeholder="Last Name" />
+          <Input required type="text" v-model="customerInfo.firstName" placeholder="First Name" />
+          <Input required type="text" v-model="customerInfo.lastName" placeholder="Last Name" />
         </div>
         <div class="form-group">
-          <Input type="email" v-model="customerInfo.email" placeholder="Email" />
-          <Input type="tel" v-model="customerInfo.phone" placeholder="Phone" />
+          <Input required type="email" v-model="customerInfo.email" placeholder="Email" />
+          <Input required type="tel" v-model="customerInfo.phone" placeholder="Phone" />
         </div>
         <div class="form-group">
           <Textarea v-model="customerInfo.address" placeholder="Address"></Textarea>
           </div>
           <div class="form-group">
-           <Select v-model="customerInfo.country">
+           <Select required v-model="customerInfo.country">
             <SelectTrigger>
               <SelectValue placeholder="Select Country" />
             </SelectTrigger>
@@ -33,7 +36,7 @@
               
             </SelectContent>
           </Select >
-           <Select v-model="customerInfo.city" @update:model-value="handleCityUpdate()">
+           <Select required v-model="customerInfo.city" @update:model-value="handleCityUpdate()">
             <SelectTrigger>
               <SelectValue placeholder="Select City" />
             </SelectTrigger>
@@ -46,7 +49,7 @@
               
             </SelectContent>
           </Select>
-           <Select v-model="customerInfo.district">
+           <Select required v-model="customerInfo.district">
             <SelectTrigger>
               <SelectValue placeholder="Select District" />
             </SelectTrigger>
@@ -61,35 +64,24 @@
           </Select>
           </div>
           <div class="form-group">
-          <Input type="text" v-model="customerInfo.contactPerson" placeholder="Contact Person Name" />
-          <Input type="tel" v-model="customerInfo.contactPersonPhone" placeholder="Contact Person Phone" />
+          <Input required type="text" v-model="customerInfo.contactPerson" placeholder="Contact Person Name" />
+          <Input required type="tel" v-model="customerInfo.contactPersonPhone" placeholder="Contact Person Phone" />
         </div>
          <div class="form-group">
           <Textarea v-model="customerInfo.note" placeholder="Delivery Note"></Textarea>
           </div>
-      </form>
+     </div>
     </section>
 
     <!-- Payment Methods -->
     <section class="shadow-lg p-4 rounded-lg mb-4">
       <h2>Payment Method</h2>
       <div class="payment-options">
-        <div class="payment-option" :class="{ active: selectedPayment === 'debit_card' }" @click="selectedPayment = 'debit_card'">
+        <div class="payment-option" :class="{ active: selectedPayment === 'online_payment' }" @click="selectedPayment = 'online_payment'">
           <i class="fas fa-credit-card"></i>
-          <span>Card</span>
+          <span>Online Payment</span>
         </div>
-        <div class="payment-option" :class="{ active: selectedPayment === 'bank_transfer' }" @click="selectedPayment = 'bank_transfer'">
-          <i class="fas fa-credit-card"></i>
-          <span>Bank</span>
-        </div>
-        <div class="payment-option" :class="{ active: selectedPayment === 'bkash' }" @click="selectedPayment = 'bkash'">
-          <i class="fab fa-paypal"></i>
-          <span>Bkash</span>
-        </div>
-        <div class="payment-option" :class="{ active: selectedPayment === 'nagad' }" @click="selectedPayment = 'nagad'">
-          <i class="fab fa-paypal"></i>
-          <span>Nagad</span>
-        </div>
+        
         <div v-if="customerInfo.city == 'Dhaka'" class="payment-option" :class="{ active: selectedPayment === 'cod' }" @click="selectedPayment = 'cod'">
           <i class="fab fa-paypal"></i>
           <span>Cash on delivery</span>
@@ -140,8 +132,9 @@
       </div>
     </section>
 
-    <button class="checkout-button" @click="processCheckout">Complete Purchase</button>
-    <button class="checkout-button" @click="pay">Pay</button>
+    <!-- <button class="checkout-button" @click="processCheckout">Complete Purchase</button> -->
+    <button class="checkout-button" >Complete Purchase</button>
+  </form>
     <!-- <button
   id="sslczPayBtn"
   class="bg-blue-600 text-white px-4 py-2 rounded"
@@ -173,7 +166,7 @@ const customerInfo = ref({
   email: '',
   phone: '',
   address: '',
-  city: 'Dhaka',
+  city: '',
   country: '',
   district: '',
   contactPerson: '',
@@ -187,7 +180,7 @@ const districts = computed(()=>{
  
   return  division.districts.filter(e=>e.division_id == id)
 })
-const selectedPayment = ref('card')
+const selectedPayment = ref('online_payment')
 const cardInfo = ref({
   number: '',
   name: '',
@@ -247,17 +240,50 @@ const processCheckout = async() => {
   console.log('Processing checkout...',form)
 }
 const pay = async () => {
+  let form = {
+    customerInfo: {
+      first_name: customerInfo.value.firstName,
+      last_name: customerInfo.value.lastName,
+      email: customerInfo.value.email,
+      phone: customerInfo.value.phone,
+      address: customerInfo.value.address,
+    },
+    paymentMethod: selectedPayment.value,
+    subTotal: cartStore.total,
+    shippingcost: cartStore.shippingMethod,
+    products: cartStore.cart.map(item => ({ productId: item.id, quantity: item.quantity, price: item.price })), 
+    totalAmount: cartStore.subtotal,
+    shippingAddress:{
+      street: customerInfo.value.address,
+      city: customerInfo.value.city,
+      district: customerInfo.value.district,
+      country: customerInfo.value.country,
+    },
+    note:customerInfo.value.note,
+    contactPerson:{
+      name: customerInfo.value.contactPerson,
+      phone: customerInfo.value.contactPersonPhone,
+    },
+   
+  }
   const data = await $fetch('/api/payment/initiate', {
     method: 'POST',
     body: {
       amount: 500,
-      customer: {
-        name: 'Ishmam',
-        email: 'ishmam@example.com',
-        address: 'Dhaka',
-        phone: '017xxxxxxxx',
-      },
+      customer_name: customerInfo.value.firstName + ' ' + customerInfo.value.lastName,
+      cus_email: customerInfo.value.email,
+      cus_phone: customerInfo.value.phone,
+      cus_add1: customerInfo.value.address,
+      cus_city: customerInfo.value.city,
+      cus_state: customerInfo.value.district,
+      num_of_items: cartStore.cart.length,
+      cart:cartStore.cart,
+      product_name: cartStore.cart.map(item => item.product.name).join(','),
     },
+    product_category: 'Tea',
+    product_profile: 'general',
+    order_data : form,
+      
   })
   console.log(data)
    const tempBtn = document.createElement('button')

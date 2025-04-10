@@ -98,7 +98,10 @@ export const useMyCartStore = defineStore('myCartStore', {
       }
     },
     calculateSubtotal() {
-      
+      if (this.cart.length == 0)
+      {
+        this.shippingMethod = 0
+      }
       this.subtotal = this.total + this.shippingMethod
     },
     checkout() {

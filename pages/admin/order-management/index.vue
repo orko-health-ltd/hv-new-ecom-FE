@@ -9,6 +9,7 @@ import {
   Search,
 } from 'lucide-vue-next'
 import type { Order } from '~/types'
+import moment from 'moment'
 const toast = useToast()
 const showCreateForm = ref(false)
 const showEditForm = ref(false)
@@ -41,8 +42,8 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/categories"
-                  >All Categories</nuxt-link
+                <nuxt-link to="/admin/order-management"
+                  >All Orders</nuxt-link
                 >
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -111,7 +112,7 @@ definePageMeta({
                   Export
                 </span>
               </Button>
-              <Button
+              <!-- <Button
                 size="sm"
                 :disabled="showEditForm"
                 @click="showCreateForm = !showCreateForm"
@@ -121,30 +122,34 @@ definePageMeta({
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Add Category
                 </span>
-              </Button>
+              </Button> -->
             </div>
           </div>
      
           <TabsContent value="all">
             <Card>
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>Orders</CardTitle>
                 <CardDescription>
-                  Manage your categories and view their sales performance.
+                  Manage your orders and view the progress.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead class="hidden w-[100px] sm:table-cell">
-                        <span class="sr-only">img</span>
-                      </TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Status</TableHead>
+                    
+                      <TableHead>Order ID</TableHead>
+                      <TableHead>Order Status</TableHead>
+                      <TableHead>Order Date</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <!-- <TableHead>Delivery Charge</TableHead> -->
 
-                      <TableHead class="hidden md:table-cell">
-                        Description
+                      <TableHead >
+                        Payment Status
+                      </TableHead>
+                      <TableHead >
+                       Contact Person 
                       </TableHead>
                       <TableHead>
                         <span class="sr-only">Actions</span>
@@ -156,36 +161,39 @@ definePageMeta({
                       v-for="order in orders"
                       :key="order._id"
                     >
-                      <TableCell class="hidden sm:table-cell">
-                        <!-- <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          :src="
-                            categoryData.image
-                              ? $config.public.apiBase +
-                                '/' +
-                                categoryData.image
-                              : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
-                          "
-                          width="64"
-                        /> -->
-                      </TableCell>
+                   
                       <TableCell class="font-medium">
-                        {{ order.totalAmount }}
+                        {{ order?.order_id }}
                       </TableCell>
                       <TableCell>
                         <Badge
-                          :variant="
-                            order.is_active ? null : 'destructive'
-                          "
+                        class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600': order.status === 'pending',
+                            'bg-blue-500 hover:bg-blue-600': order.status === 'processing',
+                            'bg-purple-500 hover:bg-purple-600': order.status === 'shipped',
+                            'bg-green-500 hover:bg-green-600': order.status === 'delivered',
+                            'bg-red-500 hover:bg-red-600': order.status === 'cancelled'
+                          }"
                         >
-                          {{ order.is_active ? 'Active' : 'Inactive' }}
-                        </Badge>
+                          {{ order.status }}                        </Badge>
                       </TableCell>
 
-                      <TableCell class="hidden md:table-cell">
-                        {{ order.customer }}
+                      <TableCell >
+                        {{moment(order.orderDate).format('DD/MM/YYYY') }}
+                      </TableCell>
+                      <TableCell >
+                        {{order.totalAmount}}
+                      </TableCell>
+                      <TableCell >
+                        {{ order.paymentStatus }}
+                      </TableCell>
+                      <TableCell >
+                        <div class="flex flex-col">
+                         <h1>{{ order.contactPerson.name }}</h1>  
+                       <p class="text-xs font-semibold"> {{ order.contactPerson.phone }}</p>
+                        </div>
+                       
                       </TableCell>
 
                       <TableCell>
@@ -202,6 +210,10 @@ definePageMeta({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <nuxt-link :to="`/admin/order-management/${order._id}`"> <DropdownMenuItem
+                             
+                              >View</DropdownMenuItem
+                            ></nuxt-link> 
                             <DropdownMenuItem
                              
                               >Edit</DropdownMenuItem

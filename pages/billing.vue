@@ -1,165 +1,234 @@
 <template>
-
   <div class="billing-container">
     <div class="flex flex-col justify-center items-center pt-20">
-    <img class="w-32 h-30 object-cover" src="/assets/images/logo/golden_logo.png" alt="">
-     <h1 class="text-3xl font-semibold">Billing & Payment Info</h1></div>
+      <img
+        class="w-32 h-30 object-cover"
+        src="/assets/images/logo/golden_logo.png"
+        alt=""
+      />
+      <h1 class="text-3xl font-semibold">Billing & Payment Info</h1>
+    </div>
     <!-- Customer Information -->
-     
-    <form  @submit.prevent="pay">
+
+    <form @submit.prevent="pay">
       <section class="shadow-lg p-4 rounded-lg mb-4">
         <div class="info-form">
-      <h2>Customer & Billing Information</h2>
-     
-        <div class="form-group">
-          <Input required type="text" v-model="customerInfo.firstName" placeholder="First Name" />
-          <Input required type="text" v-model="customerInfo.lastName" placeholder="Last Name" />
-        </div>
-        <div class="form-group">
-          <Input required type="email" v-model="customerInfo.email" placeholder="Email" />
-          <Input required type="tel" v-model="customerInfo.phone" placeholder="Phone" />
-        </div>
-        <div class="form-group">
-          <Textarea v-model="customerInfo.address" placeholder="Address"></Textarea>
+          <h2>Customer & Billing Information</h2>
+
+          <div class="form-group">
+            <Input
+              required
+              type="text"
+              v-model="customerInfo.firstName"
+              placeholder="First Name"
+            />
+            <Input
+              required
+              type="text"
+              v-model="customerInfo.lastName"
+              placeholder="Last Name"
+            />
           </div>
           <div class="form-group">
-           <Select required v-model="customerInfo.country">
-            <SelectTrigger>
-              <SelectValue placeholder="Select Country" />
-            </SelectTrigger>
-            <SelectContent>
-             
+            <Input
+              required
+              type="email"
+              v-model="customerInfo.email"
+              placeholder="Email"
+            />
+            <Input
+              required
+              type="tel"
+              v-model="customerInfo.phone"
+              placeholder="Phone"
+            />
+          </div>
+          <div class="form-group">
+            <Textarea
+              v-model="customerInfo.address"
+              placeholder="Address"
+            ></Textarea>
+          </div>
+          <div class="form-group">
+            <Select required v-model="customerInfo.country">
+              <SelectTrigger>
+                <SelectValue placeholder="Select Country" />
+              </SelectTrigger>
+              <SelectContent>
                 <SelectLabel>Countries</SelectLabel>
-                <SelectItem v-for="country in countries" :value="country.value" :key="country.label">
+                <SelectItem
+                  v-for="country in countries"
+                  :value="country.value"
+                  :key="country.label"
+                >
                   {{ country.label }}
                 </SelectItem>
-              
-            </SelectContent>
-          </Select >
-           <Select required v-model="customerInfo.city" @update:model-value="handleCityUpdate()">
-            <SelectTrigger>
-              <SelectValue placeholder="Select City" />
-            </SelectTrigger>
-            <SelectContent>
+              </SelectContent>
+            </Select>
+            <Select
+              required
+              v-model="customerInfo.city"
              
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select City" />
+              </SelectTrigger>
+              <SelectContent>
                 <SelectLabel>Cities</SelectLabel>
-                <SelectItem v-for="division in divisions" :value="division.name" :key="division.id">
+                <SelectItem
+                  v-for="division in divisions"
+                  :value="division.name"
+                  :key="division.id"
+                >
                   {{ division.name }}
                 </SelectItem>
-              
-            </SelectContent>
-          </Select>
-           <Select required v-model="customerInfo.district">
-            <SelectTrigger>
-              <SelectValue placeholder="Select District" />
-            </SelectTrigger>
-            <SelectContent>
-             
+              </SelectContent>
+            </Select>
+            <Select required v-model="customerInfo.district"  @update:model-value="handleCityUpdate()">
+              <SelectTrigger>
+                <SelectValue placeholder="Select District" />
+              </SelectTrigger>
+              <SelectContent>
                 <SelectLabel>Districts</SelectLabel>
-                <SelectItem v-for="district in districts" :value="district.name" :key="district.id">
+                <SelectItem
+                  v-for="district in districts"
+                  :value="district.name"
+                  :key="district.id"
+                >
                   {{ district.name }}
                 </SelectItem>
-              
-            </SelectContent>
-          </Select>
+              </SelectContent>
+            </Select>
           </div>
           <div class="form-group">
-          <Input required type="text" v-model="customerInfo.contactPerson" placeholder="Contact Person Name" />
-          <Input required type="tel" v-model="customerInfo.contactPersonPhone" placeholder="Contact Person Phone" />
-        </div>
-         <div class="form-group">
-          <Textarea v-model="customerInfo.note" placeholder="Delivery Note"></Textarea>
+            <Input
+              required
+              type="text"
+              v-model="customerInfo.contactPerson"
+              placeholder="Contact Person Name"
+            />
+            <Input
+              required
+              type="tel"
+              v-model="customerInfo.contactPersonPhone"
+              placeholder="Contact Person Phone"
+            />
           </div>
-     </div>
-    </section>
-
-    <!-- Payment Methods -->
-    <section class="shadow-lg p-4 rounded-lg mb-4">
-      <h2>Payment Method</h2>
-      <div class="payment-options">
-        <div class="payment-option" :class="{ active: selectedPayment === 'online_payment' }" @click="selectedPayment = 'online_payment'">
-          <i class="fas fa-credit-card"></i>
-          <span>Online Payment</span>
-        </div>
-        
-        <div v-if="customerInfo.city == 'Dhaka'" class="payment-option" :class="{ active: selectedPayment === 'cod' }" @click="selectedPayment = 'cod'">
-          <i class="fab fa-paypal"></i>
-          <span>Cash on delivery</span>
-        </div>
-      </div>
-      <div class="card-details" v-if="selectedPayment === 'card'">
-        <input type="text" v-model="cardInfo.number" placeholder="Card Number" />
-        <input type="text" v-model="cardInfo.name" placeholder="Cardholder Name" />
-        <input type="text" v-model="cardInfo.expiry" placeholder="MM/YY" />
-        <input type="text" v-model="cardInfo.cvv" placeholder="CVV" />
-      </div>
-    </section>
-
-    <!-- Order Summary -->
-    <section class="shadow-lg p-4 rounded-lg mb-4">
-      <h2>Order Summary</h2>
-      <div class="products-list">
-        <div v-for="(item, index) in cartStore.cart" :key="index" class="product-item ">
-          <img :src="$config.public.apiBase+'/'+item.product.front_image" :alt="item.product.name" />
-          <div class="flex justify-between w-full">
-
-        
-          <div class="product-details">
-            <h3>{{ item.product.name }}</h3>
-            <p>Quantity: {{ item.quantity }}</p>
-          
+          <div class="form-group">
+            <Textarea
+              v-model="customerInfo.note"
+              placeholder="Delivery Note"
+            ></Textarea>
           </div>
-            <p>৳ {{ item.price }}</p>  </div>
         </div>
-      </div>
-      <div class="total-section">
-        <div class="subtotal">
-          <span>Subtotal</span>
-          <span>৳ {{ cartStore.total }}</span>
-        </div>
-        <div class="shipping">
-          <span>Shipping</span>
-          <span>৳ {{ cartStore.shippingMethod }}</span>
-        </div>
-        <!-- <div class="tax">
-          <span>Tax</span>
-          <span>{{ cartStore.tax }}</span>
-        </div> -->
-        <div class="total">
-          <span>Total</span>
-          <span>৳ {{ cartStore.subtotal }}</span>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- <button class="checkout-button" @click="processCheckout">Complete Purchase</button> -->
-    <button class="checkout-button" >Complete Purchase</button>
-  </form>
-    <!-- <button
-  id="sslczPayBtn"
-  class="bg-blue-600 text-white px-4 py-2 rounded"
-  token="test_token"
-  postdata='{
-    "amount": 500,
-    "customer": {
-      "name": "Ishmam",
-      "email": "ishmam@example.com",
-      "address": "Dhaka",
-      "phone": "017xxxxxxxx"
-    }
-  }'
-    order="TXN_{{ Date.now() }}"
-  endpoint="/api/payment/initiate"
->
-  Pay with SSLCommerz
-</button> -->
+      <!-- Payment Methods -->
+      <section class="shadow-lg p-4 rounded-lg mb-4">
+        <h2>Payment Method</h2>
+        <div class="payment-options">
+          <div
+            class="payment-option"
+            :class="{ active: selectedPayment === 'online_payment' }"
+            @click="selectedPayment = 'online_payment'"
+          >
+            <i class="fas fa-credit-card"></i>
+            <span>Online Payment</span>
+          </div>
 
+          <div
+            v-if="customerInfo.city == 'Dhaka'"
+            class="payment-option"
+            :class="{ active: selectedPayment === 'cod' }"
+            @click="selectedPayment = 'cod'"
+          >
+            <i class="fab fa-paypal"></i>
+            <span>Cash on delivery</span>
+          </div>
+        </div>
+        <div class="card-details" v-if="selectedPayment === 'card'">
+          <input
+            type="text"
+            v-model="cardInfo.number"
+            placeholder="Card Number"
+          />
+          <input
+            type="text"
+            v-model="cardInfo.name"
+            placeholder="Cardholder Name"
+          />
+          <input type="text" v-model="cardInfo.expiry" placeholder="MM/YY" />
+          <input type="text" v-model="cardInfo.cvv" placeholder="CVV" />
+        </div>
+      </section>
+
+      <!-- Order Summary -->
+      <section class="shadow-lg p-4 rounded-lg mb-4">
+        <h2>Order Summary</h2>
+        <div class="products-list">
+          <div
+            v-for="(item, index) in cartStore.cart"
+            :key="index"
+            class="product-item"
+          >
+            <img
+              :src="$config.public.apiBase + '/' + item.product.front_image"
+              :alt="item.product.name"
+            />
+            <div class="flex justify-between w-full">
+              <div class="product-details">
+                <h3>{{ item.product.name }}</h3>
+                <p>Quantity: {{ item.quantity }}</p>
+              </div>
+              <p>৳ {{ item.price }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="total-section">
+          <div class="subtotal">
+            <span>Subtotal</span>
+            <span>৳ {{ cartStore.total }}</span>
+          </div>
+          <div class="shipping">
+            <span>Shipping</span>
+            <span>৳ {{ cartStore.shippingMethod }}</span>
+          </div>
+          <!-- <div class="tax">
+<span>Tax</span>
+<span>{{ cartStore.tax }}</span>
+</div> -->
+          <div class="total">
+            <span>Total</span>
+            <span>৳ {{ cartStore.subtotal }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- <button class="checkout-button" @click="processCheckout">Complete Purchase</button> -->
+      <button class="checkout-button">Complete Purchase</button>
+    </form>
+    <Dialog v-model:open="openOrder">
+      <DialogContent class="flex flex-col items-center justify-center">
+        <UIcon name="material-symbols-light:check-circle-outline" class="h-16 w-16 text-green-500" />
+       <h1 class="text-xl font-semibold">Your order is confirmed!</h1>
+        <p>Your order <span class="font-bold">#{{ route.query.order_id }}</span> will be processed within 2-5 working days. We will notify you by email once your order has been shipped.</p>
+        <Separator />
+        <div class="flex gap-5 justify-between items center">
+          <Button class="text-white">Track your order</Button>
+          <nuxt-link to="/shop"><Button variant="outline">Return to shopping</Button></nuxt-link>
+        </div>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import division from '@/divisions.json'
 const cartStore = useMyCartStore()
+const paymentUrl = ref('')
+const route = useRoute()
+const toast = useToast()
 const customerInfo = ref({
   firstName: '',
   lastName: '',
@@ -172,40 +241,35 @@ const customerInfo = ref({
   contactPerson: '',
   contactPersonPhone: '',
   note: '',
-  
 })
 const divisions = division.divisions
-const districts = computed(()=>{
-  let id = divisions.find(e=>e.name == customerInfo.value.city)?.id
- 
-  return  division.districts.filter(e=>e.division_id == id)
+const districts = computed(() => {
+  let id = divisions.find((e) => e.name == customerInfo.value.city)?.id
+
+  return division.districts.filter((e) => e.division_id == id)
 })
 const selectedPayment = ref('online_payment')
 const cardInfo = ref({
   number: '',
   name: '',
   expiry: '',
-  cvv: ''
+  cvv: '',
 })
 
 const countries = ref([
   {
     label: 'Banglaadesh',
     value: 'Banglaadesh',
-    
-  }
+  },
 ])
 
-const subtotal = computed(() => '$69.98')
-const shipping = computed(() => '$5.99')
-const tax = computed(() => '$7.50')
-const total = computed(() => '$83.47')
 const handleCityUpdate = () => {
-  customerInfo.value.city == 'Dhaka' ? cartStore.shippingMethod = 0 : cartStore.shippingMethod = 120
+  customerInfo.value.district == 'Dhaka'
+    ? (cartStore.shippingMethod = 0)
+    : (cartStore.shippingMethod = 120)
   cartStore.calculateSubtotal()
-  
 }
-const processCheckout = async() => {
+const processCheckout = async () => {
   // Implement checkout logic here
   let form = {
     customerInfo: {
@@ -218,27 +282,32 @@ const processCheckout = async() => {
     paymentMethod: selectedPayment.value,
     subTotal: cartStore.total,
     shippingcost: cartStore.shippingMethod,
-    products: cartStore.cart.map(item => ({ productId: item.id, quantity: item.quantity, price: item.price })), 
+    products: cartStore.cart.map((item) => ({
+      product_id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+    })),
     totalAmount: cartStore.subtotal,
-    shippingAddress:{
+    shippingAddress: {
       street: customerInfo.value.address,
       city: customerInfo.value.city,
       district: customerInfo.value.district,
       country: customerInfo.value.country,
     },
-    note:customerInfo.value.note,
-    contactPerson:{
+    note: customerInfo.value.note,
+    contactPerson: {
       name: customerInfo.value.contactPerson,
       phone: customerInfo.value.contactPersonPhone,
     },
-   
   }
-  const data = await $fetch('/api/checkout',{
+  const data = await $fetch('/api/checkout', {
     method: 'POST',
-    body: form
+    body: form,
   })
-  console.log('Processing checkout...',form)
+  console.log('Processing checkout...', form)
 }
+// const postData = ref('')
+const openOrder = ref(false)
 const pay = async () => {
   let form = {
     customerInfo: {
@@ -251,65 +320,73 @@ const pay = async () => {
     paymentMethod: selectedPayment.value,
     subTotal: cartStore.total,
     shippingcost: cartStore.shippingMethod,
-    products: cartStore.cart.map(item => ({ productId: item.id, quantity: item.quantity, price: item.price })), 
+    products: cartStore.cart.map((item) => ({
+      product_id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+    })),
     totalAmount: cartStore.subtotal,
-    shippingAddress:{
+    shippingAddress: {
       street: customerInfo.value.address,
       city: customerInfo.value.city,
       district: customerInfo.value.district,
       country: customerInfo.value.country,
     },
-    note:customerInfo.value.note,
-    contactPerson:{
+    note: customerInfo.value.note,
+    contactPerson: {
       name: customerInfo.value.contactPerson,
       phone: customerInfo.value.contactPersonPhone,
     },
-   
   }
-  const data = await $fetch('/api/payment/initiate', {
+  const response = await $fetch<{ status: string; payment_url?: string }>('/api/payment/initiate', {
     method: 'POST',
     body: {
-      amount: 500,
-      customer_name: customerInfo.value.firstName + ' ' + customerInfo.value.lastName,
-      cus_email: customerInfo.value.email,
-      cus_phone: customerInfo.value.phone,
-      cus_add1: customerInfo.value.address,
-      cus_city: customerInfo.value.city,
-      cus_state: customerInfo.value.district,
+      amount: cartStore.subtotal,
+      customer_name:
+        customerInfo.value.firstName + ' ' + customerInfo.value.lastName,
+      customer_email: customerInfo.value.email,
+      customer_phone: customerInfo.value.phone,
+      customer_address: customerInfo.value.address,
+      customer_city: customerInfo.value.city,
+      customer_country: customerInfo.value.country,
+      customer_state: customerInfo.value.district,
       num_of_items: cartStore.cart.length,
-      cart:cartStore.cart,
-      product_name: cartStore.cart.map(item => item.product.name).join(','),
+      cart: cartStore.cart,
+      product_name: cartStore.cart.map((item) => item.product.name).join(','),
+      product_category: 'Tea',
+      product_profile: 'general',
+      order_data: form,
     },
-    product_category: 'Tea',
-    product_profile: 'general',
-    order_data : form,
-      
   })
-  console.log(data)
-   const tempBtn = document.createElement('button')
-  tempBtn.id = 'sslczPayBtn'
-  tempBtn.setAttribute('endpoint', '/api/payment/initiate')
-  tempBtn.setAttribute('postdata', JSON.stringify({
-    name: 'Ishmam',
-    email: 'ishmam@example.com',
-    phone: '017xxxxxxxx',
-    address: 'Dhaka'
-  }))
-  document.body.appendChild(tempBtn)
-  tempBtn.click()
-  // window.location.href = data.GatewayPageURL;
-  //  window.open(data.GatewayPageURL, "_self");
-  //  if (data?.GatewayPageURL) {
+
+  if (response.status === 'success' && response.payment_url) {
+    paymentUrl.value = response.payment_url
+    window.location.href = paymentUrl.value    // openPayment.value = true
+  }
+}//   const script = document.createElement('script')
+//   script.src =
+//     'https://sandbox.sslcommerz.com/embed.min.js?' +
+//     Math.random().toString(36).substring(7)
+//   script.id = 'sslcz-script'
+//   document.body.appendChild(script)
+// })
+onMounted(async () => {
+ 
+  if(route.query.success == 'true' && route.query.order_id){
+    {
+      const response = await $fetch<{ data: any, status: string, error: any }>('/api/order/' + route.query.order_id)
+      
+      if (response.status == 'success') {
+        cartStore.clearCart()
+        console.log(cartStore.cart)
+        toast.add({ title: 'Order Placed Successfully.', color: 'green', timeout: 1500 })
+        openOrder.value = true
+      }
     
-  // } else {
-  //   alert('Something went wrong with SSLCommerz');
-  // }
-}
-onMounted(() => {
-  const script = document.createElement('script')
-  script.src = 'https://sandbox.sslcommerz.com/embed.min.js?' + Math.random().toString(36).substring(7)
-  script.id = 'sslcz-script'
-  document.body.appendChild(script)
+    toast.add({ title: 'Order Placed Successfully.', color: 'green',timeout: 1500 })
+  
+ }
+  }
 })
 </script>
 
@@ -324,7 +401,6 @@ onMounted(() => {
   text-align: center;
   margin-bottom: 2rem;
 }
-
 
 .form-group {
   display: grid;
@@ -357,7 +433,7 @@ input {
 }
 
 .payment-option.active {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   background: #f0f9f0;
 }
 
@@ -402,7 +478,7 @@ input {
 .checkout-button {
   width: 100%;
   padding: 1rem;
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;

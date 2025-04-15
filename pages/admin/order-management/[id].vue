@@ -1,520 +1,259 @@
-<script setup lang="ts">
-import {
-  CircleUser,
-  File,
-  ListFilter,
-  Loader2,
-  PlusCircle,
-  Search,
-} from 'lucide-vue-next'
-const showCategoryForm = ref(false)
-const creating = ref(false)
-const category = ref({
-  name: '',
-  description: '',
-  image: '',
-  isActive: true,
-})
-const createCategory = async () => {
-  creating.value = true
+<template>
+  <ClientOnly>
+    <div class="flex min-h-screen w-full flex-col bg-muted/40">
+      <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+        <header
+          class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+        >
+          <SidebarTrigger class="-ml-1" />
+          <Breadcrumb class="hidden md:flex">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink as-child>
+                  <nuxt-link to="/admin">Dashboard</nuxt-link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink as-child>
+                  <nuxt-link to="/admin/order-management"
+                    >All Orders</nuxt-link
+                  >
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink as-child>
+                  <nuxt-link :to="`/admin/product-management/orders/${route.params.id}`"
+                    >View Order</nuxt-link
+                  >
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <div class="relative ml-auto flex-1 md:grow-0">
+            <Search
+              class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
+            />
+            <Input
+              type="search"
+              placeholder="Search..."
+              class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+            />
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button variant="secondary" size="icon" class="rounded-full">
+                <CircleUser class="h-5 w-5" />
+                <span class="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </header>
+        <div class="mt-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>View Order</CardTitle>
+              <CardDescription>
+                Edit product to manage your stocks.
+              </CardDescription></CardHeader
+            >
+                          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                              <div class="rounded-lg border p-4">
+                                <h3 class="mb-4 text-lg font-semibold">Order Information</h3>
+                              
+                                <div v-if="order" class="space-y-2">
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Order ID:</span>
+                                    <span class="font-medium">{{ order.order_id }}</span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Order Date:</span>
+                                    <span class="font-medium">{{ new Date(order.orderDate).toLocaleDateString() }}</span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Status:</span>
+                                    <Badge>{{ order.status }}</Badge>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Payment Method:</span>
+                                    <span class="font-medium">{{ order.paymentMethod }}</span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Payment Status:</span>
+                                    <Badge variant="outline">{{ order.paymentStatus }}</Badge>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="mt-4 rounded-lg border p-4">
+                                <h3 class="mb-4 text-lg font-semibold">Customer Details</h3>
+                                <div class="space-y-2">
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Name:</span>
+                                    <span class="font-medium">{{ order.customer?.first_name }} </span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Email:</span>
+                                    <span class="font-medium">{{ order.customer?.email }}</span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Phone:</span>
+                                    <span class="font-medium">{{ order.customer?.phone }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div>
+                              <div class="rounded-lg border p-4">
+                                <h3 class="mb-4 text-lg font-semibold">Shipping Address</h3>
+                                <div class="space-y-2">
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Street:</span>
+                                    <span class="font-medium">{{ order.shippingAddress?.street }}</span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">City:</span>
+                                    <span class="font-medium">{{ order.shippingAddress?.city }}</span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">District:</span>
+                                    <span class="font-medium">{{ order.shippingAddress?.district }}</span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Country:</span>
+                                    <span class="font-medium">{{ order.shippingAddress?.country }}</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="mt-4 rounded-lg border p-4">
+                                <h3 class="mb-4 text-lg font-semibold">Order Summary</h3>
+                                <div class="space-y-4">
+                                  <div v-for="item in order.products" class="flex items-center justify-between">
+                                    <div>
+                                    
+                                      <h4 class="font-medium">{{ item.product?.name }} 
+                                      </h4>
+                                       <img class="w-14 h-14" :src="$config.public.apiBase+'/'+item.product.front_image" alt="">
+                                      <p class="text-sm text-muted-foreground">Quantity: {{ item.quantity }}</p>
+                                    </div>
+                                    <span class="font-medium">৳{{ item.price }}</span>
+                                  </div>
+                                  <div class="border-t pt-4">
+                                    <div class="flex justify-between">
+                                      <span class="text-muted-foreground">Subtotal:</span>
+                                      <span class="font-medium">৳{{ order.subTotal }}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                      <span class="text-muted-foreground">Shipping:</span>
+                                      <span class="font-medium">৳{{ order.shippingcost }}</span>
+                                    </div>
+                                    <div class="flex justify-between border-t pt-2">
+                                      <span class="font-medium">Total:</span>
+                                      <span class="font-medium">৳{{ order.totalAmount }}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+            
+          </Card>
+        </div>
+      </div>
+    </div>
+  </ClientOnly> 
+</template>
+<script lang="ts" setup>
+import { get } from '@vueuse/core'
+import { CircleUser, Loader2, Search } from 'lucide-vue-next'
+import Label from '~/components/ui/label/Label.vue'
+import type { Order } from '~/types'
+interface Brand {
+  name: string
+  _id: string
+  is_active: boolean
+}
+interface Sku {
+  name: string
+  _id: string
+  is_active: boolean
+}
+
+interface Category {
+  name: string
+  _id: string
+  is_active: boolean
+}
+
+interface Product {
+  _id: string
+  name: string
+  color: string
+  price: number
+  specification: string
+  discount: number
+  discount_unit: string
+  is_active: boolean
+  is_featured: boolean
+  is_combo: boolean
+  product_images: Array<never>
+  brand_id: string
+  sku_id: string
+  category_id: string
+  format: string
+  features: string[]
+  description: string
+  ingredients: string[]
+  brewing_guide: string[]
+  front_image: string
+  back_image: string
+}
+
+const toast = useToast()
+const route = useRoute()
+const updating = ref(false)
+const brands = ref<Brand[]>([])
+const skus = ref<Sku[]>([])
+const categories = ref<Category[]>([])
+const images = ref<Array<string>>([])
+const front_image = ref<string>('')
+const back_image = ref<string>('')
+const formats = ['Loose Leaf', 'Tea Bag']
+const deleting = ref('')
+const order =ref(<Order>{})
+
+const getOrder = async () => {
   try {
-    // await createCategoryMutation.mutateAsync({
-    //     name: create
-    // })
-    showCategoryForm.value = false
+    const { data } = await $fetch<{ data: Order }>(`/api/admin/orders/${route.params.id}`)
+    
+    if (data) {
+      order.value = data
+     
+    }
   } catch (error) {
-    console.log(error)
-  } finally {
-    creating.value = false
+    console.error('Error fetching order:', error)
   }
 }
+onMounted(() => {
+  getOrder()
+ 
+})
 
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
 })
 </script>
-
-<template>
-  <div class="flex min-h-screen w-full flex-col bg-muted/40">
-    <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-      <header
-        class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
-      >
-        <SidebarTrigger class="-ml-1" />
-        <Breadcrumb class="hidden md:flex">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink as-child>
-                <nuxt-link to="/admin">Dashboard</nuxt-link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/categories"
-                  >All Categories</nuxt-link
-                >
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div class="relative ml-auto flex-1 md:grow-0">
-          <Search
-            class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
-          />
-          <Input
-            type="search"
-            placeholder="Search..."
-            class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-          />
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button variant="secondary" size="icon" class="rounded-full">
-              <CircleUser class="h-5 w-5" />
-              <span class="sr-only">Toggle user menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </header>
-      <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-        <Tabs default-value="all">
-          <div class="flex items-center">
-            <TabsList>
-              <TabsTrigger value="all"> All </TabsTrigger>
-              <TabsTrigger value="active"> Active </TabsTrigger>
-              <TabsTrigger value="draft"> Draft </TabsTrigger>
-              <TabsTrigger value="archived" class="hidden sm:flex">
-                Archived
-              </TabsTrigger>
-            </TabsList>
-            <div class="ml-auto flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger as-child>
-                  <Button variant="outline" size="sm" class="h-7 gap-1">
-                    <ListFilter class="h-3.5 w-3.5" />
-                    <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Filter
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem checked> Active </DropdownMenuItem>
-                  <DropdownMenuItem>Draft</DropdownMenuItem>
-                  <DropdownMenuItem> Archived </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button size="sm" variant="outline" class="h-7 gap-1">
-                <File class="h-3.5 w-3.5" />
-                <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Export
-                </span>
-              </Button>
-              <Button
-                size="sm"
-                @click="showCategoryForm = !showCategoryForm"
-                class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1"
-              >
-                <PlusCircle class="h-3.5 w-3.5" />
-                <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Edit Category
-                </span>
-              </Button>
-            </div>
-          </div>
-          <div class="mt-3">
-            <Card>
-              <CardHeader>
-                <CardTitle>Edit Category</CardTitle>
-                <CardDescription>
-                  Edit Category to manage your products.
-                </CardDescription></CardHeader
-              >
-              <form @submit.prevent="createCategory" class="grid gap-4">
-                <CardContent>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div class="grid gap-2">
-                      <Label for="first-name">Category name</Label>
-                      <Input id="first-name" placeholder="Category" required />
-                    </div>
-                    <div class="grid gap-2">
-                      <Label for="last-name">Category Image</Label>
-                      <Input id="last-name" type="file" required />
-                    </div>
-                    <div class="flex gap-4 text-white">
-                      <Button
-                        type="button"
-                        @click="category.isActive = true"
-                        :class="
-                          category.isActive == true
-                            ? 'bg-blue-600'
-                            : 'bg-gray-400'
-                        "
-                        >Active</Button
-                      >
-                      <Button
-                        type="button"
-                        @click="category.isActive = false"
-                        :class="
-                          category.isActive == false
-                            ? 'bg-red-600'
-                            : 'bg-gray-400'
-                        "
-                        >Inactive</Button
-                      >
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button class="text-white" :disabled="creating">
-                    <Loader2
-                      v-if="creating"
-                      class="w-4 h-4 mr-2 animate-spin"
-                    />
-                    Add Category</Button
-                  >
-                </CardFooter>
-              </form>
-            </Card>
-          </div>
-          <TabsContent value="all">
-            <!-- <Card>
-              <CardHeader>
-                <CardTitle>Categories</CardTitle>
-                <CardDescription>
-                  Manage your categories and view their sales performance.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead class="hidden w-[100px] sm:table-cell">
-                        <span class="sr-only">img</span>
-                      </TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Price
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Total Sales
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Created at
-                      </TableHead>
-                      <TableHead>
-                        <span class="sr-only">Actions</span>
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Laser Lemonade Machine
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Draft
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $499.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        25
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-07-12 10:42 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Hypernova Headphones
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $129.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        100
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        AeroGlow Desk Lamp
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $39.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        50
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-11-29 08:15 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        TechTonic Energy Drink
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">
-                          Draft
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $2.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        0
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-12-25 11:59 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Gamer Gear Pro Controller
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $59.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        75
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-01-01 12:00 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        >
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Luminous VR Headset
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          Active
-                        </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $199.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        30
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-02-14 02:14 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </CardContent>
-              <CardFooter>
-                <div class="text-xs text-muted-foreground">
-                  Showing <strong>1-10</strong> of <strong>32</strong>
-                  products
-                </div>
-              </CardFooter>
-            </Card> -->
-          </TabsContent>
-        </Tabs>
-      </main>
-    </div>
-  </div>
-</template>

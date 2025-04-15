@@ -47,7 +47,8 @@ export interface Brand {
 }
 export interface Customer {
   _id: string
-  name: string
+  first_name: string
+  last_name: string
   email: string
   phone: string
   address: string
@@ -62,6 +63,7 @@ export interface Order {
   customer:Customer
   products: Array<{
     productId: string
+    product:Product
     quantity: number
     price: number
   }>
@@ -86,4 +88,5 @@ export interface Order {
   orderDate: Date
   deliveryDate: Date
   is_active: boolean
+  order_id:string
 }

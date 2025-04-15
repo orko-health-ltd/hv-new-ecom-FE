@@ -115,6 +115,11 @@ export const useMyCartStore = defineStore('myCartStore', {
     },
     clearCart() {
       this.cart = []
+      this.subtotal = 0
+      this.isOpen = false
+      this.isLoading = false
+      this.isError = false
+      this.shippingMethod = 0
     },
     toggleCart() {
       this.isOpen = !this.isOpen

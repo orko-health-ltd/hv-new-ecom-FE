@@ -205,7 +205,7 @@
       </section>
 
       <!-- <button class="checkout-button" @click="processCheckout">Complete Purchase</button> -->
-      <button class="checkout-button">Complete Purchase</button>
+      <Button class="checkout-button py-4 h-11 flex items-center justify-center gap-4" :disabled="loading"> <UIcon v-if="loading" name="svg-spinners:6-dots-rotate" />  Complete Purchase</Button>
     </form>
     <Dialog v-model:open="openOrder">
       <DialogContent class="flex flex-col items-center justify-center">
@@ -229,6 +229,7 @@ const cartStore = useMyCartStore()
 const paymentUrl = ref('')
 const route = useRoute()
 const toast = useToast()
+const loading = ref(false)
 const customerInfo = ref({
   firstName: '',
   lastName: '',
@@ -309,6 +310,7 @@ const processCheckout = async () => {
 // const postData = ref('')
 const openOrder = ref(false)
 const pay = async () => {
+  loading.value = true
   let form = {
     customerInfo: {
       first_name: customerInfo.value.firstName,
@@ -360,16 +362,12 @@ const pay = async () => {
   })
 
   if (response.status === 'success' && response.payment_url) {
+
     paymentUrl.value = response.payment_url
     window.location.href = paymentUrl.value    // openPayment.value = true
   }
-}//   const script = document.createElement('script')
-//   script.src =
-//     'https://sandbox.sslcommerz.com/embed.min.js?' +
-//     Math.random().toString(36).substring(7)
-//   script.id = 'sslcz-script'
-//   document.body.appendChild(script)
-// })
+  loading.value = false
+}
 onMounted(async () => {
  
   if(route.query.success == 'true' && route.query.order_id){
@@ -382,9 +380,9 @@ onMounted(async () => {
         toast.add({ title: 'Order Placed Successfully.', color: 'green', timeout: 1500 })
         openOrder.value = true
       }
+      
     
-    toast.add({ title: 'Order Placed Successfully.', color: 'green',timeout: 1500 })
-  
+   
  }
   }
 })

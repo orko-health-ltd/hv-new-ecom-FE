@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'token')
-
+console.log(event.context.params?.id)
   const config = useRuntimeConfig()
   try {
     const response = await $fetch<{ data: any; status: number }>(

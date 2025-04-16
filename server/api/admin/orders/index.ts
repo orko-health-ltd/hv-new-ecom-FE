@@ -3,7 +3,8 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
   try {
-    const orders = await $fetch(`${config.public.apiBase}/order/list`, {
+    const query = getQuery(event)
+    const orders = await $fetch(`${config.public.apiBase}/order/list${query.status ? `?status=${query.status}` : ''}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -16,7 +16,7 @@
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink as-child>
-                  <nuxt-link to="/admin/order-management"
+                  <nuxt-link to="/admin/order-management/all"
                     >All Orders</nuxt-link
                   >
                 </BreadcrumbLink>
@@ -65,8 +65,56 @@
               <CardTitle>View Order</CardTitle>
               <CardDescription>
                 Edit product to manage your stocks.
-              </CardDescription></CardHeader
+              </CardDescription>
+              <div class="flex justify-end items-center gap-2">
+                 <Button @click="order.status = 'pending' , stepIndex =1 , updateStatus()" :disabled="order.status == 'pending'" class="bg-yellow-500 text-white hover:bg-yellow-600">Pending
+                  <UIcon v-if="order.status == 'pending'" name="i-heroicons-check" />
+                 </Button>
+                 <Button @click="order.status = 'processing', stepIndex = 2 ,updateStatus()" :disabled="order.status == 'processing'" class="bg-violet-500 text-white hover:bg-violet-600">
+                  Processing <UIcon v-if="order.status == 'processing'" name="i-heroicons-check" />
+                </Button>
+                 <Button @click="order.status = 'shipped' , stepIndex = 3 ,updateStatus()" :disabled="order.status == 'shipped'" class="bg-blue-500 text-white hover:bg-blue-600">Shipped
+
+                  <UIcon v-if="order.status == 'shipped' " name="i-heroicons-check" />
+                 </Button>
+                 <Button @click="order.status = 'delivered' , stepIndex = 4 , updateStatus()" :disabled="order.status == 'delivered'" class="bg-green-500 text-white hover:bg-green-600">Delivered
+                  <UIcon v-if="order.status == 'delivered'" name="i-heroicons-check" />
+                 </Button>
+                 <Button @click="order.status = 'canceled' , updateStatus()" :disabled="order.status == 'canceled'" class="bg-red-500 text-white hover:bg-red-600">Canceled
+                  <UIcon v-if="order.status == 'canceled'" name="i-heroicons-check" />
+                 </Button>
+              </div>
+             
+              </CardHeader
             >
+            <div class="p-4 pl-[8rem]">
+              <Stepper  v-model="stepIndex">
+    <StepperItem
+      v-for="item in steps"
+      :key="item.step"
+      class="basis-1/4"
+      :step="item.step"
+    >
+      <StepperTrigger disabled>
+        <StepperIndicator >
+          <component :is="item.icon" class="w-4 h-4 text-white" />
+        </StepperIndicator>
+        <div class="flex  flex-col">
+          <StepperTitle>
+            {{ item.title }}
+          </StepperTitle>
+          <StepperDescription>
+            {{ item.description }}
+          </StepperDescription>
+        </div>
+      </StepperTrigger>
+      <StepperSeparator
+        v-if="item.step !== steps[steps.length - 1].step"
+        class="w-full h-px"
+      />
+    </StepperItem>
+  </Stepper>
+</div>
                           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                               <div class="rounded-lg border p-4">
@@ -83,7 +131,7 @@
                                   </div>
                                   <div class="flex justify-between">
                                     <span class="text-muted-foreground">Status:</span>
-                                    <Badge>{{ order.status }}</Badge>
+                                    <Badge class="text-white" :class="order.status == 'pending' ? 'bg-amber-500':order.status == 'processing' ? 'bg-violet-500':order.status == 'shipped' ?'bg-blue-500':'bg-green-500'">{{ order.status }}</Badge>
                                   </div>
                                   <div class="flex justify-between">
                                     <span class="text-muted-foreground">Payment Method:</span>
@@ -91,7 +139,8 @@
                                   </div>
                                   <div class="flex justify-between">
                                     <span class="text-muted-foreground">Payment Status:</span>
-                                    <Badge variant="outline">{{ order.paymentStatus }}</Badge>
+                                   <Badge class="text-white" :class="order.paymentStatus == 'pending' ? 'bg-amber-500':order.paymentStatus == 'refunded' ? 'bg-violet-500':order.paymentStatus == 'failed' ? 'bg-red-500':'bg-green-500'">{{ order.paymentStatus  }}</Badge>
+                             
                                   </div>
                                 </div>
                               </div>
@@ -110,6 +159,23 @@
                                   <div class="flex justify-between">
                                     <span class="text-muted-foreground">Phone:</span>
                                     <span class="font-medium">{{ order.customer?.phone }}</span>
+                                  </div>
+                                </div>
+                                <Separator class="my-4" />
+                                <h3 class="mb-4 text-lg font-semibold">Contact Person Details</h3>
+                                 <div class="space-y-2">
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Name:</span>
+                                    <span class="font-medium">{{ order.contactPerson?.name }} </span>
+                                  </div>
+                                
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Phone:</span>
+                                    <span class="font-medium">{{ order.contactPerson?.phone }}</span>
+                                  </div>
+                                  <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Delivery Note:</span>
+                                    <span class="font-medium">{{ order.note }}</span>
                                   </div>
                                 </div>
                               </div>
@@ -162,7 +228,7 @@
                                     </div>
                                     <div class="flex justify-between border-t pt-2">
                                       <span class="font-medium">Total:</span>
-                                      <span class="font-medium">৳{{ order.totalAmount }}</span>
+                                      <span class="font-medium">৳{{ order.total }}</span>
                                     </div>
                                   </div>
                                 </div>
@@ -181,6 +247,10 @@ import { get } from '@vueuse/core'
 import { CircleUser, Loader2, Search } from 'lucide-vue-next'
 import Label from '~/components/ui/label/Label.vue'
 import type { Order } from '~/types'
+import { Stepper, StepperDescription, StepperIndicator, StepperItem, StepperSeparator, StepperTitle, StepperTrigger } from '@/components/ui/stepper'
+
+import { BookUser, Check, CreditCard, Truck } from 'lucide-vue-next'
+
 interface Brand {
   name: string
   _id: string
@@ -233,20 +303,61 @@ const front_image = ref<string>('')
 const back_image = ref<string>('')
 const formats = ['Loose Leaf', 'Tea Bag']
 const deleting = ref('')
-const order =ref(<Order>{})
 
+const order = ref(<Order>{})
+const stepIndex = ref(1)
+const steps = [{
+  step: 1,
+  title: 'Pending',
+  description: 'Order Placed and waiting for approval',
+  icon: BookUser,
+}, {
+  step: 2,
+  title: 'Processing',
+  description: 'Order is being processed',
+  icon: Truck,
+}, {
+  step: 3,
+  title: 'Shipped',
+  description: 'Order is on the way',
+  icon: CreditCard,
+}, {
+  step: 4,
+  title: 'Delivered',
+  description: 'Order has been delivered', 
+  icon: Check,
+}]
 const getOrder = async () => {
   try {
     const { data } = await $fetch<{ data: Order }>(`/api/admin/orders/${route.params.id}`)
     
     if (data) {
       order.value = data
-     
+     stepIndex.value = data.status == 'pending' ? 1 : data.status == 'processing' ? 2 : data.status == 'shipped' ? 3 : 4
     }
   } catch (error) {
     console.error('Error fetching order:', error)
   }
 }
+const updateStatus = async () => {
+  try {
+    const { data } = await $fetch<{ data: Order }>(`/api/admin/orders/${route.params.id}`, {
+      method: 'POST',
+      body: {
+        status: order.value.status,
+      },
+    })
+   if (data) {
+      toast.add({ title: 'Order status updated successfully.', color: 'green', timeout: 1500 })
+   }
+    else {
+      toast.add({ title: 'Error updating order.', color: 'red', timeout: 1500 })
+    }
+  } catch (error) {
+    console.error('Error updating order status:', error)
+  }
+}
+
 onMounted(() => {
   getOrder()
  
@@ -257,3 +368,8 @@ definePageMeta({
   middleware: ['auth'],
 })
 </script>
+<style scoped>
+.group[data-state="completed"] .group-data-\[state\=completed\]\:bg-accent {
+    background-color: teal;
+}
+</style>

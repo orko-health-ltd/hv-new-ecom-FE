@@ -16,6 +16,7 @@
         >
           <nuxt-link class="px-1.5 py-2.5" to="/">Home</nuxt-link>
           <nuxt-link class="px-1.5 py-2.5" to="/shop/">Shop</nuxt-link>
+          <nuxt-link class="px-1.5 py-2.5" to="/track-order">Track Order</nuxt-link>
           <li>
             <UDropdown
               :items="abouts"

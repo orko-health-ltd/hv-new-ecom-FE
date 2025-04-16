@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  CalendarIcon,
   CircleUser,
   File,
   ListFilter,
@@ -10,15 +11,93 @@ import {
 } from 'lucide-vue-next'
 import type { Order } from '~/types'
 import moment from 'moment'
+import { useDebounceFn, useEventListener } from '@vueuse/core'
+import type { DateRange } from 'reka-ui'
+// import { cn } from '@/utils'
+
+import {
+  Pagination,
+  PaginationEllipsis,
+  PaginationFirst,
+  PaginationLast,
+  PaginationList,
+  PaginationListItem,
+  PaginationNext,
+  PaginationPrev,
+} from '@/components/ui/pagination'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { RangeCalendar } from '@/components/ui/range-calendar'
+import {
+  CalendarDate,
+  DateFormatter,
+  getLocalTimeZone,
+} from '@internationalized/date'
 const toast = useToast()
 const showCreateForm = ref(false)
 const showEditForm = ref(false)
 const creating = ref(false)
 const loading = ref(false)
-
+const searchString = ref('')
 const { data, refresh } = useFetch<{ data: Order[] }>('/api/admin/orders')
-const orders = computed(() => data.value?.data || [])
+const orders = ref<Order[]>([])
 
+const df = new DateFormatter('en-US', {
+  dateStyle: 'medium',
+})
+
+const value = ref({
+  start: new CalendarDate(2022, 1, 20),
+  end: new CalendarDate(2022, 1, 20).add({ days: 20 }),
+}) as Ref<DateRange>
+const filterOrders = useDebounceFn(() => {
+  if (searchString.value.length === 0) {
+    getOrders()
+    return
+  }
+ orders.value = orders.value.filter((order) => {
+    return order.order_id.toLowerCase().includes(searchString.value.toLowerCase())
+  })
+}, 1000)
+const getOrders = async () => {
+  const { data } = await $fetch<{ data: Order[] }>(
+    `/api/admin/orders`
+  )
+  orders.value = data || []
+}
+// Pagination
+const itemsPerPage = ref(10)
+const currentPage = ref(1)
+const totalPages = computed(() => Math.ceil(orders.value.length / itemsPerPage.value))
+
+const paginatedOrders = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return orders.value.slice(start, end)
+})
+
+const goToPage = (page: number) => {
+  currentPage.value = page
+}
+
+const getPageNumbers = computed(() => {
+  const pages = []
+  for (let i = 1; i <= totalPages.value; i++) {
+    if (
+      i === 1 ||
+      i === totalPages.value ||
+      (i >= currentPage.value - 2 && i <= currentPage.value + 2)
+    ) {
+      pages.push(i)
+    } else if (i === currentPage.value - 3 || i === currentPage.value + 3) {
+      pages.push('...')
+    }
+  }
+  return pages
+})
+
+onMounted(() => {
+  getOrders()
+})
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -42,7 +121,7 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/order-management"
+                <nuxt-link to="/admin/order-management/all"
                   >All Orders</nuxt-link
                 >
               </BreadcrumbLink>
@@ -53,12 +132,13 @@ definePageMeta({
           <Search
             class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
           />
-          <Input
-            type="search"
-            placeholder="Search..."
+          <Input v-model="searchString" @input="filterOrders"   
+                   type="search"
+            placeholder="Search Order ID..."
             class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
+       
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button variant="secondary" size="icon" class="rounded-full">
@@ -89,6 +169,31 @@ definePageMeta({
             </TabsList>
 
             <div class="ml-auto flex items-center gap-2">
+                <Popover>
+                  <PopoverTrigger as-child>
+                    <Button
+                      variant="outline"
+                    
+                    >
+                      <CalendarIcon class="mr-2 h-4 w-4" />
+                      <template v-if="value.start">
+                        <template v-if="value.end">
+                          {{ df.format(value.start.toDate(getLocalTimeZone())) }} - {{ df.format(value.end.toDate(getLocalTimeZone())) }}
+                        </template>
+
+                        <template v-else>
+                          {{ df.format(value.start.toDate(getLocalTimeZone())) }}
+                        </template>
+                      </template>
+                      <template v-else>
+                        Pick a date
+                      </template>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent class="w-auto p-0">
+                    <RangeCalendar v-model="value" initial-focus :number-of-months="2" @update:start-value="(startDate) => value.start = startDate" />
+                  </PopoverContent>
+                </Popover>
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
                   <Button variant="outline" size="sm" class="h-7 gap-1">
@@ -129,7 +234,7 @@ definePageMeta({
           <TabsContent value="all">
             <Card>
               <CardHeader>
-                <CardTitle>Orders</CardTitle>
+                <CardTitle>All Orders</CardTitle>
                 <CardDescription>
                   Manage your orders and view the progress.
                 </CardDescription>
@@ -158,7 +263,7 @@ definePageMeta({
                   </TableHeader>
                   <TableBody>
                     <TableRow
-                      v-for="order in orders"
+                      v-for="order in paginatedOrders"
                       :key="order._id"
                     >
                    
@@ -186,7 +291,17 @@ definePageMeta({
                         {{order.totalAmount}}
                       </TableCell>
                       <TableCell >
-                        {{ order.paymentStatus }}
+                         <Badge
+                        class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600': order.paymentStatus === 'pending',
+                            
+                            'bg-purple-500 hover:bg-purple-600': order.paymentStatus === 'refunded',
+                            'bg-green-500 hover:bg-green-600': order.paymentStatus === 'paid',
+                            'bg-red-500 hover:bg-red-600': order.paymentStatus === 'failed'
+                          }"
+                        >
+                          {{ order.paymentStatus }}                        </Badge>
                       </TableCell>
                       <TableCell >
                         <div class="flex flex-col">
@@ -226,11 +341,30 @@ definePageMeta({
                   </TableBody>
                 </Table>
               </CardContent>
-              <CardFooter>
+              <CardFooter class="flex justify-between">
                 <div class="text-xs text-muted-foreground">
-                  Showing <strong>1-10</strong> of <strong>32</strong>
+                  Showing <strong>1-10</strong> of <strong>{{ orders.length }}</strong>
                   products
                 </div>
+                <Pagination v-slot="{ page }" :items-per-page="10" :total="orders.length" :sibling-count="1" show-edges :default-page="1">
+                      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+                        <PaginationFirst />
+                        <PaginationPrev />
+
+                        <template v-for="(item, index) in items">
+                          <PaginationListItem v-if="item.type === 'page'" :key="index" :value="item.value" as-child>
+                            <Button class="w-9 h-9 p-0" @click="goToPage(item.value)" :variant="item.value === page ? 'default' : 'outline'">
+                              {{ item.value }}
+                            </Button>
+                          </PaginationListItem>
+                          <PaginationEllipsis v-else :key="item.type" :index="index" />
+                        </template>
+
+                        <PaginationNext />
+                        <PaginationLast />
+                      </PaginationList>
+                    </Pagination>
+
               </CardFooter>
             </Card>
           </TabsContent>

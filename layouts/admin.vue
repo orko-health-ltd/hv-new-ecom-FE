@@ -119,7 +119,7 @@ const data = {
      icon2: PieChart,
     isActive: false,
     items: [
-      { title: 'All Orders', url: '/admin/order-management',icon: 'material-symbols:list-alt-rounded' },
+      { title: 'All Orders', url: '/admin/order-management/all',icon: 'material-symbols:list-alt-rounded' },
       { title: 'Pending Orders', url: '/admin/order-management/pending' ,icon:'ic:baseline-pending-actions' },
       { title: 'Completed Orders', url: '/admin/order-management/completed' ,icon:'material-symbols:list-alt-check-rounded' },
       { title: 'Cancelled Orders', url: '/admin/order-management/cancelled',icon:'carbon:rule-cancelled' },

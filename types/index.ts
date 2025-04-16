@@ -88,5 +88,6 @@ export interface Order {
   orderDate: Date
   deliveryDate: Date
   is_active: boolean
-  order_id:string
+  order_id: string
+  total:number
 }

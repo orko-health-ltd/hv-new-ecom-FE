@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  CalendarIcon,
   CircleUser,
   File,
   ListFilter,
@@ -8,22 +9,101 @@ import {
   PlusCircle,
   Search,
 } from 'lucide-vue-next'
-const showCategoryForm = ref(false)
+import type { Order } from '~/types'
+import moment from 'moment'
+import { useDebounceFn, useEventListener } from '@vueuse/core'
+import type { DateRange } from 'reka-ui'
+// import { cn } from '@/utils'
+
+import {
+  Pagination,
+  PaginationEllipsis,
+  PaginationFirst,
+  PaginationLast,
+  PaginationList,
+  PaginationListItem,
+  PaginationNext,
+  PaginationPrev,
+} from '@/components/ui/pagination'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { RangeCalendar } from '@/components/ui/range-calendar'
+import {
+  CalendarDate,
+  DateFormatter,
+  getLocalTimeZone,
+} from '@internationalized/date'
+const toast = useToast()
+const showCreateForm = ref(false)
+const showEditForm = ref(false)
 const creating = ref(false)
-const createCategory = async () => {
-  creating.value = true
-  try {
-    // await createCategoryMutation.mutateAsync({
-    //     name: create
-    // })
-    showCategoryForm.value = false
-  } catch (error) {
-    console.log(error)
-  } finally {
-    creating.value = false
+const loading = ref(false)
+const searchString = ref('')
+const payments = ref<Order[]>([])
+
+const df = new DateFormatter('en-US', {
+  dateStyle: 'medium',
+})
+
+const value = ref({
+  start: new CalendarDate(2022, 1, 20),
+  end: new CalendarDate(2022, 1, 20).add({ days: 20 }),
+}) as Ref<DateRange>
+const filterpayments = useDebounceFn(() => {
+  if (searchString.value.length === 0) {
+    getPayments()
+    return
   }
+  payments.value = payments.value.filter((payment) => {
+    return payment.order_id
+      .toLowerCase()
+      .includes(searchString.value.toLowerCase())
+  })
+}, 1000)
+const getPayments = async () => {
+  const { data } = await $fetch<{ data: Order[] }>(`/api/admin/payments`)
+  payments.value = data
+  console.log(payments.value)
+}
+// Pagination
+const itemsPerPage = ref(10)
+const currentPage = ref(1)
+const totalPages = computed(() =>
+  Math.ceil(payments.value.length / itemsPerPage.value)
+)
+
+const paginatedpayments = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return payments.value.slice(start, end)
+})
+
+const goToPage = (page: number) => {
+  currentPage.value = page
 }
 
+const getPageNumbers = computed(() => {
+  const pages = []
+  for (let i = 1; i <= totalPages.value; i++) {
+    if (
+      i === 1 ||
+      i === totalPages.value ||
+      (i >= currentPage.value - 2 && i <= currentPage.value + 2)
+    ) {
+      pages.push(i)
+    } else if (i === currentPage.value - 3 || i === currentPage.value + 3) {
+      pages.push('...')
+    }
+  }
+  return pages
+})
+
+onMounted(() => {
+  getPayments()
+})
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -47,8 +127,8 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/categories"
-                  >All Categories</nuxt-link
+                <nuxt-link to="/admin/payment-management/payments"
+                  >Payments</nuxt-link
                 >
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -59,11 +139,14 @@ definePageMeta({
             class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
           />
           <Input
+            v-model="searchString"
+            @input="filterpayments"
             type="search"
-            placeholder="Search..."
+            placeholder="Search Order ID..."
             class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button variant="secondary" size="icon" class="rounded-full">
@@ -92,7 +175,38 @@ definePageMeta({
                 Archived
               </TabsTrigger>
             </TabsList>
+
             <div class="ml-auto flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger as-child>
+                  <Button variant="outline">
+                    <CalendarIcon class="mr-2 h-4 w-4" />
+                    <template v-if="value.start">
+                      <template v-if="value.end">
+                        {{
+                          df.format(value.start.toDate(getLocalTimeZone()))
+                        }}
+                        - {{ df.format(value.end.toDate(getLocalTimeZone())) }}
+                      </template>
+
+                      <template v-else>
+                        {{ df.format(value.start.toDate(getLocalTimeZone())) }}
+                      </template>
+                    </template>
+                    <template v-else> Pick a date </template>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-auto p-0">
+                  <RangeCalendar
+                    v-model="value"
+                    initial-focus
+                    :number-of-months="2"
+                    @update:start-value="
+                      (startDate) => (value.start = startDate)
+                    "
+                  />
+                </PopoverContent>
+              </Popover>
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
                   <Button variant="outline" size="sm" class="h-7 gap-1">
@@ -116,114 +230,92 @@ definePageMeta({
                   Export
                 </span>
               </Button>
-              <Button
+              <!-- <Button
                 size="sm"
-                @click="showCategoryForm = !showCategoryForm"
+                :disabled="showEditForm"
+                @click="showCreateForm = !showCreateForm"
                 class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1"
               >
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Add Category
                 </span>
-              </Button>
+              </Button> -->
             </div>
           </div>
-          <div class="mt-3" v-if="showCategoryForm">
-            <Card>
-              <CardHeader>
-                <CardTitle>Add Category</CardTitle>
-                <CardDescription>
-                  Add new categories to manage your products.
-                </CardDescription></CardHeader
-              >
-              <form @submit.prevent="createCategory" class="grid gap-4">
-                <CardContent>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div class="grid gap-2">
-                      <Label for="first-name">Category name</Label>
-                      <Input id="first-name" placeholder="Category" required />
-                    </div>
-                    <div class="grid gap-2">
-                      <Label for="last-name">Category Image</Label>
-                      <Input id="last-name" type="file" required />
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter class="gap-3">
-                  <Button class="text-white" :disabled="creating">
-                    <Loader2
-                      v-if="creating"
-                      class="w-4 h-4 mr-2 animate-spin"
-                    />
-                    Add Category</Button
-                  >
-                  <Button
-                    @click="showCategoryForm = !showCategoryForm"
-                    class="text-white"
-                    type="button"
-                    variant="destructive"
-                  >
-                    Cancel</Button
-                  >
-                </CardFooter>
-              </form>
-            </Card>
-          </div>
+
           <TabsContent value="all">
             <Card>
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>All payments</CardTitle>
                 <CardDescription>
-                  Manage your categories and view their sales performance.
+                  Manage your payments and view the progress.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead class="hidden w-[100px] sm:table-cell">
-                        <span class="sr-only">img</span>
-                      </TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Price
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Total Sales
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Created at
-                      </TableHead>
+                      <TableHead>Transaction Method</TableHead>
+                      <TableHead>Transaction Type</TableHead>
+                      <TableHead>Order ID</TableHead>
+                      <TableHead>Transation Status</TableHead>
+                      <TableHead>Transaction Date</TableHead>
+                      <TableHead>Transaction Amount</TableHead>
+                      <TableHead>Store Amount</TableHead>
+                      <!-- <TableHead>Delivery Charge</TableHead> -->
+
                       <TableHead>
                         <span class="sr-only">Actions</span>
                       </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
+                    <TableRow
+                      v-for="payment in paginatedpayments"
+                      :key="payment._id"
+                    >
+                      <TableCell class="font-medium">
+                        {{ payment?.ssl_ipn.card_brand }}
                       </TableCell>
                       <TableCell class="font-medium">
-                        Laser Lemonade Machine
+                        {{ payment?.ssl_ipn.card_issuer }}
+                      </TableCell>
+                      <TableCell class="font-medium">
+                        {{ payment?.order_id }}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline"> Draft </Badge>
+                        <Badge
+                          class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600':
+                              payment.ssl_ipn.status === 'CANCELLED',
+                            'bg-blue-500 hover:bg-blue-600':
+                              payment.ssl_ipn.status === 'UNATTEMPTED',
+                            'bg-purple-500 hover:bg-purple-600':
+                              payment.ssl_ipn.status === 'EXPIRED',
+                            'bg-green-500 hover:bg-green-600':
+                              payment.ssl_ipn.status === 'VALID',
+                            'bg-red-500 hover:bg-red-600':
+                              payment.ssl_ipn.status === 'FAILED',
+                          }"
+                        >
+                          {{ payment.ssl_ipn.status }}
+                        </Badge>
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $499.99
+
+                      <TableCell>
+                        {{
+                          moment(payment.ssl_ipn.tran_date).format('DD/MM/YYYY')
+                        }}
                       </TableCell>
-                      <TableCell class="hidden md:table-cell"> 25 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-07-12 10:42 AM
+                      <TableCell>
+                        {{ payment.ssl_ipn.amount }}
                       </TableCell>
+                      <TableCell>
+                        {{ payment.ssl_ipn.store_amount }}
+                      </TableCell>
+
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger as-child>
@@ -238,226 +330,7 @@ definePageMeta({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Hypernova Headphones
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $129.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              ><nuxt-link
-                                :to="`/admin/product-management/categories/1`"
-                                >Edit</nuxt-link
-                              >
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        AeroGlow Desk Lamp
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $39.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 50 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-11-29 08:15 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        TechTonic Energy Drink
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary"> Draft </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $2.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 0 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-12-25 11:59 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Gamer Gear Pro Controller
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $59.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 75 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-01-01 12:00 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Luminous VR Headset
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $199.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 30 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-02-14 02:14 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
                             <DropdownMenuItem>Edit</DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
@@ -467,11 +340,53 @@ definePageMeta({
                   </TableBody>
                 </Table>
               </CardContent>
-              <CardFooter>
+              <CardFooter class="flex justify-between">
                 <div class="text-xs text-muted-foreground">
-                  Showing <strong>1-10</strong> of <strong>32</strong>
+                  Showing <strong>1-10</strong> of
+                  <strong>{{ payments.length }}</strong>
                   products
                 </div>
+                <Pagination
+                  v-slot="{ page }"
+                  :items-per-page="10"
+                  :total="payments.length"
+                  :sibling-count="1"
+                  show-edges
+                  :default-page="1"
+                >
+                  <PaginationList
+                    v-slot="{ items }"
+                    class="flex items-center gap-1"
+                  >
+                    <PaginationFirst />
+                    <PaginationPrev />
+
+                    <template v-for="(item, index) in items">
+                      <PaginationListItem
+                        v-if="item.type === 'page'"
+                        :key="index"
+                        :value="item.value"
+                        as-child
+                      >
+                        <Button
+                          class="w-9 h-9 p-0"
+                          @click="goToPage(item.value)"
+                          :variant="item.value === page ? 'default' : 'outline'"
+                        >
+                          {{ item.value }}
+                        </Button>
+                      </PaginationListItem>
+                      <PaginationEllipsis
+                        v-else
+                        :key="item.type"
+                        :index="index"
+                      />
+                    </template>
+
+                    <PaginationNext />
+                    <PaginationLast />
+                  </PaginationList>
+                </Pagination>
               </CardFooter>
             </Card>
           </TabsContent>

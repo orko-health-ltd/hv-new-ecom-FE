@@ -26,6 +26,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+
+import {
+  Pagination,
+  PaginationEllipsis,
+  PaginationFirst,
+  PaginationLast,
+  PaginationList,
+  PaginationListItem,
+  PaginationNext,
+  PaginationPrev,
+} from '@/components/ui/pagination'
 import {
   Table,
   TableBody,
@@ -65,10 +76,33 @@ interface Product {
   created_at: string
   front_image: string
 }
+const searchString = ref('')
 const showMod = ref(false)
+// Pagination
+const itemsPerPage = ref(10)
+const currentPage = ref(1)
+const totalPages = computed(() => Math.ceil(products.value.length / itemsPerPage.value))
+
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return products.value.slice(start, end)
+})
+
+const products = ref<Product[]>([])
+const goToPage = (page: number) => {
+  currentPage.value = page
+}
 const emit = defineEmits<{ close: [boolean] }>()
-const { data, refresh } = useFetch<Product[]>('/api/admin/products')
-const products = computed(() => data.value || [])
+const getProducts = async () => {
+  const  data  = await $fetch<Product[]>('/api/admin/products')
+  if (data)
+  {
+  products.value = data
+}
+
+  
+}
 const deleteProduct = async (id: string) => {
   showMod.value = false
   const { error } = await useFetch('/api/admin/products/'+id, {
@@ -78,8 +112,20 @@ const deleteProduct = async (id: string) => {
   if (error.value) {
     console.log(error.value)
   }
-  refresh()
+  getProducts()
 }
+const filterProducts = useDebounceFn(() => {
+  if (searchString.value.length === 0) {
+    getProducts()
+    return
+  }
+  products.value = products.value.filter((product) => {
+    return product.name.toLowerCase().includes(searchString.value.toLowerCase())
+  })
+})
+onMounted(()=>{
+  getProducts()
+})
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -115,7 +161,7 @@ definePageMeta({
           <Search
             class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
           />
-          <Input
+          <Input v-model="searchString" @input="filterProducts"
             type="search"
             placeholder="Search..."
             class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
@@ -215,7 +261,7 @@ definePageMeta({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow v-for="product in products" :key="product._id">  
+                    <TableRow v-for="product in paginatedProducts" :key="product._id">  
                       <TableCell class="hidden sm:table-cell">
                        <AdminTableImage :image="product.front_image" />
                       </TableCell>
@@ -275,10 +321,28 @@ definePageMeta({
                 </Table>
               </CardContent>
               <CardFooter>
-                <div class="text-xs text-muted-foreground">
-                  Showing <strong>1-10</strong> of <strong>32</strong>
+                 <div class="text-xs text-muted-foreground">
+                  Showing <strong>1-10</strong> of <strong>{{ products.length }}</strong>
                   products
                 </div>
+                <Pagination v-slot="{ page }" :items-per-page="10" :total="products.length" :sibling-count="1" show-edges :default-page="1">
+                      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+                        <PaginationFirst />
+                        <PaginationPrev />
+
+                        <template v-for="(item, index) in items">
+                          <PaginationListItem v-if="item.type === 'page'" :key="index" :value="item.value" as-child>
+                            <Button class="w-9 h-9 p-0" @click="goToPage(item.value)" :variant="item.value === page ? 'default' : 'outline'">
+                              {{ item.value }}
+                            </Button>
+                          </PaginationListItem>
+                          <PaginationEllipsis v-else :key="item.type" :index="index" />
+                        </template>
+
+                        <PaginationNext />
+                        <PaginationLast />
+                      </PaginationList>
+                    </Pagination>
               </CardFooter>
             </Card>
           </TabsContent>

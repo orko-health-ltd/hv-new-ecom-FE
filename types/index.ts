@@ -89,5 +89,33 @@ export interface Order {
   deliveryDate: Date
   is_active: boolean
   order_id: string
-  total:number
+  total: number
+  ssl_ipn: {
+    status: string
+    status_message: string
+    amount: number
+    tran_id: string
+    store_amount: number
+    currency: string
+    method: string
+    transaction_id: string
+    card_brand: string
+    tran_date: string
+    card_type: string
+    card_number: string
+    card_issuer: string
+    card_issuer_country: string
+    card_issuer_country_code: string
+    card_issuer_phone: string
+    card_issuer_email: string
+    card_issuer_bank_name: string
+    card_issuer_bank_phone: string
+    card_issuer_bank_address: string
+    card_issuer_bank_city: string
+    card_issuer_bank_state: string
+    card_issuer_bank_zip: string
+    card_issuer_bank_country: string
+    card_issuer_bank_country_code: string
+    card_issuer_bank_country_phone: string
+  }
 }

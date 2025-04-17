@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex gap-2 px-10 py-2 pt-8">
-      <p>Shop</p>
+        <nuxt-link to="/shop" > Shop</nuxt-link>
       \
       <p>{{ route?.params.slug }} \</p>
     </div>

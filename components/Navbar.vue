@@ -400,23 +400,23 @@ const teas = [
   [
     {
       label: 'Halda Valley Black Tea',
-      to: '/product-category/Halda_Valley_Black_Tea',
+      to: '/product-category/halda-valley-black-tea/',
     },
     {
       label: 'Dragon Well Green Tea',
-      to: '/product-category/Dragon_Well_Green_Tea',
+      to: '/product-category/dragon-well-green-tea/',
     },
     {
       label: 'Golden Eyebrow Black Tea',
-      to: '/product-category/Golden_Eyebrow_Black_Tea',
+      to: '/product-category/golden-eyebrow-black-tea/',
     },
     {
       label: 'Red Robe Olong Tea',
-      to: '/product-category/Red_Robe_Olong_Tea',
+      to: '/product-category/red-robe-olong-tea',
     },
     {
       label: 'Silver Needle White Tea',
-      to: '/product-category/Silver_Needle_White_Tea',
+      to: '/product-category/silver-needle-white-tea',
     },
   ],
 ]

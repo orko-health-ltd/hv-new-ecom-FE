@@ -1,5 +1,14 @@
 <template>
   <div>
+    <Head>
+      <Title>{{ product?.name }} - Tea Shop</Title>
+      <Meta name="description" :content="product?.specification || 'Discover our premium tea collection'" />
+      <Meta property="og:title" :content="product?.name + ' - Tea Shop'" />
+      <Meta property="og:description" :content="product?.specification || 'Discover our premium tea collection'" />
+      <Meta property="og:image" :content="product?.front_image ? $config.public.apiBase + '/' + product.front_image : ''" />
+      <Meta property="og:type" content="product" />
+      <Meta name="keywords" :content="'tea, ' + product?.name + ', ' + product?.format + ', premium tea'" />
+    </Head>
     <div class="flex text-xs gap-2 px-10 py-2 pt-8">
       <p>Shop</p>
       \

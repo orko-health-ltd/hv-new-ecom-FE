@@ -19,7 +19,7 @@
      <p class="text-gray-900 text-xs tracking-normal mb-5 sm:mb-10 font-thin">{{ item.description }}</p>
       <div class="flex w-full items-center space-x-2 md:space-x-5 mb-2 text-[#b4a345]">
       <div class="w-full border-t-2 border-[#b4a345]"></div>
-      <nuxt-link :to="`/product/${item.slug}`" class="text-sm md:text-[20px] font-thin ">Explore</nuxt-link>
+      <nuxt-link :to="`/product-category/${item.slug}`" class="text-sm md:text-[20px] font-thin ">Explore</nuxt-link>
       <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
     </div>

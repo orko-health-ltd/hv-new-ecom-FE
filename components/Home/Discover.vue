@@ -7,7 +7,9 @@
      
       <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
-      <p class="text-white w-full text-start">Our Tea</p>
+        <h2 class="text-white text-x2l md:text-[60px]  tracking-[20px] font-serif uppercase">
+ Our Tea
+</h2>
         <div class="flex items-center w-full space-x-5 mb-2 text-white">
       <div class="w-full border-t-2 border-[#b4a345]"></div>
       <img class="w-10 h-10" loading="lazy"  src="/assets/icon/Pattern-Icon-01.png" alt="">

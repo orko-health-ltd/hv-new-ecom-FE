@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     'shadcn-nuxt',
+    '@nuxt/image',
   ],
 
   app: {
@@ -46,6 +47,12 @@ export default defineNuxtConfig({
   shadcn: {
     prefix: '',
     componentDir: 'components/ui',
+  },
+  image: {
+    domains: [process.env.API_BASE_URL || ''],
+    alias: {
+      halda: process.env.API_BASE_URL || '',
+    },
   },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },

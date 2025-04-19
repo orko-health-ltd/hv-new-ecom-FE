@@ -9,8 +9,12 @@
    </div>
  
        <nuxt-link :to="'/product/'+props.product.slug" class="relative group">
-        <img :src="$config.public.apiBase+'/'+props.product.front_image" class="transition-opacity duration-300 group-hover:opacity-0" alt="">
-        <img :src="$config.public.apiBase+'/'+props.product.back_image" class="absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" alt="">
+        <NuxtImg
+              :src="`/halda/${props.product.front_image}`"
+              :alt="props.product.name"class="transition-opacity duration-300 group-hover:opacity-0" />
+       <NuxtImg
+              :src="`/halda/${props.product.front_image}`"
+              :alt="props.product.name"class="absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"  />
        </nuxt-link>  
       
       <div class="flex flex-col space-y-2 mt-4">
@@ -54,6 +58,8 @@
 </template>
 
 <script lang="ts" setup>
+
+  const config = useRuntimeConfig()
 const toast = useToast()
 const isClicked = ref(false);
 const props = defineProps({
@@ -70,6 +76,16 @@ const addProductToCart = (product: any) => {
   toast.add({ title: 'Product added to cart', color: 'green',timeout: 1500 })
   cart.addToCart(product)
 }
+useHead({
+  title: props.product.name,
+  meta: [
+    { name: 'description', content: props.product.description },
+    { property: 'og:title', content: props.product.name },
+    { property: 'og:description', content: props.product.description },
+    { property: 'og:image', content: config.public.apiBase+'/'+props.product.front_image },
+    { name: 'twitter:card', content: config.public.apiBase+'/'+props.product.front_image }
+  ]
+})
 </script>
 
 

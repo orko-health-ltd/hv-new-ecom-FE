@@ -1,6 +1,6 @@
 <template>
   <div>
-     <img
+     <NuxtImg
                           alt="Product image"
                           class="aspect-square rounded-md object-cover"
                           height="64"

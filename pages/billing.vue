@@ -65,11 +65,7 @@
                 </SelectItem>
               </SelectContent>
             </Select>
-            <Select
-              required
-              v-model="customerInfo.city"
-             
-            >
+            <Select required v-model="customerInfo.city">
               <SelectTrigger>
                 <SelectValue placeholder="Select City" />
               </SelectTrigger>
@@ -84,7 +80,11 @@
                 </SelectItem>
               </SelectContent>
             </Select>
-            <Select required v-model="customerInfo.district"  @update:model-value="handleCityUpdate()">
+            <Select
+              required
+              v-model="customerInfo.district"
+              @update:model-value="handleCityUpdate()"
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select District" />
               </SelectTrigger>
@@ -137,7 +137,7 @@
           </div>
 
           <div
-            v-if="customerInfo.city == 'Dhaka'"
+            v-if="customerInfo.district == 'Dhaka'"
             class="payment-option"
             :class="{ active: selectedPayment === 'cod' }"
             @click="selectedPayment = 'cod'"
@@ -171,8 +171,8 @@
             :key="index"
             class="product-item"
           >
-            <img
-              :src="$config.public.apiBase + '/' + item.product.front_image"
+            <NuxtImg
+              :src="`/halda/${item.product.front_image}`"
               :alt="item.product.name"
             />
             <div class="flex justify-between w-full">
@@ -205,17 +205,36 @@
       </section>
 
       <!-- <button class="checkout-button" @click="processCheckout">Complete Purchase</button> -->
-      <Button class="checkout-button py-4 h-11 flex items-center justify-center gap-4" :disabled="loading"> <UIcon v-if="loading" name="svg-spinners:6-dots-rotate" />  Complete Purchase</Button>
+      <Button
+        v-if="cartStore.cart.length > 0"
+        class="checkout-button py-4 h-11 flex items-center justify-center gap-4"
+        :disabled="loading"
+      >
+        <UIcon v-if="loading" name="svg-spinners:6-dots-rotate" /> Complete
+        Purchase</Button
+      >
     </form>
     <Dialog v-model:open="openOrder">
       <DialogContent class="flex flex-col items-center justify-center">
-        <UIcon name="material-symbols-light:check-circle-outline" class="h-16 w-16 text-green-500" />
-       <h1 class="text-xl font-semibold">Your order is confirmed!</h1>
-        <p>Your order <span class="font-bold">#{{ route.query.order_id }}</span> will be processed within 2-5 working days. We will notify you by email once your order has been shipped.</p>
+        <UIcon
+          name="material-symbols-light:check-circle-outline"
+          class="h-16 w-16 text-green-500"
+        />
+        <h1 class="text-xl font-semibold">Your order is confirmed!</h1>
+        <p>
+          Your order
+          <span class="font-bold">#{{ route.query.order_id }}</span> will be
+          processed within 2-5 working days. We will notify you by email once
+          your order has been shipped.
+        </p>
         <Separator />
         <div class="flex gap-5 justify-between items center">
-          <Button class="text-white">Track your order</Button>
-          <nuxt-link to="/shop"><Button variant="outline">Return to shopping</Button></nuxt-link>
+          <nuxt-link :to="`/track-order?id=${route.query.order_id}`">
+            <Button class="text-white">Track your order </Button>
+          </nuxt-link>
+          <nuxt-link to="/shop"
+            ><Button variant="outline">Return to shopping</Button></nuxt-link
+          >
         </div>
       </DialogContent>
     </Dialog>
@@ -225,6 +244,7 @@
 <script lang="ts" setup>
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import division from '@/divisions.json'
+import type { Order } from '~/types'
 const cartStore = useMyCartStore()
 const paymentUrl = ref('')
 const route = useRoute()
@@ -256,7 +276,6 @@ const cardInfo = ref({
   expiry: '',
   cvv: '',
 })
-
 const countries = ref([
   {
     label: 'Banglaadesh',
@@ -301,16 +320,41 @@ const processCheckout = async () => {
       phone: customerInfo.value.contactPersonPhone,
     },
   }
-  const data = await $fetch('/api/checkout', {
-    method: 'POST',
-    body: form,
-  })
-  console.log('Processing checkout...', form)
+  const { order, status } = await $fetch<{ order: Order; status: string }>(
+    '/api/checkout',
+    {
+      method: 'POST',
+      body: form,
+    }
+  )
+  console.log(order, status)
+  if (status == 'success') {
+    setTimeout(() => {
+      route.query.order_id = order.order_id
+      toast.add({
+        title: 'Order Placed Successfully.',
+        color: 'green',
+        timeout: 1500,
+      })
+      openOrder.value = true
+      loading.value = false
+      cartStore.clearCart()
+    }, 3000)
+  }
 }
 // const postData = ref('')
 const openOrder = ref(false)
 const pay = async () => {
+  if (cartStore.cart.length == 0) {
+    toast.add({ title: 'Cart is empty.', color: 'red', timeout: 1500 })
+    return
+  }
   loading.value = true
+  if (selectedPayment.value == 'cod') {
+    processCheckout()
+    return
+  }
+
   let form = {
     customerInfo: {
       first_name: customerInfo.value.firstName,
@@ -340,50 +384,54 @@ const pay = async () => {
       phone: customerInfo.value.contactPersonPhone,
     },
   }
-  const response = await $fetch<{ status: string; payment_url?: string }>('/api/payment/initiate', {
-    method: 'POST',
-    body: {
-      amount: cartStore.subtotal,
-      customer_name:
-        customerInfo.value.firstName + ' ' + customerInfo.value.lastName,
-      customer_email: customerInfo.value.email,
-      customer_phone: customerInfo.value.phone,
-      customer_address: customerInfo.value.address,
-      customer_city: customerInfo.value.city,
-      customer_country: customerInfo.value.country,
-      customer_state: customerInfo.value.district,
-      num_of_items: cartStore.cart.length,
-      cart: cartStore.cart,
-      product_name: cartStore.cart.map((item) => item.product.name).join(','),
-      product_category: 'Tea',
-      product_profile: 'general',
-      order_data: form,
-    },
-  })
+  const response = await $fetch<{ status: string; payment_url?: string }>(
+    '/api/payment/initiate',
+    {
+      method: 'POST',
+      body: {
+        amount: cartStore.subtotal,
+        customer_name:
+          customerInfo.value.firstName + ' ' + customerInfo.value.lastName,
+        customer_email: customerInfo.value.email,
+        customer_phone: customerInfo.value.phone,
+        customer_address: customerInfo.value.address,
+        customer_city: customerInfo.value.city,
+        customer_country: customerInfo.value.country,
+        customer_state: customerInfo.value.district,
+        num_of_items: cartStore.cart.length,
+        cart: cartStore.cart,
+        product_name: cartStore.cart.map((item) => item.product.name).join(','),
+        product_category: 'Tea',
+        product_profile: 'general',
+        order_data: form,
+      },
+    }
+  )
 
   if (response.status === 'success' && response.payment_url) {
-
     paymentUrl.value = response.payment_url
-    window.location.href = paymentUrl.value    // openPayment.value = true
+    window.location.href = paymentUrl.value // openPayment.value = true
   }
   loading.value = false
 }
 onMounted(async () => {
- 
-  if(route.query.success == 'true' && route.query.order_id){
+  if (route.query.success == 'true' && route.query.order_id) {
     {
-      const response = await $fetch<{ data: any, status: string, error: any }>('/api/order/' + route.query.order_id)
-      
+      const response = await $fetch<{ data: any; status: string; error: any }>(
+        '/api/order/' + route.query.order_id
+      )
+
       if (response.status == 'success') {
         cartStore.clearCart()
         console.log(cartStore.cart)
-        toast.add({ title: 'Order Placed Successfully.', color: 'green', timeout: 1500 })
+        toast.add({
+          title: 'Order Placed Successfully.',
+          color: 'green',
+          timeout: 1500,
+        })
         openOrder.value = true
       }
-      
-    
-   
- }
+    }
   }
 })
 </script>

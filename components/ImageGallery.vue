@@ -9,7 +9,7 @@
       target="_blank"
       rel="noreferrer"
     >
-      <img :src="image.thumbnailURL" alt="" />
+      <NuxtImgimg :src="image.thumbnailURL" alt="" />
     </a>
   </div>
 </template>

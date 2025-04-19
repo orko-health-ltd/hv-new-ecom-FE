@@ -28,6 +28,17 @@ import {
 import { Input } from '@/components/ui/input'
 
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import {
   Pagination,
   PaginationEllipsis,
   PaginationFirst,
@@ -45,17 +56,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   CircleUser,
@@ -65,23 +65,15 @@ import {
   PlusCircle,
   Search,
 } from 'lucide-vue-next'
-interface Product {
-  _id: string
-  name: string
-  description: string
-  price: number
-  stock: number
-  is_active: boolean
-  product_images:[{url:string}]
-  created_at: string
-  front_image: string
-}
+import type { Product } from '~/types'
 const searchString = ref('')
 const showMod = ref(false)
 // Pagination
 const itemsPerPage = ref(10)
 const currentPage = ref(1)
-const totalPages = computed(() => Math.ceil(products.value.length / itemsPerPage.value))
+const totalPages = computed(() =>
+  Math.ceil(products.value.length / itemsPerPage.value)
+)
 
 const paginatedProducts = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value
@@ -95,19 +87,15 @@ const goToPage = (page: number) => {
 }
 const emit = defineEmits<{ close: [boolean] }>()
 const getProducts = async () => {
-  const  data  = await $fetch<Product[]>('/api/admin/products')
-  if (data)
-  {
-  products.value = data
-}
-
-  
+  const data = await $fetch<Product[]>('/api/admin/products')
+  if (data) {
+    products.value = data
+  }
 }
 const deleteProduct = async (id: string) => {
   showMod.value = false
-  const { error } = await useFetch('/api/admin/products/'+id, {
+  const { error } = await useFetch('/api/admin/products/' + id, {
     method: 'DELETE',
-   
   })
   if (error.value) {
     console.log(error.value)
@@ -123,14 +111,13 @@ const filterProducts = useDebounceFn(() => {
     return product.name.toLowerCase().includes(searchString.value.toLowerCase())
   })
 })
-onMounted(()=>{
+onMounted(() => {
   getProducts()
 })
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
 })
-
 </script>
 
 <template>
@@ -161,7 +148,9 @@ definePageMeta({
           <Search
             class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
           />
-          <Input v-model="searchString" @input="filterProducts"
+          <Input
+            v-model="searchString"
+            @input="filterProducts"
             type="search"
             placeholder="Search..."
             class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
@@ -250,7 +239,7 @@ definePageMeta({
                         Price
                       </TableHead>
                       <TableHead class="hidden md:table-cell">
-                        Total Sales
+                        Current Stock
                       </TableHead>
                       <TableHead class="hidden md:table-cell">
                         Created at
@@ -261,12 +250,15 @@ definePageMeta({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow v-for="product in paginatedProducts" :key="product._id">  
+                    <TableRow
+                      v-for="product in paginatedProducts"
+                      :key="product._id"
+                    >
                       <TableCell class="hidden sm:table-cell">
-                       <AdminTableImage :image="product.front_image" />
+                        <AdminTableImage :image="product.front_image" />
                       </TableCell>
                       <TableCell class="font-medium">
-                       {{ product.name }}
+                        {{ product.name }}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline"> Draft </Badge>
@@ -274,78 +266,124 @@ definePageMeta({
                       <TableCell class="hidden md:table-cell">
                         {{ product.price }}
                       </TableCell>
-                      <TableCell class="hidden md:table-cell"> 25 </TableCell>
+                      <TableCell class="hidden md:table-cell">
+                        {{ product.stock }}
+                      </TableCell>
                       <TableCell class="hidden md:table-cell">
                         2023-07-12 10:42 AM
                       </TableCell>
-                      <TableCell><AlertDialog>
-                        <DropdownMenu :modal="showMod">
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            
-                              <nuxt-link :to="`/admin/product-management/products/edit/${product._id}`"><DropdownMenuItem>Edit            </DropdownMenuItem></nuxt-link>                  
-                            <DropdownMenuItem>
-                            
-                              <AlertDialogTrigger>Delete</AlertDialogTrigger>
-                             
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu> <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete your account
-                                    and remove your data from our servers.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction  class="bg-red-500 text-white" @click="deleteProduct(product._id)" variant="destructive">Delete</AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                              </AlertDialog>
+                      <TableCell
+                        ><AlertDialog>
+                          <DropdownMenu :modal="showMod">
+                            <DropdownMenuTrigger as-child>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal class="h-4 w-4" />
+                                <span class="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+                              <nuxt-link
+                                :to="`/admin/product-management/products/${product._id}`"
+                                ><DropdownMenuItem
+                                  >View
+                                </DropdownMenuItem></nuxt-link
+                              >
+                              <nuxt-link
+                                :to="`/admin/product-management/products/edit/${product._id}`"
+                                ><DropdownMenuItem
+                                  >Edit
+                                </DropdownMenuItem></nuxt-link
+                              >
+                              <DropdownMenuItem>
+                                <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle
+                                >Are you absolutely sure?</AlertDialogTitle
+                              >
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete your account and remove your
+                                data from our servers.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                class="bg-red-500 text-white"
+                                @click="deleteProduct(product._id)"
+                                variant="destructive"
+                                >Delete</AlertDialogAction
+                              >
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </TableCell>
                     </TableRow>
-                   
                   </TableBody>
                 </Table>
               </CardContent>
               <CardFooter>
-                 <div class="text-xs text-muted-foreground">
-                  Showing <strong>1-10</strong> of <strong>{{ products.length }}</strong>
+                <div class="text-xs text-muted-foreground">
+                  Showing <strong>1-10</strong> of
+                  <strong>{{ products.length }}</strong>
                   products
                 </div>
-                <Pagination v-slot="{ page }" :items-per-page="10" :total="products.length" :sibling-count="1" show-edges :default-page="1">
-                      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
-                        <PaginationFirst />
-                        <PaginationPrev />
+                <Pagination
+                  v-slot="{ page }"
+                  :items-per-page="10"
+                  :total="products.length"
+                  :sibling-count="1"
+                  show-edges
+                  :default-page="1"
+                >
+                  <PaginationList
+                    v-slot="{ items }"
+                    class="flex items-center gap-1"
+                  >
+                    <PaginationFirst />
+                    <PaginationPrev />
 
-                        <template v-for="(item, index) in items">
-                          <PaginationListItem v-if="item.type === 'page'" :key="index" :value="item.value" as-child>
-                            <Button class="w-9 h-9 p-0" @click="goToPage(item.value)" :variant="item.value === page ? 'default' : 'outline'">
-                              {{ item.value }}
-                            </Button>
-                          </PaginationListItem>
-                          <PaginationEllipsis v-else :key="item.type" :index="index" />
-                        </template>
+                    <template v-for="(item, index) in items">
+                      <PaginationListItem
+                        v-if="item.type === 'page'"
+                        :key="index"
+                        :value="item.value"
+                        as-child
+                      >
+                        <Button
+                          class="w-9 h-9 p-0"
+                          @click="goToPage(item.value)"
+                          :variant="item.value === page ? 'default' : 'outline'"
+                        >
+                          {{ item.value }}
+                        </Button>
+                      </PaginationListItem>
+                      <PaginationEllipsis
+                        v-else
+                        :key="item.type"
+                        :index="index"
+                      />
+                    </template>
 
-                        <PaginationNext />
-                        <PaginationLast />
-                      </PaginationList>
-                    </Pagination>
+                    <PaginationNext />
+                    <PaginationLast />
+                  </PaginationList>
+                </Pagination>
               </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
-      </main>    </div>  </div>
+      </main>
+    </div>
+  </div>
 </template>

@@ -6,6 +6,7 @@ export interface Product {
   price: number
   specification: string
   discount: number
+  stock: number
   discount_unit: string
   is_active: boolean
   category: string

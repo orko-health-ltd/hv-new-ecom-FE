@@ -10,7 +10,7 @@
       <Meta name="keywords" :content="'tea, ' + product?.name + ', ' + product?.format + ', premium tea'" />
     </Head>
     <div class="flex text-xs gap-2 px-10 py-2 pt-8">
-      <p>Shop</p>
+      <nuxt-link to="/shop">Shop</nuxt-link>
       \
       <p>Category \ Product</p>
     </div>
@@ -26,9 +26,9 @@
                 @click="scrollToImage(product.front_image)"
                
               >
-                <img
-                  :src="$config.public.apiBase + '/' + product.front_image"
-                  alt="Thumbnail 1"
+                <NuxtImg
+                    :src="`/halda/${product.front_image}`"
+                    :alt="product.name"
                   class="object-cover rounded-md cursor-pointer transition duration-300"
                 />
               </div>
@@ -37,9 +37,9 @@
                 @click="scrollToImage(product.back_image)"
                
               >
-                <img
-                  :src="$config.public.apiBase + '/' + product.back_image"
-                  alt="Thumbnail 1"
+                <NuxtImg
+              :src="`/halda/${product.back_image}`"
+              :alt="product.name"
                   class="object-cover rounded-md cursor-pointer transition duration-300"
                 />
               </div>
@@ -51,34 +51,35 @@
                 v-for="image in product.product_images"
                 :key="image._id"
               >
-                <img
-                  :src="$config.public.apiBase + '/' + image.url"
-                  alt="Thumbnail 1"
+               <NuxtImg
+              :src="`/halda/${image.url}`"
+              :alt="product.name"
                   class="object-cover rounded-md cursor-pointer transition duration-300"
                 />
               </div>
             </div>
           </div>
           <div class="w-full mx-10 px-4 mb-8">
-            <img
+           
               
-              :src="$config.public.apiBase + '/' + product.front_image"
-              alt="Product"
+             <NuxtImg
+              :src="`/halda/${product.front_image}`"
+              :alt="product.name"
               class="w-full h-auto rounded-lg shadow-md mb-4"
               :id="product.front_image"
             />
-            <img
-              
-              :src="$config.public.apiBase + '/' + product.back_image"
-              alt="Product"
+              <NuxtImg
+              :src="`/halda/${product.back_image}`"
+               :alt="product.name"
               class="w-full h-auto rounded-lg shadow-md mb-4"
               :id="product.back_image"
             />
-            <img
+           <NuxtImg
+             
               v-for="image in product.product_images"
               :key="image._id"
-              :src="$config.public.apiBase + '/' + image.url"
-              alt="Product"
+               :src="`/halda/${image.url}`"
+              :alt="product.name"
               class="w-full h-auto rounded-lg shadow-md mb-4"
               :id="image._id"
             />
@@ -169,7 +170,10 @@
                     name="material-symbols:check-circle"
                   />
               
-                  <img :src="$config.public.apiBase + '/' +sku.front_image" class="size-20" alt="" />
+                  <NuxtImg
+              :src="`/halda/${sku.front_image}`"
+              :alt="sku.name"
+                   class="size-20" />
                   <p class="flex text-sm items-center justify-center gap-2">
                     {{ sku.sku }}
                   </p>

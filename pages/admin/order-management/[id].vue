@@ -212,7 +212,7 @@
                                     
                                       <h4 class="font-medium">{{ item.product?.name }} 
                                       </h4>
-                                       <img class="w-14 h-14" :src="$config.public.apiBase+'/'+item.product.front_image" alt="">
+                                       <img class="w-14 h-14" :src="$config.public.apiBase+'/'+item.product?.front_image" alt="">
                                       <p class="text-sm text-muted-foreground">Quantity: {{ item.quantity }}</p>
                                     </div>
                                     <span class="font-medium">৳{{ item.price }}</span>
@@ -345,6 +345,7 @@ const updateStatus = async () => {
       method: 'POST',
       body: {
         status: order.value.status,
+        stocking:order.value.status == 'shipped' ?true : false
       },
     })
    if (data) {

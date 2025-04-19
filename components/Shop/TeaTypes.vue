@@ -49,6 +49,7 @@ interface Category {
 const { data: categories } = await useAsyncData('categories', () =>
   $fetch<{ data: Category[] }>('/api/categories').then(res => res.data)
 )
+
 </script>
 
 <style>

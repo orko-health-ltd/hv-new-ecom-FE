@@ -83,7 +83,7 @@ import { BookUser, Check, CreditCard, Truck } from 'lucide-vue-next'
 const orderId = ref('');
 const loading = ref(false);
 const orderDetails = ref();
-
+const route = useRoute()
 const stepIndex = ref(1)
 const steps = [{
   step: 1,
@@ -122,7 +122,16 @@ const handleTrackOrder = async () => {
   } finally {
     loading.value = false;
   }
-};</script>
+};
+onMounted(() => {
+  if (route.query.id)
+  {
+    orderId.value = route.query.id as string
+  handleTrackOrder()
+}
+
+})
+</script>
 
 <style scoped>
 .track-order-container {

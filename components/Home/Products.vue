@@ -8,12 +8,15 @@
      <h2 class="text-dark font-quattrocento py-4 text-xl sm:text-[34px]  tracking-[20px] font-serif uppercase">
 Products
 </h2>
-<div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-<div v-for="product in products" :key="product.id">
-  <img :src="product.img"  alt="">
+<div v-if="products.length > 0" class="grid grid-cols-1 md:grid-cols-4 gap-2">
+<div v-for="product in products.slice(0,4)" :key="product._id">
+  
+  <NuxtImg
+              :src="`/halda/${product.front_image}`"
+              :alt="product.name" />
    <div class="flex flex-col justify-center items-center  my-5 ">
      <h2 class="text-dark  text-lg font-sans font-[500]">
-{{ product.name }}
+{{ product?.brand_id?.name }}
 </h2>
 <div class="flex w-2/3 justify-between items-center mt-5 gap-5">
    <div class="w-full border-t-2 border-[#b4a345]"></div>
@@ -32,33 +35,24 @@ import Grandeur_WT from 'assets/images/home/Grandeur_WT.jpg'
 import PG_00755 from 'assets/images/home/PG_00755.jpg'
 import TheGlamourCollection from 'assets/images/home/The-Glamour-Collection.jpg'
 // import TheInspirationCollection from 'assets/images/home/The-Inspiration-Collection-Open.jpg'
-
-const products = [
-  {
-    id:1,
-    name: 'The Grandeur Collection',
-    slug:'grandeur',
-    img :Grandeur_WT
-  },
-  {
-    id:2,
-    name: 'The Prestige Collection',
-    slug:'prestige',
-    img :PG_00755
-  },
-  {
-    id:3,
-    name: 'The Glamour Collection',
-    slug:'glamour',
-    img :TheGlamourCollection
-  },
-  // {
-  //   id:4,
-  //   name: 'The Inspiration Collection',
-  //   slug:'inspiration',
-  //   img :TheInspirationCollection
-  // }
-]
+interface Product {
+  _id: string
+  name: string
+  slug: string
+  brand_id: {
+    name: string
+  }
+  front_image: string
+}
+const products = ref<Product[]>([])
+const getProducts = async () => {
+  const { data } = await $fetch<{ data: Product[] }>('/api/products/giftbox')
+  console.log(data)
+  products.value = data
+}
+onMounted(() => {
+  getProducts()
+})
 </script>
 
 

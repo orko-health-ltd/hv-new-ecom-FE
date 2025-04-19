@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
     const config = useRuntimeConfig()
-
+    const order_id = 'ORD-' + Date.now()
     // Create FormData object properly
     const formData = new FormData()
     for (const [key, value] of Object.entries(body)) {
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
         typeof value === 'string' ? value : JSON.stringify(value)
       )
     }
-
+    formData.append('order_id', order_id)
     const data = await $fetch(`${config.public.apiBase}/order/create`, {
       method: 'POST',
       body: formData, // Use FormData correctly
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    console.log('Response:', data)
+   
     return data
   } catch (error: any) {
     console.error('API Error:', error)

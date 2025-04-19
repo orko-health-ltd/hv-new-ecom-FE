@@ -1,7 +1,7 @@
 <template>
    <div class="w-full overflow-hidden h-auto md:h-[90vh] flex items-center justify-center">
      <UCarousel v-slot="{ item }" :items="items" :ui="{ item: 'basis-full' }" class=" overflow-hidden  " arrows>
-    <img :src="item" class="w-full overflow-hidden" draggable="false">
+    <img :src="item" class="w-full overflow-hidden" draggable="false" >
   </UCarousel>
    </div>
 </template>

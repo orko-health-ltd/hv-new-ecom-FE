@@ -24,8 +24,15 @@
        </p>
        </nuxt-link>
       
-    <!-- <p class="flex items-center text-lime-600"> <UIcon class="text-xl" name="tabler:currency-taka" /> {{ props.product.price }}</p> -->
-     <div v-if="!isClicked" class="flex border border-gray-500 rounded-md px-2 py-2 items-center justify-between gap-2 w-full ">
+    
+     <div v-if="props.product.stock == 0" class="flex border border-gray-500 rounded-md px-2 py-2 items-center text-center justify-between gap-2 w-full ">
+        <h1 class="w-full text-gray-400 font-semibold">Out of stock</h1>
+      <!-- <UIcon name="material-symbols:shopping-bag" />
+      <p @click="addProductToCart(props.product)"  class="right-1/3 font-semibold text-sm items-center flex relative" >
+        <UIcon class="text-xl" name="tabler:currency-taka" /> {{props.product.price}} Taka</p> -->
+     </div>
+     <div v-else-if="!isClicked" class="flex border border-gray-500 rounded-md px-2 py-2 items-center justify-between gap-2 w-full ">
+      
       <UIcon name="material-symbols:shopping-bag" />
       <p @click="addProductToCart(props.product)"  class="right-1/3 font-semibold text-sm items-center flex relative" >
         <UIcon class="text-xl" name="tabler:currency-taka" /> {{props.product.price}} Taka</p>

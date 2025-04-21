@@ -107,6 +107,7 @@ const data = {
       { title: 'Categories', url: '/admin/product-management/categories' , icon: 'tabler:category-2'},
       { title: 'Brands', url: '/admin/product-management/brands',icon:'tabler:brand-airtable' },
       { title: 'Products', url: '/admin/product-management/products' , icon:'streamline:shopping-bag-suitcase-1-product-business-briefcase' },
+      { title: 'Stocks', url: '/admin/product-management/stocks' , icon:'lsicon:management-stockout-filled' },
       { title: 'SKU', url: '/admin/product-management/sku' ,icon:'ic:round-edit-attributes'},
       { title: 'Media Library', url: '/admin/product-management/media-library',icon:'iconoir:media-image-folder' },
       { title: 'Reviews & Ratings', url: '/admin/product-management/reviews',icon:'ic:outline-star-half' },

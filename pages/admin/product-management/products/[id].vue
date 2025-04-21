@@ -17,7 +17,7 @@
               <BreadcrumbItem>
                 <BreadcrumbLink as-child>
                   <nuxt-link to="/admin/product-management/products"
-                    >All Products</nuxt-link
+                    >Products</nuxt-link
                   >
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -25,306 +25,247 @@
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink as-child>
-                  <nuxt-link to="/admin/product-management/products/edit"
-                    >Edit Product</nuxt-link
+                  <nuxt-link :to="`/admin/product-management/products/${route.params.id}`"
+                    >View Product</nuxt-link
                   >
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <div class="relative ml-auto flex-1 md:grow-0">
-            <Search
-              class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
-            />
-            <Input
-              type="search"
-              placeholder="Search..."
-              class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-            />
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger as-child>
-              <Button variant="secondary" size="icon" class="rounded-full">
-                <CircleUser class="h-5 w-5" />
-                <span class="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+       
         </header>
         <div class="mt-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Edit Product</CardTitle>
-              <CardDescription>
-                Edit product to manage your stocks.
+
+
+
+
+          <Card class="bg-white rounded-lg shadow-md">
+            <CardHeader class="border-b border-gray-200 p-6">
+              <CardTitle class="text-2xl font-bold text-gray-800">View Product</CardTitle>
+              <CardDescription class="text-gray-600">
+                View product to manage your stocks.
               </CardDescription></CardHeader
             >
             
-            <form @submit.prevent="updateProduct()" class="grid gap-4">
-              <CardContent>
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="grid gap-2">
-                    <Label for="first-name">Brand</Label>
-                    <Select v-model="product.brand_id">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a brand" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectLabel>Brands</SelectLabel>
-                        <SelectItem
-                          v-for="brand in brands"
-                          :key="brand._id"
-                          :value="brand._id"
-                        >
-                          {{ brand.name }}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+
+
+
+
+
+
+            <div class="grid gap-6">
+              <CardContent class="p-6">
+                <div class="grid grid-cols-2 gap-6">
+                  <div class="space-y-2">
+                    <Label for="first-name" class="text-sm font-medium text-gray-700">Brand</Label>
+                   <h1 class="text-lg font-semibold text-gray-900">{{product.brand_info?.name}}</h1>
                   </div>
 
-                  <div class="grid gap-2">
-                    <Label for="first-name">Category</Label>
-                    <Select v-model="product.category_id">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectLabel>Category</SelectLabel>
-                        <SelectItem
-                          v-for="category in categories"
-                          :key="category._id"
-                          :value="category._id"
-                        >
-                          {{ category.name }}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+
+
+
+                  <div class="space-y-2">
+                    <Label for="first-name" class="text-sm font-medium text-gray-700">Category</Label>
+                     <h1 class="text-lg font-semibold text-gray-900">{{product.category_info?.name}}</h1>
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="first-name">SKU</Label>
-                    <Select v-model="product.sku_id">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a SKU" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectLabel>SKU</SelectLabel>
-                        <SelectItem
-                          v-for="sku in skus"
-                          :key="sku._id"
-                          :value="sku._id"
-                        >
-                          {{ sku.name }}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+
+
+
+                  <div class="space-y-2">
+                    <Label for="first-name" class="text-sm font-medium text-gray-700">SKU</Label>
+                      <h1 class="text-lg font-semibold text-gray-900">{{product.sku_info?.name}}</h1>
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="first-name">Format</Label>
-                    <Select v-model="product.format">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a Format" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectLabel>Format</SelectLabel>
-                        <SelectItem
-                          v-for="format in formats"
-                          :key="format"
-                          :value="format"
-                        >
-                          {{ format }}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+
+
+
+                  <div class="space-y-2">
+                    <Label for="first-name" class="text-sm font-medium text-gray-700">Format</Label>
+                     <h1 class="text-lg font-semibold text-gray-900">{{product.format}}</h1>
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Name</Label>
-                    <Input
-                      v-model="productName"
-                      id="last-name"
-                      type="text"
-                      required
-                      disabled
-                    />
+
+
+
+                  <div class="space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Name</Label>
+                    <h1 class="text-lg font-semibold text-gray-900">{{product.name}}</h1>
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Specification</Label>
-                    <Textarea
-                      v-model="product.specification"
-                      placeholder="Product Details."
-                    />
+                  <div class="space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Current Stock</Label>
+                    <h1 class="text-lg font-semibold text-gray-900">{{product.stock}}</h1>
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Price</Label>
-                    <Input
-                      v-model="product.price"
-                      id="last-name"
-                      type="number"
-                      required
-                    />
+
+
+
+                  <div class="col-span-2 space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Specification</Label>
+                    <p class="text-gray-700"
+                      > {{product.specification}}
+                    </p>
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Discount</Label>
-                    <Input
-                      v-model="product.discount"
-                      id="last-name"
-                      type="number"
-                      required
-                    />
+
+
+
+                  <div class="space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Price</Label>
+                   <h1 class="text-lg font-semibold text-gray-900">{{product.price}}</h1>
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Discount Unit</Label>
-                    <Select v-model="product.discount_unit">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Discount Unit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectLabel>Unit</SelectLabel>
-                        <SelectItem value="percentage"> Percentage </SelectItem>
-                        <SelectItem value="amount"> Amount </SelectItem>
-                      </SelectContent>
-                    </Select>
+
+
+
+                  <div class="space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Discount</Label>
+                   <h1 class="text-lg font-semibold text-gray-900">{{product.discount}}</h1>
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Is Active</Label>
-                    <Switch
+
+
+
+                  <div class="space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Discount Unit</Label>
+                    <h1 class="text-lg font-semibold text-gray-900">{{product.discount_unit}}</h1>
+                  </div>
+
+
+                  <div class="space-y-2 flex flex-col">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Is Active</Label>
+                    <Switch disabled
                       @update:checked="product.is_active = !product.is_active"
                       :checked="product.is_active"
+                      class="mt-1"
                     />
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Is Featured</Label>
-                    <Switch
+
+
+                  <div class="space-y-2 flex flex-col">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Is Featured</Label>
+                    <Switch disabled
                       :checked="product.is_featured"
                       @update:checked="
                         product.is_featured = !product.is_featured
                       "
+                      class="mt-1"
                     />
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Is Combo</Label>
-                    <Switch
+
+
+                  <div class="space-y-2 flex flex-col">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Is Combo</Label>
+                    <Switch disabled
                       :checked="product.is_combo"
                       @update:checked="product.is_combo = !product.is_combo"
+                      class="mt-1"
                     />
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="sku">Features</Label>
-                    <TagsInput v-model="product.features">
-                      <TagsInputItem
-                        v-for="item in product.features"
+
+
+
+                  <div class="space-y-2">
+                    <Label for="sku" class="text-sm font-medium text-gray-700">Features</Label>
+                    <ul class="list-disc pl-5 text-gray-700">
+                      <li  v-for="item in product.features"
                         :key="item"
-                        :value="item"
-                      >
-                        <TagsInputItemText />
-                        <TagsInputItemDelete />
-                      </TagsInputItem>
-                      
-                      <TagsInputInput placeholder="Product Tags..." />
-                    </TagsInput>
+                        :value="item">{{item}}</li>
+                    </ul>
+
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="sku">Ingredients</Label>
-                    <TagsInput v-model="product.ingredients">
-                      <TagsInputItem
-                        v-for="item in product.ingredients"
-                        :key="item"
-                        :value="item"
-                      >
-                        <TagsInputItemText />
-                        <TagsInputItemDelete />
-                      </TagsInputItem>
-                      
-                      <TagsInputInput placeholder="Product Tags..." />
-                    </TagsInput>
+
+
+
+                  <div class="space-y-2">
+                    <Label for="sku" class="text-sm font-medium text-gray-700">Ingredients</Label>
+                    <ul class="list-disc pl-5 text-gray-700">
+                      <li v-for="item in product.ingredients"
+                        :key="item">
+                      {{item}}
+                      </li>
+                    </ul>
+
                   </div>
-                  <div class="col-span-2 gap-2">
-                    <Label for="sku">Brewing Guides</Label>
-                    <TagsInput v-model="product.brewing_guide" class="h-[90px] items-start">
-                      <TagsInputItem
-                        v-for="item in product.brewing_guide"
-                        :key="item"
-                        :value="item"
-                      >
-                        <TagsInputItemText />
-                        <TagsInputItemDelete />
-                      </TagsInputItem>
-                      
-                      <TagsInputInput placeholder="Brewing Guides..." />
-                    </TagsInput>
+
+
+
+                  <div class="col-span-2 space-y-2">
+                    <Label for="sku" class="text-sm font-medium text-gray-700">Brewing Guides</Label>
+                    <ul class="list-decimal pl-5 text-gray-700">
+                      <li v-for="item in product.brewing_guide"
+                        :key="item">{{item}}</li>
+                    </ul>
+
                   </div>
-                  <div class="grid gap-2">
-                    <Label for="last-name">Front Image</Label>
-                    <Input
-                      id="last-name"
-                      type="file"
-                      @change="(event: Event) => handleFileChange(event, product, 'front_image')"
+
+
+
+                  <div class="space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Front Image</Label>
+                   <NuxtImg :src="`/halda/${product.front_image}`" class="rounded-lg shadow-sm" />
+                  </div>
+                
+
+
+                  <div class="space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Back Image</Label>
+                     <NuxtImg
+
+
+
+
+                      :src="`/halda/${product.back_image}`"
+                      :alt="product.name"
+                      class="w-auto h-20 rounded-lg shadow-sm"
                     />
                   </div>
-                 <NuxtImg
-              :src="`/halda/${product.front_image}`"
-              :alt="product.name"
-                    class="w-auto h-20"
-                  />
-                  <div class="grid gap-2">
-                    <Label for="last-name">Back Image</Label>
-                    <Input
-                      id="last-name"
-                      type="file"
-                      @change="(event: Event) => handleFileChange(event, product, 'back_image')"
-                    />
-                  </div>
-                  <img
-                    :src="
-                      back_image
-                        ? back_image
-                        : $config.public.apiBase+'/'+product.back_image
-                    "
-                    alt="Product Image"
-                    class="w-auto h-20"
-                  />
-                  <div class="grid gap-2">
-                    <Label for="last-name">Thumbnail Images</Label>
-                    <Input
-                      id="last-name" multiple
-                      type="file"
-                      @change="(event: Event) => uploadImage(event)"
-                    />
-                  </div>
-                  <div class="grid items-center justify-center grid-cols-4 gap-2">
+                
+
+
+                  <div class="col-span-2 space-y-2">
+                    <Label for="last-name" class="text-sm font-medium text-gray-700">Thumbnail Images</Label>
+                  
+
+                  <div class="grid items-center justify-center grid-cols-6 gap-4">
                      <div v-for="image in (product.product_images as Array<{url: string,_id:string}>)" class="relative w-20 h-20" :class="deleting == image._id ? 'opacity-50 animate-pulse' : ''">
-                    <button @click="deleteImage(image)" type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                        x
-                      </button>
-                    <AdminTableImage  :image="image.url" :key="image.url" />
                    
-                      
-                      <!-- <img
-                        :src="
-                          image
-                            ? image
-                            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
-                        "
-                        alt="Product Image"
-                        class="w-auto h-20"
-                      /> -->
-                    </div>                  </div>
+
+                    <AdminTableImage class="rounded-lg shadow-sm" :image="image.url" :key="image.url" />
+                   
+
+
+                           </div>  </div>
+                </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button class="text-white" :disabled="updating">
-                  <Loader2 v-if="updating" class="w-4 h-4 mr-2 animate-spin" />
-                  Update Product</Button
-                >
+
+
+              <CardFooter class="border-t flex space-y-3 flex-col border-gray-200 p-6">
+                <h1 class="text-2xl font-bold">Stock Log</h1>
+                <Separator />
+               <Table>
+                <TableCaption>A list of your recent invoices.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead >
+                      Date
+                    </TableHead> <TableHead >
+                      Quantity
+                    </TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Reason</TableHead>
+                   
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow v-for="stock in product.stock_info" :key="stock._id">
+                    <TableCell class="font-medium">
+                      {{ moment(stock.date).format('MMM DD, YYYY : hh:mm a') }}
+                    </TableCell>
+                     <TableCell>{{ stock.quantity }}</TableCell>
+                    <TableCell>{{ stock.type }}</TableCell>
+                    <TableCell>{{ stock.reason }}</TableCell>
+                   
+                   
+                  </TableRow>
+                </TableBody>
+              </Table>
               </CardFooter>
-            </form>
+            </div>
           </Card>
         </div>
       </div>
@@ -332,10 +273,10 @@
   </ClientOnly> 
 </template>
 <script lang="ts" setup>
-import { get } from '@vueuse/core'
-import { CircleUser, Loader2, Search } from 'lucide-vue-next'
+import { Loader2 } from 'lucide-vue-next'
 import Label from '~/components/ui/label/Label.vue'
-
+import type { Product } from '~/types'
+import moment from 'moment'
 interface Brand {
   name: string
   _id: string
@@ -353,29 +294,6 @@ interface Category {
   is_active: boolean
 }
 
-interface Product {
-  _id: string
-  name: string
-  color: string
-  price: number
-  specification: string
-  discount: number
-  discount_unit: string
-  is_active: boolean
-  is_featured: boolean
-  is_combo: boolean
-  product_images: Array<never>
-  brand_id: string
-  sku_id: string
-  category_id: string
-  format: string
-  features: string[]
-  description: string
-  ingredients: string[]
-  brewing_guide: string[]
-  front_image: string
-  back_image: string
-}
 
 const toast = useToast()
 const route = useRoute()
@@ -388,30 +306,7 @@ const front_image = ref<string>('')
 const back_image = ref<string>('')
 const formats = ['Loose Leaf', 'Tea Bag']
 const deleting = ref('')
-const product = ref<Product>({
-  _id: '',
-  name: '',
-  color: '',
-  price: 0,
-  specification: '',
-  discount: 0,
-  discount_unit: 'percentage',
-  is_active: false,
-  is_featured: false,
-  is_combo: false,
-  product_images: [],
-  brand_id: '',
-  sku_id: '',
-  category_id: '',
-  format: '',
-  features: [],
-  description: '',
-  ingredients: [],
-  brewing_guide: [],
-  front_image: '',
-  back_image: ''
-})
-
+const product = ref<Product>({} as Product)
 const getProduct = async () => {
   try {
     const { data } = await $fetch<{ data: Product }>(`/api/admin/products/${route.params.id}`)

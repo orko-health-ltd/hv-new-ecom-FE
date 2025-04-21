@@ -1,12 +1,18 @@
 export default defineEventHandler(async (event) => {
- 
-
+  const token = getCookie(event, 'token')
+  console.log('token', token)
   const config = useRuntimeConfig()
   try {
-    const { data } = await $fetch<{ data: unknown }>(
-      `${config.public.apiBase}/product/list`
+    const users = await $fetch(
+      `${config.public.apiBase}/dashboard/analytics`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     )
-    return data
+
+    return users
   } catch (error: unknown) {
     const statusCode =
       error instanceof Error && 'statusCode' in error
@@ -15,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode,
-      message: 'Failed to fetch user data',
+      message: 'Failed to fetch analytics data',
     })
   }
 })

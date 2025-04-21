@@ -12,7 +12,7 @@ export interface Product {
   category: string
   is_featured: boolean
   is_combo: boolean
-  product_images: {name:string,url:string,_id:string}[]
+  product_images: { name: string; url: string; _id: string }[]
   brand_id: string
   sku_id: string
   category_id: string
@@ -31,7 +31,38 @@ export interface Product {
     description: string
     image: string
     is_active: boolean
-  }}
+  }
+  brand_info: {
+    _id: string
+    name: string
+    description: string
+    image: string
+    is_active: boolean
+  }
+  category_info: {
+    _id: string
+    name: string
+    image: string
+    description: string
+    is_active: boolean
+  }
+  sku_info: {
+    _id: string
+    name: string
+    image: string
+    description: string
+    is_active: boolean
+  }
+  stock_info: [
+    {
+      _id: string
+      quantity: string
+      date: string
+      type: string
+      reason: boolean
+    }
+  ]
+}
 export interface Category {
   _id: string
   name: string

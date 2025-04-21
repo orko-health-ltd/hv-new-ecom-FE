@@ -1,10 +1,11 @@
 <template>
   <div>
+   
      <NuxtImg
                           alt="Product image"
                           class="aspect-square rounded-md object-cover"
                           height="64"
-                          :src="imageUrl"
+                          :src="'/halda/'+props.image"
                           width="64"
                         />
   </div>
@@ -14,7 +15,7 @@
 const props = defineProps(['image'])
 console.log(props.image)
 const config = useRuntimeConfig()
-const imageUrl = config.public.apiBase+'/'+props.image
+
 </script>
 
 <style>

@@ -3,7 +3,8 @@
     <div class="flex gap-2 px-10 py-2 pt-8">
         <nuxt-link to="/shop" > Shop</nuxt-link>
       \
-      <p>{{ route?.params.slug }} \</p>
+       <nuxt-link :to="`/shop/${route?.params.slug}`" > {{ route?.params.slug }}</nuxt-link>
+     
     </div>
 
     <div class="flex px-10 py-3 gap-2 flex-col justify-start items-start">
@@ -46,21 +47,21 @@
                       <h3 class="text-md font-bold mb-3">Tea Format</h3>
                       <div class="space-y-3 text-xs">
                         <label class="flex items-center">
-                          <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-600" />
+                          <input type="checkbox" v-model="filters.teaFormats.looseLeaf" class="form-checkbox h-4 w-4 text-gray-600" />
                           <span class="ml-2">Loose Leaf</span>
                         </label>
                         <label class="flex items-center">
-                          <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-600" />
+                          <input type="checkbox" v-model="filters.teaFormats.teaBags"  class="form-checkbox h-4 w-4 text-gray-600" />
                           <span class="ml-2">Tea Bags</span>
                         </label>
-                        <label class="flex items-center">
+                        <!-- <label class="flex items-center">
                           <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-600" />
                           <span class="ml-2">Powder</span>
                         </label>
                         <label class="flex items-center">
                           <input type="checkbox" class="form-checkbox h-4 w-4 text-gray-600" />
                           <span class="ml-2">Ready to Drink</span>
-                        </label>
+                        </label> -->
                       </div>
                     </div>
           
@@ -69,31 +70,32 @@
             <div class="space-y-3 text-xs">
               <label class="flex items-center">
                 <input
-                  type="checkbox"
+                  type="checkbox" v-model="filters.priceRange.under250"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
-                <span class="ml-2">Under $25</span>
+                
+                <span class="ml-2">Under ৳250</span>
               </label>
               <label class="flex items-center">
                 <input
-                  type="checkbox"
+                  type="checkbox" v-model="filters.priceRange.over250"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
-                <span class="ml-2">$25 - $50</span>
+                <span class="ml-2">৳250 - ৳500</span>
               </label>
               <label class="flex items-center">
                 <input
-                  type="checkbox"
+                  type="checkbox" v-model="filters.priceRange.over500"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
-                <span class="ml-2">$50 - $100</span>
+                <span class="ml-2">৳500 - ৳1000</span>
               </label>
               <label class="flex items-center">
                 <input
-                  type="checkbox"
+                  type="checkbox" v-model="filters.priceRange.over1000"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
-                <span class="ml-2">Over $100</span>
+                <span class="ml-2">Over ৳1000</span>
               </label>
             </div>
           </div>
@@ -102,39 +104,39 @@
             <h3 class="text-md font-bold mb-3">Tea Type</h3>
             <div class="space-y-3 text-xs">
               <label class="flex items-center">
-                <input
-                  type="checkbox"
+                <input 
+                  type="checkbox" v-model="filters.teaTypes.black"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
                 <span class="ml-2">Black Tea</span>
               </label>
               <label class="flex items-center">
                 <input
-                  type="checkbox"
+                  type="checkbox" v-model="filters.teaTypes.green"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
                 <span class="ml-2">Green Tea</span>
               </label>
               <label class="flex items-center">
                 <input
-                  type="checkbox"
+                  type="checkbox" v-model="filters.teaTypes.oolong"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
                 <span class="ml-2">Oolong Tea</span>
               </label>
               <label class="flex items-center">
                 <input
-                  type="checkbox"
+                  type="checkbox" v-model="filters.teaTypes.white"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
                 <span class="ml-2">White Tea</span>
               </label>
               <label class="flex items-center">
                 <input
-                  type="checkbox"
+                  type="checkbox" v-model="filters.teaTypes.giftBox"
                   class="form-checkbox h-4 w-4 text-gray-600"
                 />
-                <span class="ml-2">Herbal Tea</span>
+                <span class="ml-2">Gift Box</span>
               </label>
             </div>
           </div>
@@ -321,13 +323,18 @@
           </button>
         </div>
       </div>
-      <div class="grid gap-5 grid-cols-4 p-10 h-auto bg-gray-100">
-        <ShopProductCardNew
+      <div class="grid gap-5 grid-cols-4 p-10 w-full h-auto bg-gray-100">
+        <ShopProductCardNew v-if="filteredProducts.length > 0"
           class="hover:border border-gray-700"
-          v-for="product in products"
+          v-for="product in filteredProducts"
           :key="product._id"
           :product="product"
         />
+        <div v-else class="col-span-4">
+          <div class="flex container my-auto  justify-center mx-auto items-center ">
+            <h1 class="w-full text-center text-gray-500 font-semibold text-xl">No Products Found</h1>
+        </div>
+        </div>
       </div>
     </div>
   </div>
@@ -341,13 +348,79 @@ const route = useRoute()
 const category = ref(<Category>{})
 const products = ref<Product[]>([])
 const showFilters = ref(false)
+const filtered = ref(false)
+const filters = ref({
+  
+  teaFormats: {
+    looseLeaf: false,
+    teaBags: false,
+  },
+ teaTypes: {
+    black: false,
+    green: false,
+    white: false,
+    oolong: false,
+    giftBox: false,
+    // herbal: false,
+  },
+  priceRange: {
+    under250: false,
+    over250: false,
+    over500: false,
+    over1000: false,
+  },
+})
 // Replace the getProducts function and onMounted with useAsyncData
-const { data: responseData } = await useAsyncData('products', () =>
-  $fetch<{ status: string, data: { category: any, products: Product[] } }>('/api/categories/products?category=' + route.params.slug)
-)
-watchEffect(() => {
-  if (responseData.value) {
-    products.value = responseData.value.data?.products
+const getProducts = async () => {
+  if (route.params.slug === 'all') {
+    products.value = await $fetch<Product[]>('/api/products')
+  } else {
+    const response = await $fetch<{ status: string, data: { category: any, products: Product[] } }>('/api/categories/products?category=' + route.params.slug)
+    products.value = response.data?.products
   }
+}
+const filteredProducts = computed(() => {
+ 
+  let prod = <Product[]>([])
+  if (Object.values(filters.value).every(category => Object.values(category).every(value => value === false))) {
+    prod = products.value
+  }
+   prod = products.value
+  // Apply tea format filters
+  if (filters.value.teaFormats.looseLeaf || filters.value.teaFormats.teaBags) {
+    prod = prod.filter(product => 
+      (filters.value.teaFormats.looseLeaf && product.format.match(/Loose/)) ||
+      (filters.value.teaFormats.teaBags && product.format === 'Tea Bag')
+    )
+  }
+
+  // Apply tea type filters
+  if (filters.value.teaTypes.black || filters.value.teaTypes.green || 
+      filters.value.teaTypes.white || filters.value.teaTypes.oolong || 
+      filters.value.teaTypes.giftBox) {
+    prod = prod.filter(product =>
+      (filters.value.teaTypes.black && product.category === 'Black Tea') ||
+      (filters.value.teaTypes.green && product.category === 'Green Tea') ||
+      (filters.value.teaTypes.white && product.category === 'White Tea') ||
+      (filters.value.teaTypes.oolong && product.category === 'RROT') ||
+      (filters.value.teaTypes.giftBox && product.category === 'Gift Box')
+    )
+  }
+
+  // Apply price range filters
+  if (filters.value.priceRange.under250 || filters.value.priceRange.over250 || 
+      filters.value.priceRange.over500 || filters.value.priceRange.over1000) {
+    prod = prod.filter(product =>
+      (filters.value.priceRange.under250 && product.price < 250) ||
+      (filters.value.priceRange.over250 && product.price >= 250 && product.price < 500) ||
+      (filters.value.priceRange.over500 && product.price >= 500 && product.price < 1000) ||
+      (filters.value.priceRange.over1000 && product.price >= 1000)
+    )
+  }
+  return [...new Set(prod)]
+})
+ 
+onMounted(() => {
+  getProducts()
 })
 </script>

@@ -9,7 +9,7 @@
           world of tea
         </h1>
         <div class="flex gap-2">
-          <Button variant="outline">Shop all teas</Button>
+         <nuxt-link to="/shop/all"><Button variant="outline">Shop all teas</Button></nuxt-link> 
         <Button>Shop top selling teas</Button>
         </div>
         </div>

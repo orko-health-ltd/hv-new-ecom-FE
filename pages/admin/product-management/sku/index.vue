@@ -179,33 +179,33 @@ definePageMeta({
               </Button>
             </div>
           </div>
-           <div class="mt-3" v-if="showCreateForm || showEditForm">
-            <Card>
-                <CardHeader>
-                   <CardTitle>{{showEditForm ? 'Update SKU' : 'Add SKU'}}</CardTitle>
-                <CardDescription>
-                {{ showEditForm ? 'Update SKU data to manage and identify products':'Add new skus to manage your products.' }} 
-                </CardDescription></CardHeader>
-                <form @submit.prevent="showEditForm ? updateSku() : createSku()" class="grid gap-4">
-                <CardContent>
+            <div class="mt-3" v-if="showCreateForm || showEditForm">
+              <Card>
+                  <CardHeader>
+                    <CardTitle>{{showEditForm ? 'Update SKU' : 'Add SKU'}}</CardTitle>
+                  <CardDescription>
+                  {{ showEditForm ? 'Update SKU data to manage and identify products':'Add new skus to manage your products.' }} 
+                  </CardDescription></CardHeader>
+                  <form @submit.prevent="showEditForm ? updateSku() : createSku()" class="grid gap-4">
+                  <CardContent>
 
-                     <div class="grid grid-cols-2 gap-4">
-          <div class="grid gap-2">
-            <Label for="first-name">SKU name</Label>
-            <Input id="first-name" v-model="sku.name"  required placeholder="Brand"  />
+                      <div class="grid grid-cols-2 gap-4">
+            <div class="grid gap-2">
+              <Label for="first-name">SKU name</Label>
+              <Input id="first-name" v-model="sku.name"  required placeholder="Brand"  />
+            </div>
+          
+          
           </div>
-        
-         
-        </div>
-                </CardContent>
-                <CardFooter class="gap-3">
-                    <Button type="submit" class="text-white" :disabled="creating"> <Loader2 v-if="creating" class="w-4  h-4 mr-2 animate-spin" />
-                      {{ showEditForm ? 'Update SKU' : 'Add SKU' }}</Button>
-                      <Button type="button" variant="outline" @click="showEditForm = false, showCreateForm = false, sku={_id: '', name: '',   is_active: false}">Cancel</Button>
-                </CardFooter>
-                </form>
-            </Card>
-        </div>
+                  </CardContent>
+                  <CardFooter class="gap-3">
+                      <Button type="submit" class="text-white" :disabled="creating"> <Loader2 v-if="creating" class="w-4  h-4 mr-2 animate-spin" />
+                        {{ showEditForm ? 'Update SKU' : 'Add SKU' }}</Button>
+                        <Button type="button" variant="outline" @click="showEditForm = false, showCreateForm = false, sku={_id: '', name: '',   is_active: false}">Cancel</Button>
+                  </CardFooter>
+                  </form>
+              </Card>
+          </div>
           <TabsContent value="all">
             <Card>
               <CardHeader>

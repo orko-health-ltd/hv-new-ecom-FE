@@ -14,7 +14,7 @@ const showEditForm = ref(false)
 const creating = ref(false)
 const loading = ref(false)
 const orders = ref<Order[]>([])
-const status = ref<string>('pending')
+const status = ref<string>('delivered')
 const getOrders = async () => {
   const { data } = await $fetch<{ data: Order[] }>(
     `/api/admin/orders?status=${status.value}`
@@ -49,8 +49,8 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/order-management/pending"
-                  >Pending Orders</nuxt-link
+                <nuxt-link to="/admin/order-management/completed"
+                  >Completed Orders</nuxt-link
                 >
               </BreadcrumbLink>
             </BreadcrumbItem>

@@ -137,7 +137,7 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/customer-management/customers"
+                <nuxt-link to="/admin/customer-management"
                   >Customers</nuxt-link
                 >
               </BreadcrumbLink>
@@ -208,14 +208,14 @@ definePageMeta({
                   Export
                 </span>
               </Button>
-              <nuxt-link to="/admin/customer-management/customers/create">
+              <!-- <nuxt-link to="/admin/customer-management/customers/create">
                 <Button size="sm" class="h-7 text-white gap-1">
                   <PlusCircle class="h-3.5 w-3.5" />
                   <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Customer
                   </span>
                 </Button></nuxt-link
-              >
+              > -->
             </div>
           </div>
           <TabsContent value="all">
@@ -270,15 +270,15 @@ definePageMeta({
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-                              <nuxt-link
+                              <!-- <nuxt-link
                                 :to="`/admin/customer-management/customers/edit/${customer._id}`"
                                 ><DropdownMenuItem
                                   >Edit
                                 </DropdownMenuItem></nuxt-link
-                              >
-                              <DropdownMenuItem>
+                              > -->
+                              <!-- <DropdownMenuItem>
                                 <AlertDialogTrigger>Delete</AlertDialogTrigger>
-                              </DropdownMenuItem>
+                              </DropdownMenuItem> -->
                             </DropdownMenuContent>
                           </DropdownMenu>
                           <AlertDialogContent>

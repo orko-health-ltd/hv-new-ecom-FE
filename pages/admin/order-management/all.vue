@@ -38,7 +38,6 @@ const showEditForm = ref(false)
 const creating = ref(false)
 const loading = ref(false)
 const searchString = ref('')
-const { data, refresh } = useFetch<{ data: Order[] }>('/api/admin/orders')
 const orders = ref<Order[]>([])
 
 const df = new DateFormatter('en-US', {
@@ -58,9 +57,9 @@ const filterOrders = useDebounceFn(() => {
     return order.order_id.toLowerCase().includes(searchString.value.toLowerCase())
   })
 }, 1000)
-const getOrders = async () => {
+const getOrders = async (type?: string ) => {
   const { data } = await $fetch<{ data: Order[] }>(
-    `/api/admin/orders`
+    `/api/admin/orders${type ? `?type=${type}` : ''}`
   )
   orders.value = data || []
 }
@@ -96,7 +95,7 @@ const getPageNumbers = computed(() => {
 })
 
 onMounted(() => {
-  getOrders()
+  getOrders('')
 })
 definePageMeta({
   layout: 'admin',
@@ -161,11 +160,11 @@ definePageMeta({
           <div class="flex items-center">
             <TabsList>
               <TabsTrigger value="all"> All </TabsTrigger>
-              <TabsTrigger value="active"> Active </TabsTrigger>
-              <TabsTrigger value="draft"> Draft </TabsTrigger>
-              <TabsTrigger value="archived" class="hidden sm:flex">
+              <TabsTrigger value="online_payment" @click="getOrders('online_payment')"> Online Payment </TabsTrigger>
+              <TabsTrigger value="cod" @click="getOrders('cod')"> Cash on delivery </TabsTrigger>
+              <!-- <TabsTrigger value="archived" >
                 Archived
-              </TabsTrigger>
+              </TabsTrigger> -->
             </TabsList>
 
             <div class="ml-auto flex items-center gap-2">
@@ -235,6 +234,280 @@ definePageMeta({
             <Card>
               <CardHeader>
                 <CardTitle>All Orders</CardTitle>
+                <CardDescription>
+                  Manage your orders and view the progress.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                    
+                      <TableHead>Order ID</TableHead>
+                      <TableHead>Order Status</TableHead>
+                      <TableHead>Order Date</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <!-- <TableHead>Delivery Charge</TableHead> -->
+
+                      <TableHead >
+                        Payment Status
+                      </TableHead>
+                      <TableHead >
+                       Contact Person 
+                      </TableHead>
+                      <TableHead>
+                        <span class="sr-only">Actions</span>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow
+                      v-for="order in paginatedOrders"
+                      :key="order._id"
+                    >
+                   
+                      <TableCell class="font-medium">
+                        {{ order?.order_id }}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                        class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600': order.status === 'pending',
+                            'bg-blue-500 hover:bg-blue-600': order.status === 'processing',
+                            'bg-purple-500 hover:bg-purple-600': order.status === 'shipped',
+                            'bg-green-500 hover:bg-green-600': order.status === 'delivered',
+                            'bg-red-500 hover:bg-red-600': order.status === 'cancelled'
+                          }"
+                        >
+                          {{ order.status }}                        </Badge>
+                      </TableCell>
+
+                      <TableCell >
+                        {{moment(order.orderDate).format('DD/MM/YYYY') }}
+                      </TableCell>
+                      <TableCell >
+                        {{order.totalAmount}}
+                      </TableCell>
+                      <TableCell >
+                         <Badge
+                        class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600': order.paymentStatus === 'pending',
+                            
+                            'bg-purple-500 hover:bg-purple-600': order.paymentStatus === 'refunded',
+                            'bg-green-500 hover:bg-green-600': order.paymentStatus === 'paid',
+                            'bg-red-500 hover:bg-red-600': order.paymentStatus === 'failed'
+                          }"
+                        >
+                          {{ order.paymentStatus }}                        </Badge>
+                      </TableCell>
+                      <TableCell >
+                        <div class="flex flex-col">
+                         <h1>{{ order.contactPerson.name }}</h1>  
+                       <p class="text-xs font-semibold"> {{ order.contactPerson.phone }}</p>
+                        </div>
+                       
+                      </TableCell>
+
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger as-child>
+                            <Button
+                              aria-haspopup="true"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <MoreHorizontal class="h-4 w-4" />
+                              <span class="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <nuxt-link :to="`/admin/order-management/${order._id}`"> <DropdownMenuItem
+                             
+                              >View</DropdownMenuItem
+                            ></nuxt-link> 
+                            <DropdownMenuItem
+                             
+                              >Edit</DropdownMenuItem
+                            >
+                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+              <CardFooter class="flex justify-between">
+                <div class="text-xs text-muted-foreground">
+                  Showing <strong>1-10</strong> of <strong>{{ orders.length }}</strong>
+                  products
+                </div>
+                <Pagination v-slot="{ page }" :items-per-page="10" :total="orders.length" :sibling-count="1" show-edges :default-page="1">
+                      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+                        <PaginationFirst />
+                        <PaginationPrev />
+
+                        <template v-for="(item, index) in items">
+                          <PaginationListItem v-if="item.type === 'page'" :key="index" :value="item.value" as-child>
+                            <Button class="w-9 h-9 p-0" @click="goToPage(item.value)" :variant="item.value === page ? 'default' : 'outline'">
+                              {{ item.value }}
+                            </Button>
+                          </PaginationListItem>
+                          <PaginationEllipsis v-else :key="item.type" :index="index" />
+                        </template>
+
+                        <PaginationNext />
+                        <PaginationLast />
+                      </PaginationList>
+                    </Pagination>
+
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="cod">
+            <Card>
+              <CardHeader>
+                <CardTitle>Cash on Delivery Orders</CardTitle>
+                <CardDescription>
+                  Manage your orders and view the progress.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                    
+                      <TableHead>Order ID</TableHead>
+                      <TableHead>Order Status</TableHead>
+                      <TableHead>Order Date</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <!-- <TableHead>Delivery Charge</TableHead> -->
+
+                      <TableHead >
+                        Payment Status
+                      </TableHead>
+                      <TableHead >
+                       Contact Person 
+                      </TableHead>
+                      <TableHead>
+                        <span class="sr-only">Actions</span>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow
+                      v-for="order in paginatedOrders"
+                      :key="order._id"
+                    >
+                   
+                      <TableCell class="font-medium">
+                        {{ order?.order_id }}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                        class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600': order.status === 'pending',
+                            'bg-blue-500 hover:bg-blue-600': order.status === 'processing',
+                            'bg-purple-500 hover:bg-purple-600': order.status === 'shipped',
+                            'bg-green-500 hover:bg-green-600': order.status === 'delivered',
+                            'bg-red-500 hover:bg-red-600': order.status === 'cancelled'
+                          }"
+                        >
+                          {{ order.status }}                        </Badge>
+                      </TableCell>
+
+                      <TableCell >
+                        {{moment(order.orderDate).format('DD/MM/YYYY') }}
+                      </TableCell>
+                      <TableCell >
+                        {{order.totalAmount}}
+                      </TableCell>
+                      <TableCell >
+                         <Badge
+                        class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600': order.paymentStatus === 'pending',
+                            
+                            'bg-purple-500 hover:bg-purple-600': order.paymentStatus === 'refunded',
+                            'bg-green-500 hover:bg-green-600': order.paymentStatus === 'paid',
+                            'bg-red-500 hover:bg-red-600': order.paymentStatus === 'failed'
+                          }"
+                        >
+                          {{ order.paymentStatus }}                        </Badge>
+                      </TableCell>
+                      <TableCell >
+                        <div class="flex flex-col">
+                         <h1>{{ order.contactPerson.name }}</h1>  
+                       <p class="text-xs font-semibold"> {{ order.contactPerson.phone }}</p>
+                        </div>
+                       
+                      </TableCell>
+
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger as-child>
+                            <Button
+                              aria-haspopup="true"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <MoreHorizontal class="h-4 w-4" />
+                              <span class="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <nuxt-link :to="`/admin/order-management/${order._id}`"> <DropdownMenuItem
+                             
+                              >View</DropdownMenuItem
+                            ></nuxt-link> 
+                            <DropdownMenuItem
+                             
+                              >Edit</DropdownMenuItem
+                            >
+                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+              <CardFooter class="flex justify-between">
+                <div class="text-xs text-muted-foreground">
+                  Showing <strong>1-10</strong> of <strong>{{ orders.length }}</strong>
+                  products
+                </div>
+                <Pagination v-slot="{ page }" :items-per-page="10" :total="orders.length" :sibling-count="1" show-edges :default-page="1">
+                      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+                        <PaginationFirst />
+                        <PaginationPrev />
+
+                        <template v-for="(item, index) in items">
+                          <PaginationListItem v-if="item.type === 'page'" :key="index" :value="item.value" as-child>
+                            <Button class="w-9 h-9 p-0" @click="goToPage(item.value)" :variant="item.value === page ? 'default' : 'outline'">
+                              {{ item.value }}
+                            </Button>
+                          </PaginationListItem>
+                          <PaginationEllipsis v-else :key="item.type" :index="index" />
+                        </template>
+
+                        <PaginationNext />
+                        <PaginationLast />
+                      </PaginationList>
+                    </Pagination>
+
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="online_payment">
+            <Card>
+              <CardHeader>
+                <CardTitle>Online Payments Orders</CardTitle>
                 <CardDescription>
                   Manage your orders and view the progress.
                 </CardDescription>

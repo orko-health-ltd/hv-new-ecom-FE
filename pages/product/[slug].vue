@@ -27,6 +27,7 @@
                
               >
                 <NuxtImg
+                 :placeholder="fallbackImage"
                     :src="`/halda/${product.front_image}`"
                     :alt="product.name"
                   class="object-cover rounded-md cursor-pointer transition duration-300"
@@ -38,6 +39,7 @@
                
               >
                 <NuxtImg
+                 :placeholder="fallbackImage"
               :src="`/halda/${product.back_image}`"
               :alt="product.name"
                   class="object-cover rounded-md cursor-pointer transition duration-300"
@@ -52,6 +54,7 @@
                 :key="image._id"
               >
                <NuxtImg
+                :placeholder="fallbackImage"
               :src="`/halda/${image.url}`"
               :alt="product.name"
                   class="object-cover rounded-md cursor-pointer transition duration-300"
@@ -63,12 +66,14 @@
            
               
              <NuxtImg
+              :placeholder="fallbackImage"
               :src="`/halda/${product.front_image}`"
               :alt="product.name"
               class="w-full h-auto rounded-lg shadow-md mb-4"
               :id="product.front_image"
             />
               <NuxtImg
+               :placeholder="fallbackImage"
               :src="`/halda/${product.back_image}`"
                :alt="product.name"
               class="w-full h-auto rounded-lg shadow-md mb-4"
@@ -79,6 +84,7 @@
               v-for="image in product.product_images"
               :key="image._id"
                :src="`/halda/${image.url}`"
+                :placeholder="fallbackImage"
               :alt="product.name"
               class="w-full h-auto rounded-lg shadow-md mb-4"
               :id="image._id"
@@ -172,6 +178,7 @@
               
                   <NuxtImg
               :src="`/halda/${sku.front_image}`"
+               :placeholder="fallbackImage"
               :alt="sku.name"
                    class="size-20" />
                   <p class="flex text-sm items-center justify-center gap-2">
@@ -462,7 +469,8 @@ import NumberFieldDecrement from '~/components/ui/number-field/NumberFieldDecrem
 import NumberFieldIncrement from '~/components/ui/number-field/NumberFieldIncrement.vue'
 import NumberFieldInput from '~/components/ui/number-field/NumberFieldInput.vue'
 import type { Product } from '~/types'
-
+import IMG from '@/assets/images/no-image.jpg'
+const fallbackImage = IMG
 const img2 =
   'https://i3.wp.com/haldavalley.com/wp-content/uploads/2025/02/Web-Page-2-05.jpg'
 const img1 =

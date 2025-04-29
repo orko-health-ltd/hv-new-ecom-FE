@@ -28,10 +28,39 @@
             <UIcon name="mage:filter" class="text-xl" />
             <p class="font-semibold" >{{showFilters ?'Hide Filters' : 'Show Filters'}}</p>
           </div>
-          <div class="flex gap-1 items-center">
+         
+         <DropdownMenu>
+    <DropdownMenuTrigger as-child class="flex gap-1 items-center">
+    
             <UIcon name="lets-icons:sort-list" class="text-2xl" />
             <p class="font-semibold">Sort By</p>
-          </div>
+        
+    </DropdownMenuTrigger>
+    <DropdownMenuContent class="w-56">
+      <DropdownMenuLabel>Sort products by</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuRadioGroup v-model="sortByValue">
+        <DropdownMenuRadioItem value="typedown">
+          Tea Types (A-Z)
+        </DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="typeup">
+          Tea Types (Z-A)
+        </DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="pricedown">
+          Price (Low to High)
+        </DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="priceup">
+          Price (High to Low)
+        </DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="namedown">
+          Name (A-Z)
+        </DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="nameup">
+          Name (Z-A)
+        </DropdownMenuRadioItem>
+      </DropdownMenuRadioGroup>
+    </DropdownMenuContent>
+  </DropdownMenu>
         </div>
       </div>
     </div>
@@ -43,6 +72,47 @@
           <h1 class="text-xl font-semibold">Filters</h1>
         </div>
         <div class="w-64 p-4 bg-white border-r  border-gray-200">
+
+          <div class="mb-6">
+            <h3 class="text-md font-bold mb-3">Tea Type</h3>
+            <div class="space-y-3 text-xs">
+              <label class="flex items-center">
+                <input 
+                  type="checkbox" v-model="filters.teaTypes.black"
+                  class="form-checkbox h-4 w-4 text-gray-600"
+                />
+                <span class="ml-2">Black Tea</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox" v-model="filters.teaTypes.green"
+                  class="form-checkbox h-4 w-4 text-gray-600"
+                />
+                <span class="ml-2">Green Tea</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox" v-model="filters.teaTypes.oolong"
+                  class="form-checkbox h-4 w-4 text-gray-600"
+                />
+                <span class="ml-2">Oolong Tea</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox" v-model="filters.teaTypes.white"
+                  class="form-checkbox h-4 w-4 text-gray-600"
+                />
+                <span class="ml-2">White Tea</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox" v-model="filters.teaTypes.giftBox"
+                  class="form-checkbox h-4 w-4 text-gray-600"
+                />
+                <span class="ml-2">Gift Box</span>
+              </label>
+            </div>
+          </div>
           <div class="mb-6">
                       <h3 class="text-md font-bold mb-3">Tea Format</h3>
                       <div class="space-y-3 text-xs">
@@ -100,46 +170,6 @@
             </div>
           </div>
 
-          <div class="mb-6">
-            <h3 class="text-md font-bold mb-3">Tea Type</h3>
-            <div class="space-y-3 text-xs">
-              <label class="flex items-center">
-                <input 
-                  type="checkbox" v-model="filters.teaTypes.black"
-                  class="form-checkbox h-4 w-4 text-gray-600"
-                />
-                <span class="ml-2">Black Tea</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox" v-model="filters.teaTypes.green"
-                  class="form-checkbox h-4 w-4 text-gray-600"
-                />
-                <span class="ml-2">Green Tea</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox" v-model="filters.teaTypes.oolong"
-                  class="form-checkbox h-4 w-4 text-gray-600"
-                />
-                <span class="ml-2">Oolong Tea</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox" v-model="filters.teaTypes.white"
-                  class="form-checkbox h-4 w-4 text-gray-600"
-                />
-                <span class="ml-2">White Tea</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="checkbox" v-model="filters.teaTypes.giftBox"
-                  class="form-checkbox h-4 w-4 text-gray-600"
-                />
-                <span class="ml-2">Gift Box</span>
-              </label>
-            </div>
-          </div>
 
           <div class="mb-6">
             <h3 class="text-md font-bold mb-3">Origin</h3>
@@ -341,6 +371,7 @@
 </template>
 
 <script lang="ts" setup>
+import { sortBy } from '@unovis/ts'
 import type { Category, Product } from '~/types'
 
 
@@ -349,6 +380,7 @@ const category = ref(<Category>{})
 const products = ref<Product[]>([])
 const showFilters = ref(false)
 const filtered = ref(false)
+const sortByValue = ref('')  
 const filters = ref({
   
   teaFormats: {
@@ -417,9 +449,32 @@ const filteredProducts = computed(() => {
       (filters.value.priceRange.over1000 && product.price >= 1000)
     )
   }
+  if (sortByValue.value === 'pricedown') {
+    prod = prod.sort((a, b) => a.price - b.price)
+  }
+  else if (sortByValue.value === 'priceup') {
+    prod = prod.sort((a, b) => b.price - a.price)
+  }
+  else if (sortByValue.value === 'namedown') {
+    prod = prod.sort((a, b) => a.name.localeCompare(b.name))
+  }
+  else if (sortByValue.value === 'nameup') {
+    prod = prod.sort((a, b) => b.name.localeCompare(a.name))
+  }
+  else if (sortByValue.value === 'typedown') {
+      prod = prod.sort((a, b) => {
+        const order: Record<string, number> = { 'Black Tea': 1, 'Green Tea': 2, 'White Tea': 3, 'Gift Box': 4 };
+        return (order[a.category] ?? 5) - (order[b.category] ?? 5);
+      })
+  } 
+  else if (sortByValue.value === 'typeup') {
+      prod = prod.sort((b, a) => {
+        const order: Record<string, number> = { 'Black Tea': 4, 'Green Tea': 3, 'White Tea': 2, 'Gift Box': 1 };
+        return (order[a.category] ?? 5) - (order[b.category] ?? 5);
+      })
+  } 
   return [...new Set(prod)]
-})
- 
+}) 
 onMounted(() => {
   getProducts()
 })

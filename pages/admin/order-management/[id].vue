@@ -66,6 +66,7 @@
               <CardDescription>
                 Edit product to manage your stocks.
               </CardDescription>
+                
               <div class="flex justify-end items-center gap-2">
                  <Button @click="order.status = 'pending' , stepIndex =1 , updateStatus()" :disabled="order.status == 'pending'" class="bg-yellow-500 text-white hover:bg-yellow-600">Pending
                   <UIcon v-if="order.status == 'pending'" name="i-heroicons-check" />
@@ -80,8 +81,8 @@
                  <Button @click="order.status = 'delivered' , stepIndex = 4 , updateStatus()" :disabled="order.status == 'delivered'" class="bg-green-500 text-white hover:bg-green-600">Delivered
                   <UIcon v-if="order.status == 'delivered'" name="i-heroicons-check" />
                  </Button>
-                 <Button @click="order.status = 'canceled' , updateStatus()" :disabled="order.status == 'canceled'" class="bg-red-500 text-white hover:bg-red-600">Canceled
-                  <UIcon v-if="order.status == 'canceled'" name="i-heroicons-check" />
+                 <Button @click="order.status = 'cancelled' , updateStatus()" :disabled="order.status == 'cancelled'" class="bg-red-500 text-white hover:bg-red-600">Canceled
+                  <UIcon v-if="order.status == 'cancelled'" name="i-heroicons-check" />
                  </Button>
               </div>
              
@@ -137,11 +138,18 @@
                                     <span class="text-muted-foreground">Payment Method:</span>
                                     <span class="font-medium">{{ order.paymentMethod }}</span>
                                   </div>
-                                  <div class="flex justify-between">
+                                  <!-- <div class="flex justify-between">
                                     <span class="text-muted-foreground">Payment Status:</span>
                                    <Badge class="text-white" :class="order.paymentStatus == 'pending' ? 'bg-amber-500':order.paymentStatus == 'refunded' ? 'bg-violet-500':order.paymentStatus == 'failed' ? 'bg-red-500':'bg-green-500'">{{ order.paymentStatus  }}</Badge>
                              
-                                  </div>
+                                  </div> -->
+                                   <div class="flex justify-between">
+                                                                    <span class="text-muted-foreground">Payment Status:</span>
+                                                                    <div class="flex items-center gap-2">
+                                                                      <Badge class="text-white" :class="order.paymentStatus == 'pending' ? 'bg-amber-500':order.paymentStatus == 'refunded' ? 'bg-violet-500':order.paymentStatus == 'failed' ? 'bg-red-500':'bg-green-500'">{{ order.paymentStatus }}</Badge>
+                                                                      <Button class="text-white" v-if="order.paymentMethod === 'cod' && order.paymentStatus === 'pending' && order.status != 'cancelled'" size="sm" @click="updatePaymentStatus(order._id)">Mark as Paid</Button>
+                                                                    </div>
+                                                                  </div>
                                 </div>
                               </div>
 
@@ -338,6 +346,55 @@ const getOrder = async () => {
   } catch (error) {
     console.error('Error fetching order:', error)
   }
+}
+const updatePaymentStatus = async(id:string) => {
+  console.log(order.value)
+  let formdata  = {
+    paymentStatus : 'paid',
+    ssl_ipn : JSON.stringify ({
+amount : order.value.total ,
+bank_tran_id : "",
+base_fair : "0.00",
+card_brand : "Cash",
+card_issuer : "Cash" ,
+card_issuer_country : "Bangladesh" ,
+card_issuer_country_code :  "BD" ,
+card_no :"" , 
+card_sub_brand : "Classic" ,
+card_type : "Cash" ,
+currency :  "BDT" ,
+currency_amount : order.value.total,
+currency_rate : "1.0000" ,
+currency_type :  "BDT" ,
+error : "" ,
+risk_level : "0" ,
+risk_title : "Safe" ,
+status :"VALID" ,
+store_amount : order.value.total ,
+store_id : "",
+tran_date : Date.now(),
+tran_id : order.value.order_id,
+val_id :"" ,
+
+value_a :"",
+value_b :""
+
+})
+}
+try{
+  const { data } = await $fetch<{ data: Order }>(`/api/admin/orders/${route.params.id}`, {
+      method: 'POST',
+      body: formdata,
+    })
+   if (data) {
+    order.value = data
+      toast.add({ title: 'Order payment status updated successfully.', color: 'green', timeout: 1500 })
+   }
+    else {
+      toast.add({ title: 'Error updating order.', color: 'red', timeout: 1500 })
+    }
+}catch(error){
+}
 }
 const updateStatus = async () => {
   try {

@@ -1,5 +1,7 @@
 <template>
   <div class="billing-container">
+    <Invoice v-if="success" :invoice="cartStore.invoice" />
+    <div v-else class="billing-form">
     <div class="flex flex-col justify-center items-center pt-20">
       <img
         class="w-32 h-30 object-cover"
@@ -214,8 +216,9 @@
         Purchase</Button
       >
     </form>
-    <Dialog v-model:open="openOrder">
-      <DialogContent class="flex flex-col items-center justify-center">
+    </div>
+    <Dialog v-model:open="openOrder" class="max-w-lg">
+      <DialogContent class="flex flex-col items-center overflow-y-scroll justify-center">
         <UIcon
           name="material-symbols-light:check-circle-outline"
           class="h-16 w-16 text-green-500"
@@ -236,8 +239,10 @@
             ><Button variant="outline">Return to shopping</Button></nuxt-link
           >
         </div>
+          
       </DialogContent>
     </Dialog>
+  
   </div>
 </template>
 
@@ -250,6 +255,8 @@ const paymentUrl = ref('')
 const route = useRoute()
 const toast = useToast()
 const loading = ref(false)
+const openOrder = ref(false)
+const success = ref(false)
 const customerInfo = ref({
   firstName: '',
   lastName: '',
@@ -336,20 +343,47 @@ const processCheckout = async () => {
         color: 'green',
         timeout: 1500,
       })
+       cartStore.invoice.id =  order.order_id
       openOrder.value = true
+      success.value = true
       loading.value = false
       cartStore.clearCart()
     }, 3000)
   }
 }
 // const postData = ref('')
-const openOrder = ref(false)
+
 const pay = async () => {
   if (cartStore.cart.length == 0) {
     toast.add({ title: 'Cart is empty.', color: 'red', timeout: 1500 })
     return
   }
   loading.value = true
+  cartStore.invoice.name = customerInfo.value.firstName + ' ' + customerInfo.value.lastName
+  cartStore.invoice.email = customerInfo.value.email
+  cartStore.invoice.phone = customerInfo.value.phone
+  cartStore.invoice.address = customerInfo.value.address
+  cartStore.invoice.city = customerInfo.value.city
+  cartStore.invoice.district = customerInfo.value.district
+  cartStore.invoice.country = customerInfo.value.country
+  cartStore.invoice.contactPerson = customerInfo.value.contactPerson
+  cartStore.invoice.contactPersonPhone = customerInfo.value.contactPersonPhone
+  cartStore.invoice.note = customerInfo.value.note
+  cartStore.invoice.paymentMethod = selectedPayment.value
+  cartStore.invoice.paymentStatus = 'pending'
+  cartStore.invoice.shippingCost = cartStore.shippingMethod
+  cartStore.invoice.shippingAddress =  customerInfo.value.address + ' , ' + customerInfo.value.city + ' , ' + customerInfo.value.district + ' , ' + customerInfo.value.country,
+   cartStore.invoice.total = cartStore.subtotal
+   cartStore.invoice.subtotal = cartStore.total
+   cartStore.invoice.created_at = new Date().toISOString()
+  cartStore.invoice.items = cartStore.cart.map((item) => ({
+    product_id: item.id,
+    name:item.product.name,
+    quantity: item.quantity,
+    price: item.price,
+  }))
+  
+  
   if (selectedPayment.value == 'cod') {
     processCheckout()
     return
@@ -422,6 +456,8 @@ onMounted(async () => {
       )
 
       if (response.status == 'success') {
+         cartStore.invoice.id = route.query.order_id as string
+          cartStore.invoice.paymentStatus = 'paid'
         cartStore.clearCart()
         console.log(cartStore.cart)
         toast.add({
@@ -429,6 +465,7 @@ onMounted(async () => {
           color: 'green',
           timeout: 1500,
         })
+        success.value = true
         openOrder.value = true
       }
     }

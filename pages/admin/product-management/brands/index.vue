@@ -289,7 +289,7 @@ definePageMeta({
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem @click="brand = brandData, showEditForm = true">Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <!-- <DropdownMenuItem>Delete</DropdownMenuItem> -->
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   try {
     const query = getQuery(event)
-    const orders = await $fetch(`${config.public.apiBase}/order/list${query.status ? `?status=${query.status}` : ''}`, {
+    const orders = await $fetch(`${config.public.apiBase}/order/list${query.status ? `?status=${query.status}` : ''}${query.type ? `${query.status ? '&' : '?'}type=${query.type}` : ''}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

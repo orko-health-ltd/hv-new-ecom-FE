@@ -20,7 +20,7 @@ as unexpected flavours so there’s something for every taste
   <div class="grid grid-cols-6 gap-6">
   <nuxt-link v-for="item in categories" :to="`/shop/${item.slug}`" :state="{description:item.description}" class="flex flex-col hover:scale-105 transition-transform items-top justify-center gap-2">
      <div class="z-10 relative ">
-     <NuxtImg v-if="item.image"  :src="`/halda/${item.image}`" width="234" height="234" :alt="item.name" class="rounded-lg" />
+     <NuxtImg v-if="item.image" :placeholder="fallbackImage"  :src="`/halda/${item.image}`" width="234" height="234" :alt="item.name" class="rounded-lg" />
      <img v-else src="https://cdn.intelligencebank.com/au/share/NOrD/2lPAP/dMgDY/size=408&quality=70&compresstype=WebP&ext=png/image-hero-banner" width="234" height="234" class="rounded-lg">
     
   </div>
@@ -39,6 +39,8 @@ as unexpected flavours so there’s something for every taste
 </template>
 
 <script lang="ts" setup>
+import IMG from '@/assets/images/no-image.jpg'
+const fallbackImage = IMG
 interface Category {
   id: number
   name: string
@@ -46,6 +48,7 @@ interface Category {
   description: string
   slug: string
 }
+
 const { data: categories } = await useAsyncData('categories', () =>
   $fetch<{ data: Category[] }>('/api/categories').then(res => res.data)
 )

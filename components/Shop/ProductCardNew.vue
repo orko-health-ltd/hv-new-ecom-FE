@@ -10,9 +10,11 @@
  
        <nuxt-link :to="'/product/'+props.product.slug" class="relative group">
         <NuxtImg
+              :placeholder="fallbackImage"
               :src="`/halda/${props.product.front_image}`"
               :alt="props.product.name"class="transition-opacity duration-300 group-hover:opacity-0" />
        <NuxtImg
+          :placeholder="fallbackImage"
               :src="`/halda/${props.product.front_image}`"
               :alt="props.product.name"class="absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"  />
        </nuxt-link>  
@@ -65,7 +67,8 @@
 </template>
 
 <script lang="ts" setup>
-
+import IMG from '@/assets/images/no-image.jpg'
+const fallbackImage = IMG
   const config = useRuntimeConfig()
 const toast = useToast()
 const isClicked = ref(false);

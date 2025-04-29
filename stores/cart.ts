@@ -16,6 +16,30 @@ type CartItem = {
 }
 export const useMyCartStore = defineStore('myCartStore', {
   state: () => ({
+    invoice: {
+      id: '',
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      district: '',
+      contactPerson: '',
+      contactPersonPhone: '',
+      paymentMethod: '',
+      paymentStatus: '',
+      total: 0,
+      subtotal: 0,
+      shippingCost: 0,
+      shippingAddress: '',
+      country: '',
+      note: '',
+      status: '',
+      created_at: '',
+      updated_at: '',
+      deleted_at: '',
+      items: [{ product_id: '',name:'', quantity: 0, price: 0 }],
+    },
     cart: [] as CartItem[],
     subtotal: 0,
     isOpen: false,
@@ -35,7 +59,7 @@ export const useMyCartStore = defineStore('myCartStore', {
         id: 2,
         name: 'Outside Dhaka',
         price: 120,
-      }
+      },
     ],
   }),
   getters: {
@@ -51,7 +75,7 @@ export const useMyCartStore = defineStore('myCartStore', {
     },
   },
   actions: {
-    addToCart(product: Product,quantity:number = 1) {
+    addToCart(product: Product, quantity: number = 1) {
       if (!this.cart.some((item) => item.id === product._id)) {
         let data = {
           id: product._id,
@@ -64,7 +88,7 @@ export const useMyCartStore = defineStore('myCartStore', {
       } else {
         const item = this.cart.find((item) => item.id === product._id)
         if (item) {
-          item.quantity+=quantity
+          item.quantity += quantity
         }
       }
       this.calculateSubtotal()
@@ -74,7 +98,7 @@ export const useMyCartStore = defineStore('myCartStore', {
       if (item) {
         item.quantity++
       }
-       this.calculateSubtotal()
+      this.calculateSubtotal()
     },
     decrement(product: CartItem) {
       const item = this.cart.find((item) => item.id === product.id)
@@ -88,7 +112,7 @@ export const useMyCartStore = defineStore('myCartStore', {
       if (index !== -1) {
         this.cart.splice(index, 1)
       }
-       this.calculateSubtotal()
+      this.calculateSubtotal()
     },
     applyPromo() {
       if (this.promoCode === 'DISCOUNT') {
@@ -98,8 +122,7 @@ export const useMyCartStore = defineStore('myCartStore', {
       }
     },
     calculateSubtotal() {
-      if (this.cart.length == 0)
-      {
+      if (this.cart.length == 0) {
         this.shippingMethod = 0
       }
       this.subtotal = this.total + this.shippingMethod

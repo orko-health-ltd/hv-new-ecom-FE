@@ -15,6 +15,8 @@ interface Category {
   description: string
   is_active: boolean
 }
+import IMG from '@/assets/images/no-image.jpg'
+const fallbackImage = IMG
 const toast = useToast()
 const showCreateForm = ref(false)
 const showEditForm = ref(false)
@@ -27,6 +29,7 @@ const category = ref<Category>({
   description: '',
   is_active: true,
 })
+const imageData = ref(<File | null>null)
 const image = ref('')
 const handleFileChange = (
   event: Event,
@@ -37,7 +40,8 @@ const handleFileChange = (
   const files = target.files
   if (files && files.length > 0) {
     targetObject[property] = files[0]
-
+    imageData.value = files[0]
+    console.log(files[0])
     const reader = new FileReader()
     reader.onload = (e: ProgressEvent<FileReader>) => {
       if (e.target?.result && typeof e.target.result === 'string') {
@@ -52,7 +56,7 @@ const { data, refresh } = useFetch<{ data: Category[] }>(
 )
 const categories = computed(() => data.value?.data || [])
 const createCategory = async () => {
-  loading.value = true
+  creating.value = true
   try {
     const formData = new FormData()
 
@@ -79,20 +83,28 @@ const createCategory = async () => {
 
     refresh()
     setTimeout(() => {
+      creating.value = true
       showCreateForm.value = false
     }, 1000)
   } catch (error) {
     console.log(error)
   }
-  loading.value = true
+  creating.value = true
 }
 const updateCategory = async () => {
-  console.log('xsc')
-  loading.value = true
+ 
+
+  creating.value = true
   try {
+        const formData = new FormData()
+
+    formData.append('name', category.value.name)
+    if(imageData.value)
+    formData.append('image', imageData.value)
+    formData.append('description', category.value.description)
     await $fetch('/api/admin/categories/' + category.value._id, {
       method: 'POST',
-      body: category.value,
+      body:  formData,
     })
     category.value = {
       _id: '',
@@ -109,12 +121,13 @@ const updateCategory = async () => {
 
     refresh()
     setTimeout(() => {
+      creating.value = false
       showEditForm.value = false
     }, 1000)
   } catch (error) {
     console.log(error)
   }
-  loading.value = true
+  creating.value = true
 }
 definePageMeta({
   layout: 'admin',
@@ -220,6 +233,7 @@ definePageMeta({
                   Add Category
                 </span>
               </Button>
+              {{creating}}
             </div>
           </div>
           <div class="mt-3" v-if="showCreateForm || showEditForm">
@@ -269,7 +283,7 @@ definePageMeta({
                         id="last-name"
                         type="file"
                         @change="(event: Event) => handleFileChange(event, category, 'image')"
-                        required
+                        :required="!showEditForm"
                       />
                     </div>
                     <img
@@ -297,7 +311,7 @@ definePageMeta({
                     type="button"
                     variant="outline"
                     @click="
-                      ;(showEditForm = false),
+                      (showEditForm = false),
                         (showCreateForm = false),
                         (category = {
                           _id: '',
@@ -345,13 +359,13 @@ definePageMeta({
                       :key="categoryData._id"
                     >
                       <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          :src="categoryData.image ? $config.public.apiBase+'/'+categoryData.image :'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'"
-                          width="64"
-                        />
+                         <NuxtImg
+                    :placeholder="fallbackImage"
+                    :src="`/halda/${categoryData.image}`"
+                    :alt="categoryData.name"
+                  class="object-cover rounded-md cursor-pointer transition duration-300"
+                />
+                      
                       </TableCell>
                       <TableCell class="font-medium">
                         {{ categoryData.name }}
@@ -389,7 +403,7 @@ definePageMeta({
                               "
                               >Edit</DropdownMenuItem
                             >
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <!-- <DropdownMenuItem>Delete</DropdownMenuItem> -->
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

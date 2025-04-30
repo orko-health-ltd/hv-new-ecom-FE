@@ -15,15 +15,15 @@
               :alt="props.product.name"class="transition-opacity duration-300 group-hover:opacity-0" />
        <NuxtImg
           :placeholder="fallbackImage"
-              :src="`/halda/${props.product.front_image}`"
+              :src="`/halda/${props.product.back_image}`"
               :alt="props.product.name"class="absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"  />
        </nuxt-link>  
       
       <div class="flex flex-col space-y-2 mt-4">
        <nuxt-link :to="'/product/'+props.product.slug" class="w-full font-semibold text-black">{{ props.product.name }}
-         <p>
+         
         <div class="text-gray-500 flex items-center text-xs"><UIcon name="fluent:leaf-two-16-regular" class="text-lg"/> {{ props.product.category }}</div>
-       </p>
+       
        </nuxt-link>
       
     

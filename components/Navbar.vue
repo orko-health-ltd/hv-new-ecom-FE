@@ -15,9 +15,78 @@
           class="flex text-white justify-center items-center text-xs lg:text-sm gap-3 lg:gap-5 xl:gap-8 w-full"
         >
           <nuxt-link class="px-1.5 py-2.5" to="/">Home</nuxt-link>
-          <nuxt-link class="px-1.5 py-2.5" to="/shop/">Shop</nuxt-link>
-          <nuxt-link class="px-1.5 py-2.5" to="/track-order">Track Order</nuxt-link>
-          <li>
+         <NavigationMenu>
+    <NavigationMenuList class="bg-none">
+     <nuxt-link class="px-1.5 py-2.5" to="/shop/">
+      <NavigationMenuItem class="bg-none">
+        <NavigationMenuTrigger class="bg-transparent hover:!bg-[#336958] hover:!text-white">Tea</NavigationMenuTrigger>
+        <NavigationMenuContent >
+          <div class="w-[500px] grid grid-cols-2 gap-6 p-5">
+           <div class="flex flex-col border-e-[1px] border-e-gray-400 gap-2 ">
+            <nuxt-link to="/shop/all">Shop All Teas</nuxt-link>
+            <h1>Best Sellers</h1>
+           </div> 
+            <div>
+            <h1 class="uppercase font-bold ">Shop By Tea</h1>
+            <ul class="flex flex-col gap-1 my-2">
+              <nuxt-link :to="`/shop/${category.slug}`" v-for="category in categories" :key="category._id">{{category.name}}</nuxt-link>
+            </ul>
+          </div>
+          </div>
+         
+        
+        </NavigationMenuContent>
+      </NavigationMenuItem></nuxt-link>
+    
+    </NavigationMenuList>
+  </NavigationMenu>
+          
+          <nuxt-link class="px-1.5 py-2.5" to="/shop/gift-box">Gift</nuxt-link>
+         
+        
+          <!-- <li>
+            <UDropdown
+              :items="teas"
+              mode="hover"
+              class="border-none text-xs lg:text-sm ring-0 hover:bg-none"
+              :popper="{ placement: 'bottom-start' }"
+            >
+              <UButton
+                color="white"
+                label="Our Tea"
+                class="bg-transparent text-xs lg:text-sm ring-0 hover:!bg-transparent border-none"
+                :class="
+                  route.path.startsWith('/product-category')
+                    ? 'text-[#b4a345]'
+                    : 'text-white'
+                "
+                trailing-icon="i-heroicons-chevron-down-20-solid"
+              />
+            </UDropdown>
+          </li> -->
+          <!-- <nuxt-link class="px-1.5 py-2.5" to="/springflush">Springflush</nuxt-link> -->
+          <a class="px-1.5 py-2.5" href="https://tealounge.haldavalley.com/">Tea Lounge</a>
+          <!-- <li>
+            <UDropdown
+              :items="medias"
+              mode="hover"
+              class="border-none ring-0 hover:bg-none"
+              :popper="{ placement: 'bottom-start' }"
+            >
+              <UButton
+                color="white"
+                label="Media"
+                class="bg-transparent text-xs lg:text-sm ring-0 hover:!bg-transparent border-none"
+                :class="
+                  route.path.startsWith('/media')
+                    ? 'text-[#b4a345]'
+                    : 'text-white'
+                "
+                trailing-icon="i-heroicons-chevron-down-20-solid"
+              />
+            </UDropdown>
+          </li> -->
+            <li>
             <UDropdown
               :items="abouts"
               mode="hover"
@@ -37,50 +106,7 @@
               />
             </UDropdown>
           </li>
-          <li>
-            <UDropdown
-              :items="teas"
-              mode="hover"
-              class="border-none text-xs lg:text-sm ring-0 hover:bg-none"
-              :popper="{ placement: 'bottom-start' }"
-            >
-              <UButton
-                color="white"
-                label="Our Tea"
-                class="bg-transparent text-xs lg:text-sm ring-0 hover:!bg-transparent border-none"
-                :class="
-                  route.path.startsWith('/product-category')
-                    ? 'text-[#b4a345]'
-                    : 'text-white'
-                "
-                trailing-icon="i-heroicons-chevron-down-20-solid"
-              />
-            </UDropdown>
-          </li>
-          <!-- <nuxt-link class="px-1.5 py-2.5" to="/springflush">Springflush</nuxt-link> -->
-          <a class="px-1.5 py-2.5" href="https://tealounge.haldavalley.com/">Tea Lounge</a>
-          <li>
-            <UDropdown
-              :items="medias"
-              mode="hover"
-              class="border-none ring-0 hover:bg-none"
-              :popper="{ placement: 'bottom-start' }"
-            >
-              <UButton
-                color="white"
-                label="Media"
-                class="bg-transparent text-xs lg:text-sm ring-0 hover:!bg-transparent border-none"
-                :class="
-                  route.path.startsWith('/media')
-                    ? 'text-[#b4a345]'
-                    : 'text-white'
-                "
-                trailing-icon="i-heroicons-chevron-down-20-solid"
-              />
-            </UDropdown>
-          </li>
-          <nuxt-link class="px-1.5 py-2.5" to="/contact-us">Contact Us</nuxt-link>
-          <nuxt-link class="px-1.5 py-2.5" to="/career">Careers</nuxt-link>
+          <nuxt-link class="px-1.5 py-2.5" to="/track-order">Track Order</nuxt-link>
           <nuxt-link class="px-1.5 py-2.5" to="/admin">Admin Dashboard</nuxt-link>
         </ul>
       </div>
@@ -219,7 +245,7 @@
             </template>
           </UAccordion>
 
-          <nuxt-link class="px-2.5 py-1.5" to="/contact-us"
+          <nuxt-link class="px-2.5 py-1.5" to="/about-us/contact-us"
             >Contact Us</nuxt-link
           >
           <nuxt-link class="px-2.5 py-1.5" to="/career">Careers</nuxt-link>
@@ -393,6 +419,53 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu'
+
+const components: { title: string, href: string, description: string }[] = [
+  {
+    title: 'Alert Dialog',
+    href: '/docs/components/alert-dialog',
+    description:
+      'A modal dialog that interrupts the user with important content and expects a response.',
+  },
+  {
+    title: 'Hover Card',
+    href: '/docs/components/hover-card',
+    description:
+      'For sighted users to preview content available behind a link.',
+  },
+  {
+    title: 'Progress',
+    href: '/docs/components/progress',
+    description:
+      'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.',
+  },
+  {
+    title: 'Scroll-area',
+    href: '/docs/components/scroll-area',
+    description: 'Visually or semantically separates content.',
+  },
+  {
+    title: 'Tabs',
+    href: '/docs/components/tabs',
+    description:
+      'A set of layered sections of content—known as tab panels—that are displayed one at a time.',
+  },
+  {
+    title: 'Tooltip',
+    href: '/docs/components/tooltip',
+    description:
+      'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
+  },
+]
 const route = useRoute()
 const cart = useMyCartStore() as ReturnType<typeof useMyCartStore>
 const toast = useToast()
@@ -440,6 +513,10 @@ const abouts = [
       label: 'Corporate Client List',
       to: '/about-us/corporate-client-list',
     },
+    {
+      label: 'Contact Us',
+      to: '/about-us/contact-us',
+    }
   ],
 ]
 const medias = [
@@ -458,6 +535,18 @@ const medias = [
     },
   ],
 ]
+interface Category {
+  _id: string
+  name: string
+  image: string
+  description: string
+  slug: string
+}
+
+const { data: categories } = await useAsyncData('categories', () =>
+  $fetch<{ data: Category[] }>('/api/categories').then(res => res.data)
+)
+
 watch(route, () => {
   isOpen.value = false
   isCartOpen.value = false

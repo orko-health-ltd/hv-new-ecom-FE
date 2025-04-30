@@ -34,7 +34,7 @@
     <div class="col-span-3 md:col-span-3 mx-auto py-10 px-3">
       <div class="grid grid-cols-2 md:grid-cols-4 justify-center px-10 items-center text-sm font-thin text-white gap-3">
         <p class="px-10  border-0 border-e-2">About Us</p>
-        <nuxt-link to="/contact-us" class="px-10  border-0 border-e-2">Contact Us</nuxt-link>
+        <nuxt-link to="/about-us/contact-us" class="px-10  border-0 border-e-2">Contact Us</nuxt-link>
         <p class="px-10 text-nowrap border-0 border-e-2">Terms & Conditions</p>
         <p class=" px-10">Privacy Policy</p>
       </div>

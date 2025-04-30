@@ -10,17 +10,47 @@
       <Meta name="keywords" :content="'tea, ' + product?.name + ', ' + product?.format + ', premium tea'" />
     </Head>
     <div class="flex text-xs gap-2 px-10 py-2 pt-8">
-      <nuxt-link to="/shop">Shop</nuxt-link>
-      \
-      <p>Category \ Product</p>
+      <nuxt-link to="/">Home</nuxt-link>/
+      <nuxt-link to="/shop">Shop</nuxt-link>/
+      <nuxt-link :to="`/shop/${product?.category_info?.slug}`">{{product?.category_info?.name}}</nuxt-link>/
+      <nuxt-link :to="`/product/${product?.slug}`">{{product?.brand?.name}}</nuxt-link>
+     
     </div>
     <div v-if="product" class="bg-white">
       <div class="container mx-auto px-4 py-8">
+        
+          <!-- Mobile view  -->
+           <div class="flex-1 lg:hidden w-full">
+            <UCarousel
+    :items="product.product_images"
+    :ui="{
+      item: 'basis-full',
+      container: 'rounded-lg',
+      indicators: {
+        wrapper: 'relative bottom-0 mt-4'
+      }
+    }"
+    indicators
+    class="w-full sm:w-2/3 md:w-1/2 mx-auto p-3"
+  >
+    <template #default="{ item }">
+       <NuxtImg :src="`/halda/${item.url}`"  :alt="product.name":placeholder="fallbackImage"  class="rounded-lg container w-auto h-[300px]" />
+    </template>
+
+    <template #indicator="{ onClick, page, active ,item }">
+      <UButton :label="String(page)" :variant="active ? 'solid' : 'outline'" size="2xs" class="rounded-full min-w-6 justify-center" @click="onClick(page)" />
+      {{ item }}
+        <!-- <NuxtImg :src="`/halda/${item.url}`"  :alt="product.name":placeholder="fallbackImage" width="44" height="44" class="rounded-lg" /> -->
+    </template>
+  </UCarousel>
+   
+  </div>
+
         <div class="flex items-start">
           <!-- Product Images -->
           <!-- <div class="flex w-full"> -->
-          <div class="sticky top-20">
-            <div class="flex w-auto flex-col gap-4 py-4 px-2 justify-center">
+          <div class="sticky hidden lg:block top-20">
+            <!-- <div class="flex w-auto flex-col gap-4 py-4 px-2 justify-center">
               <div
                 class="p-2 w-20 h-20 border rounded-md bg-gray-100"
                 @click="scrollToImage(product.front_image)"
@@ -45,7 +75,7 @@
                   class="object-cover rounded-md cursor-pointer transition duration-300"
                 />
               </div>
-            </div>
+            </div> -->
             <div class="flex w-auto flex-col gap-4 py-4 px-2 justify-center">
               <div
                 class="p-2 w-20 h-20 border rounded-md bg-gray-100"
@@ -57,15 +87,15 @@
                 :placeholder="fallbackImage"
               :src="`/halda/${image.url}`"
               :alt="product.name"
-                  class="object-cover rounded-md cursor-pointer transition duration-300"
+                  class="object-cover h-[4rem] rounded-md cursor-pointer transition duration-300"
                 />
               </div>
             </div>
           </div>
-          <div class="w-full mx-10 px-4 mb-8">
+          <div class="w-full hidden lg:block mx-10 px-4 mb-8">
            
               
-             <NuxtImg
+             <!-- <NuxtImg
               :placeholder="fallbackImage"
               :src="`/halda/${product.front_image}`"
               :alt="product.name"
@@ -78,20 +108,23 @@
                :alt="product.name"
               class="w-full h-auto rounded-lg shadow-md mb-4"
               :id="product.back_image"
-            />
-           <NuxtImg
+            /> -->
+            <div   v-for="image in product.product_images"
+              :key="image._id" class="w-[500px] h-[500px] flex justify-center items-center rounded-lg shadow-md mb-4 p-3">
+               <NuxtImg
              
-              v-for="image in product.product_images"
-              :key="image._id"
+                 class="w-auto h-auto max-h-[500px]"
                :src="`/halda/${image.url}`"
                 :placeholder="fallbackImage"
               :alt="product.name"
-              class="w-full h-auto rounded-lg shadow-md mb-4"
+              
               :id="image._id"
             />
+            </div>
+          
           </div>
           <!-- </div> -->
-
+        
           <!-- Product Details -->
           <div class="w-full sticky top-[-170px] px-4">
             <p class="text-sm">
@@ -142,7 +175,7 @@
                   </p>
                   <UIcon
                     v-if="format == 'loose'"
-                    class="right-[-40px] relative"
+                    class="right-[-10px] md:right-[-10px] sm:right-[-40px]  xl:right-[-40px] relative"
                     name="material-symbols:check-circle"
                   />
                 </div>
@@ -164,7 +197,7 @@
             </div>
             <div class="mb-6">
               <h3 class="text-lg font-semibold mb-2">Choose a Size:</h3>
-              <div class="flex gap-5 w-full">
+              <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4   gap-5 w-full">
                 <div v-for="sku in products" :key="sku._id"
                   @click="getProduct(sku.slug)"
                   class="border flex flex-col justify-center items-center px-3 py-2 rounded-md w-full text-center space-y-2"
@@ -313,7 +346,7 @@
               Medium-bodied black tea provides a base for fruity and floral
               notes to shine.
             </p>
-            <div class="grid grid-cols-4 gap-10 mt-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mt-10">
               <div>
                 <UIcon name="solar:tea-cup-bold" class="text-5xl" />
                 <h1 class="text-xl font-semibold py-2">Aroma and Taste</h1>
@@ -372,7 +405,7 @@
               <UIcon name="material-symbols:device-thermostat" /> 100℃ (212℉)
             </p>
           </div>
-          <div class="grid grid-cols-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
             <div class="col-span-3 space-y-3">
               <div v-for="(item,index) in product.brewing_guide"
                 class="flex px-10 items-center gap-10 py-8 rounded-md bg-white border"
@@ -406,7 +439,7 @@
             Don't take our word for it
           </h1>
 
-          <div class="grid grid-cols-3 gap-5 py-10">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 py-10">
             <div class="space-y-2">
               <div class="flex">
                 <UIcon name="fluent-color:star-16" />
@@ -486,7 +519,24 @@ const price = ref(0)
 const discountPrice = ref(0)
 const addingToCart = ref(false)
 const cart = useMyCartStore()
+// const carousel = useTemplateRef('carousel')
+// const activeIndex = ref(0)
 
+// const onClickPrev = () => {
+//   activeIndex.value--
+// }
+// const onClickNext = () => {
+//   activeIndex.value++
+// }
+
+// const onSelect = (index: number) => {
+//   console.log(index)
+//   activeIndex.value = index
+
+//   carousel.value?.emblaApi?.scrollTo(index)
+  
+//   console.log(carousel.value)
+// }
 const toast = useToast()
 const getProduct = async (slug: string | string[]) => {
   const { data: responseData } = await $fetch<{ data: Product }>('/api/products/' + slug)
@@ -504,8 +554,9 @@ const getProduct = async (slug: string | string[]) => {
     price.value = product?.value?.price ? product?.value?.price : 0
   }
   discountPrice.value = product?.value?.price ? product?.value?.price : 0
-
-  if(product.value.brand_id) {
+  product.value.product_images.unshift({name:product.value.name,url:product.value.back_image,_id:'front-randomm-id'})
+  product.value.product_images.unshift({ name: product.value.name, url: product.value.front_image, _id: 'back-randomm-id' })
+  if (product.value.brand_id) {
     getSkuProducts()
   }
   }

@@ -45,6 +45,7 @@ export interface Product {
     image: string
     description: string
     is_active: boolean
+    slug: string
   }
   sku_info: {
     _id: string

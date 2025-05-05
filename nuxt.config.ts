@@ -5,8 +5,8 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.API_BASE_URL,
       appUrl: process.env.APP_URL,
-      sslKey: process.env.SSL_KEY || 'hvbt67f612d334bbd',
-      sslPass: process.env.SSL_PASS || 'hvbt67f612d334bbd@ssl',
+      sslKey: process.env.SSL_KEY ,
+      sslPass: process.env.SSL_PASS,
     },
   },
   // routeRules: {

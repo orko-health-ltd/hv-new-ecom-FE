@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
     const store_id = config.public.sslKey
     const store_passwd = config.public.sslPass
-    const is_live = false
+    const is_live = true
     const order_id = 'ORD-' + Date.now()
     const data = {
       total_amount: body.amount,

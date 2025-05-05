@@ -471,6 +471,9 @@ onMounted(async () => {
     }
   }
 })
+definePageMeta({
+  ssr: false
+})
 </script>
 
 <style>

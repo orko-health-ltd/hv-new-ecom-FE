@@ -31,7 +31,7 @@
         </div>
         <div class="detail-item">
           <span class="label">Payment Status:</span>
-          <span class="value status-badge uppercase" >{{ orderDetails.status }}</span>
+          <span class="value status-badge uppercase" >{{ orderDetails.paymentStatus }}</span>
         </div>
         <div class="detail-item">
           <span class="label">Order Date:</span>
@@ -52,8 +52,9 @@
       :step="item.step"
     >
       <StepperTrigger disabled>
-        <StepperIndicator >
-          <component :is="item.icon" class="w-4 h-4 text-white" />
+        <StepperIndicator :class="item.step <=  stepIndex ? '!bg-green-500' : 'bg-gray-300'">
+        
+          <component :is="item.icon" class="w-4 h-4 text-white"  />
         </StepperIndicator>
         <div class="flex  flex-col">
           <StepperTitle>

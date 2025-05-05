@@ -342,7 +342,7 @@
                     <div class="flex justify-start gap-4 items-start"><UIcon name="hugeicons:truck-delivery" class="text-4xl font-bold" />
                       <div class="flex space-y-2 flex-col justify-start items-start">
                          <h2 class="text-base font-semibold flex gap-4">  Express delivery inside Dhaka</h2>
-                    <p>Get sipping within 1-3 business days from dispatch</p></div>
+                    <p>Get sipping within 2-3 business days from dispatch</p></div>
                   </div>
                   <h1 class="font-bold text-lg">৳ 50</h1>
                       </div>
@@ -350,7 +350,7 @@
                     <div class="flex justify-start gap-4 items-start"><UIcon name="hugeicons:shipping-truck-02" class="text-4xl font-bold" />
                       <div class="flex space-y-2 flex-col justify-start items-start">
                          <h2 class="text-base font-semibold flex gap-4">  Standard delivery outside Dhaka</h2>
-                    <p>Get sipping within 2-5 business days from dispatch</p></div>
+                    <p>Get sipping within 3-5 business days from dispatch</p></div>
                   </div>
                   <h1 class="font-bold text-lg">৳ 100</h1>
                       </div>

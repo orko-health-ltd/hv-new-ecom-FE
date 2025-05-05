@@ -167,8 +167,31 @@
           <nuxt-link class="px-2.5 w-full py-1.5 hover:text-white" to="/"
             >Home</nuxt-link
           >
-          <nuxt-link class="px-2.5 w-full py-1.5" to="/shop/">Shop</nuxt-link>
-
+          <!-- <nuxt-link class="px-2.5 w-full py-1.5" to="/shop/">Tea</nuxt-link> -->
+           <UAccordion
+            color="white"
+            class="w-full"   :class="
+                  route.path.startsWith('/shop')
+                    ? 'text-[#b4a345]'
+                    : 'text-white'
+                "
+            :items="[
+              {
+                label: 'Tea',
+                content: 'This is the content inside the accordion.',
+              },
+            ]"
+          >
+            <template #item="{ item }">
+              <UVerticalNavigation
+                :links="teas[0]"
+                :ui="{
+                  inactive: 'text-white',
+                }"
+              />
+            </template>
+          </UAccordion>
+        
           <UAccordion
             color="white"
             class="w-full"   :class="
@@ -192,8 +215,10 @@
               />
             </template>
           </UAccordion>
-
-          <UAccordion   :class="
+  <nuxt-link class="px-2.5 w-full py-1.5 hover:text-white" to="/shop/gift-box"
+            >Gift</nuxt-link
+          >
+          <!-- <UAccordion   :class="
                   route.path.startsWith('/product-category')
                     ? 'text-[#b4a345]'
                     : 'text-white'
@@ -214,16 +239,16 @@
                 }"
               />
             </template>
-          </UAccordion>
+          </UAccordion> -->
 
-          <nuxt-link class="px-2.5 py-1.5" to="/springflush"
+          <!-- <nuxt-link class="px-2.5 py-1.5" to="/springflush"
             >Springflush</nuxt-link
-          >
+          > -->
           <a class="px-2.5 py-1.5" href="https://tealounge.haldavalley.com/"
             >Tea Lounge</a
           >
 
-          <UAccordion
+          <!-- <UAccordion
             color="white" :class="
                 route.path.startsWith('/media')
                   ? 'text-[#b4a345]'
@@ -244,12 +269,12 @@
                 }"
               />
             </template>
-          </UAccordion>
+          </UAccordion> -->
 
-          <nuxt-link class="px-2.5 py-1.5" to="/about-us/contact-us"
-            >Contact Us</nuxt-link
+          <nuxt-link class="px-2.5 py-1.5" to="/track-order"
+            >Track Order</nuxt-link
           >
-          <nuxt-link class="px-2.5 py-1.5" to="/career">Careers</nuxt-link>
+          <!-- <nuxt-link class="px-2.5 py-1.5" to="/career">Careers</nuxt-link> -->
         </ul>
       </UCard>
     </USlideover>
@@ -473,26 +498,34 @@ const toast = useToast()
 const isOpen = ref(false)
 const isCartOpen = ref(false)
 const teas = [
-  [
+  [  {
+      label: 'Explore Tea',
+      to: '/shop',
+    },
     {
-      label: 'Halda Valley Black Tea',
-      to: '/product-category/halda-valley-black-tea/',
+      label: 'All',
+      to: '/shop/all/',
+    },
+  
+    {
+      label: 'Best Sellers',
+      to: '/shop/top-sellers/',
     },
     {
       label: 'Dragon Well Green Tea',
-      to: '/product-category/dragon-well-green-tea/',
+      to: '/shop/dragon-well-green-tea/',
     },
     {
       label: 'Golden Eyebrow Black Tea',
-      to: '/product-category/golden-eyebrow-black-tea/',
+      to: '/shop/golden-eyebrow-black-tea/',
     },
     {
       label: 'Red Robe Olong Tea',
-      to: '/product-category/red-robe-olong-tea',
+      to: '/shop/red-robe-olong-tea',
     },
     {
       label: 'Silver Needle White Tea',
-      to: '/product-category/silver-needle-white-tea',
+      to: '/shop/silver-needle-white-tea',
     },
   ],
 ]

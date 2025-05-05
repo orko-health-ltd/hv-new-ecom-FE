@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="flex gap-2 px-10 py-2 pt-8">
-      <nuxt-link to="/shop"> Shop</nuxt-link>
+      <nuxt-link to="/"> Home</nuxt-link>
+   \   <nuxt-link to="/shop"> Shop</nuxt-link>
       \
       <nuxt-link :to="`/shop/${route?.params.slug}`">
         {{ route?.params.slug }}</nuxt-link
@@ -50,12 +51,12 @@
               <DropdownMenuLabel>Sort products by</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup v-model="sortByValue">
-                <DropdownMenuRadioItem value="typedown">
+                <!-- <DropdownMenuRadioItem value="typedown">
                   Tea Types (A-Z)
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="typeup">
                   Tea Types (Z-A)
-                </DropdownMenuRadioItem>
+                </DropdownMenuRadioItem> -->
                 <DropdownMenuRadioItem value="pricedown">
                   Price (Low to High)
                 </DropdownMenuRadioItem>

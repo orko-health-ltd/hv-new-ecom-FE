@@ -161,45 +161,46 @@
               {{ product.specification }}
             </p>
 
-            <div class="mb-6">
+            <div class="mb-6" v-if="products.length > 1">
               <h3 class="text-lg font-semibold mb-2">Choose a format:</h3>
               <div class="flex gap-5 w-full">
                 <div
-                  @click="format = 'loose'"
+                  @click="format = 'Loose Leaf'"
                   class="border flex justify-center items-center px-3 py-2 rounded-md w-full text-center"
                   :class="
-                    format == 'loose' ? 'border-black' : 'border-gray-300'
+                    format == 'Loose Leaf' ? 'border-black' : 'border-gray-300'
                   "
                 >
                   <p class="flex items-center justify-center gap-2">
                     <UIcon name="fluent:leaf-three-16-regular" /> Loose leaf
-                  </p>
-                  <UIcon
-                    v-if="format == 'loose'"
+                     <UIcon
+                    v-if="format == 'Loose Leaf'"
                     class="right-[-10px] md:right-[-10px] sm:right-[-40px]  xl:right-[-40px] relative"
                     name="material-symbols:check-circle"
                   />
+                  </p>
+                 
                 </div>
                 <div
-                  @click="format = 'bag'"
+                  @click="format = 'Tea Bag'"
                   class="border flex justify-center items-center px-3 py-2 rounded-md w-full text-center"
-                  :class="format == 'bag' ? 'border-black' : 'border-gray-300'"
+                  :class="format == 'Tea Bag' ? 'border-black' : 'border-gray-300'"
                 >
                   <p class="flex items-center justify-center gap-2">
-                    <UIcon name="lineicons:teabag" /> Tea Bag
-                  </p>
-                  <UIcon
-                    v-if="format == 'bag'"
+                    <UIcon name="lineicons:teabag" /> Tea Bag  <UIcon
+                    v-if="format == 'Tea Bag'"
                     class="right-[-40px] relative"
                     name="material-symbols:check-circle"
                   />
+                  </p>
+                
                 </div>
               </div>
             </div>
-            <div class="mb-6">
-              <h3 class="text-lg font-semibold mb-2">Choose a Size:</h3>
+            <div class="mb-6" v-if="products.filter(e=>e.format == format).length > 1">
+              <h3 class="text-lg font-semibold mb-2">Choose a different size:</h3>
               <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4   gap-5 w-full">
-                <div v-for="sku in products" :key="sku._id"
+                <div v-for="sku in products.filter(e=>e.format == format)" :key="sku._id"
                   @click="getProduct(sku.slug)"
                   class="border flex flex-col justify-center items-center px-3 py-2 rounded-md w-full text-center space-y-2"
                   :class="product._id == sku._id ? 'border-black' : 'border-gray-300'"
@@ -336,11 +337,49 @@
               </AccordionItem>
               <AccordionItem value="item-4">
                 <AccordionTrigger>Delivery & Returns</AccordionTrigger>
-                <AccordionContent></AccordionContent>
+                <AccordionContent>
+                  <div class="flex justify-between mb-6">
+                    <div class="flex justify-start gap-4 items-start"><UIcon name="hugeicons:truck-delivery" class="text-4xl font-bold" />
+                      <div class="flex space-y-2 flex-col justify-start items-start">
+                         <h2 class="text-base font-semibold flex gap-4">  Express delivery inside Dhaka</h2>
+                    <p>Get sipping within 1-3 business days from dispatch</p></div>
+                  </div>
+                  <h1 class="font-bold text-lg">৳ 50</h1>
+                      </div>
+                  <div class="flex justify-between">
+                    <div class="flex justify-start gap-4 items-start"><UIcon name="hugeicons:shipping-truck-02" class="text-4xl font-bold" />
+                      <div class="flex space-y-2 flex-col justify-start items-start">
+                         <h2 class="text-base font-semibold flex gap-4">  Standard delivery outside Dhaka</h2>
+                    <p>Get sipping within 2-5 business days from dispatch</p></div>
+                  </div>
+                  <h1 class="font-bold text-lg">৳ 100</h1>
+                      </div>
+                   
+                 
+                </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-5">
                 <AccordionTrigger>Reviews(1200)</AccordionTrigger>
-                <AccordionContent></AccordionContent>
+                <AccordionContent>
+                   <div class="grid grid-cols-1 max-h-96 overflow-y-scroll gap-5 py-10">
+            <div class="space-y-2" v-for="(review,index) in reviews" :key="index">
+              <div class="flex">
+                <UIcon name="fluent-color:star-16" v-for="i in review.rating" />
+               
+              </div>
+              <p class="font-semibold text-black">
+               {{ review.comment }}
+              </p>
+              <div class="flex w-full justify-between">
+                 <p class="text-xs text-gray-400">-{{ review.name }}</p>
+                 <p class="text-xs text-gray-400">{{ review.date }}</p>
+              </div>
+             
+            </div>
+           
+          
+          </div>
+                </AccordionContent>
               </AccordionItem>
             </Accordion>
           </div>
@@ -519,7 +558,7 @@ const img1 =
   'https://i3.wp.com/haldavalley.com/wp-content/uploads/2025/02/Web-Page-2-05.jpg'
 const img3 =
   'https://i3.wp.com/haldavalley.com/wp-content/uploads/2025/02/Web-Page-2-05.jpg'
-const format = ref('loose')
+const format = ref('')
 const quantity = ref(1)
 const route = useRoute()
 const product = ref<Product>()
@@ -528,6 +567,44 @@ const price = ref(0)
 const discountPrice = ref(0)
 const addingToCart = ref(false)
 const cart = useMyCartStore()
+const reviews = [
+  {
+    name: 'Mark',
+    rating: 5,
+    comment: 'Looks pretty, smells heavenly and tastes even better. This without doubt the family favourite.',
+    date: '2023-01-01'
+  },
+  {
+    name: 'Adam',
+    rating: 5,
+    comment: 'Looks pretty, smells heavenly and tastes even better. This without doubt the family favourite.',
+    date: '2023-01-01'
+  },
+  {
+    name: 'Steve',
+    rating: 5,
+    comment: 'Looks pretty, smells heavenly and tastes even better. This without doubt the family favourite.',
+    date: '2023-01-01'
+  },
+  {
+    name: 'Mark',
+    rating: 5,
+    comment: 'Looks pretty, smells heavenly and tastes even better. This without doubt the family favourite.',
+    date: '2023-01-01'
+  },
+  {
+    name: 'Adam',
+    rating: 5,
+    comment: 'Looks pretty, smells heavenly and tastes even better. This without doubt the family favourite.',
+    date: '2023-01-01'
+  },
+  {
+    name: 'Steve',
+    rating: 5,
+    comment: 'Looks pretty, smells heavenly and tastes even better. This without doubt the family favourite.',
+    date: '2023-01-01'
+  }
+]
 // const carousel = useTemplateRef('carousel')
 // const activeIndex = ref(0)
 
@@ -551,6 +628,7 @@ const getProduct = async (slug: string | string[]) => {
   const { data: responseData } = await $fetch<{ data: Product }>('/api/products/' + slug)
   console.log('hello',responseData)
   product.value = responseData
+  format.value = responseData.format
   if (product.value?.discount && product.value?.discount > 0 && product.value?.price) {
     if (product.value.discount_unit === 'percent') {
       price.value = product.value.price - (product.value.price * product.value.discount) / 100

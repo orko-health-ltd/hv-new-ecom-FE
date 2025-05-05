@@ -24,7 +24,8 @@
           <div class="w-[500px] grid grid-cols-2 gap-6 p-5">
            <div class="flex flex-col border-e-[1px] border-e-gray-400 gap-2 ">
             <nuxt-link to="/shop/all">Shop All Teas</nuxt-link>
-            <h1>Best Sellers</h1>
+            <nuxt-link to="/shop/best-selling">Best Sellers</nuxt-link>
+           
            </div> 
             <div>
             <h1 class="uppercase font-bold ">Shop By Tea</h1>

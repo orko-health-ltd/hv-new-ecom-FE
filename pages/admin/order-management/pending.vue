@@ -15,16 +15,20 @@ const creating = ref(false)
 const loading = ref(false)
 const orders = ref<Order[]>([])
 const status = ref<string>('pending')
+const paymentStatus = ref<string>('pending')
 const getOrders = async () => {
   const { data } = await $fetch<{ data: Order[] }>(
-    `/api/admin/orders?status=${status.value}`
+    `/api/admin/orders?${
+      paymentStatus.value == 'paid'
+        ? 'payment_status=paid'
+        : 'status=' + status.value
+    }`
   )
   orders.value = data
 } // const orders = computed(() => data.value?.data || [])
 onMounted(() => {
   getOrders()
 })
-
 
 definePageMeta({
   layout: 'admin',
@@ -84,12 +88,39 @@ definePageMeta({
         </DropdownMenu>
       </header>
       <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-        <Tabs default-value="pending" >
+        <Tabs default-value="pending">
           <div class="flex items-center">
             <TabsList>
-              <TabsTrigger value="pending" @click="status = 'pending', getOrders()"> Pending </TabsTrigger>
-              <TabsTrigger value="processing" @click="status = 'processing', getOrders()"> Processing </TabsTrigger>
-              <TabsTrigger value="shipped" @click="status = 'shipped', getOrders()"> Shipped </TabsTrigger>
+              <TabsTrigger
+                value="pending"
+                @click="
+                  ;(status = 'pending'), (paymentStatus = ''), getOrders()
+                "
+              >
+                Pending
+              </TabsTrigger>
+              <TabsTrigger
+                value="processing"
+                @click="
+                  ;(status = 'processing'), (paymentStatus = ''), getOrders()
+                "
+              >
+                Processing
+              </TabsTrigger>
+              <TabsTrigger
+                value="shipped"
+                @click="
+                  ;(status = 'shipped'), (paymentStatus = ''), getOrders()
+                "
+              >
+                Shipped
+              </TabsTrigger>
+              <TabsTrigger
+                value="paid"
+                @click=";(paymentStatus = 'paid'), getOrders()"
+              >
+                Paid
+              </TabsTrigger>
             </TabsList>
 
             <div class="ml-auto flex items-center gap-2">
@@ -348,6 +379,120 @@ definePageMeta({
             </Card>
           </TabsContent>
           <TabsContent value="shipped">
+            <Card>
+              <CardHeader>
+                <CardTitle>Shipped Orders</CardTitle>
+                <CardDescription>
+                  Manage your orders and view the progress.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Order ID</TableHead>
+                      <TableHead>Order Status</TableHead>
+                      <TableHead>Order Date</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead> Payment Status </TableHead>
+                      <TableHead> Contact Person </TableHead>
+                      <TableHead>
+                        <span class="sr-only">Actions</span>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow v-for="order in orders" :key="order._id">
+                      <TableCell class="font-medium">
+                        {{ order?.order_id }}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600':
+                              order.status === 'pending',
+                            'bg-blue-500 hover:bg-blue-600':
+                              order.status === 'processing',
+                            'bg-purple-500 hover:bg-purple-600':
+                              order.status === 'shipped',
+                            'bg-green-500 hover:bg-green-600':
+                              order.status === 'delivered',
+                            'bg-red-500 hover:bg-red-600':
+                              order.status === 'cancelled',
+                          }"
+                        >
+                          {{ order.status }}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {{ moment(order.orderDate).format('DD/MM/YYYY') }}
+                      </TableCell>
+                      <TableCell>
+                        {{ order.totalAmount }}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          class="text-white"
+                          :class="{
+                            'bg-yellow-500 hover:bg-yellow-600':
+                              order.paymentStatus === 'pending',
+                            'bg-purple-500 hover:bg-purple-600':
+                              order.paymentStatus === 'refunded',
+                            'bg-green-500 hover:bg-green-600':
+                              order.paymentStatus === 'paid',
+                            'bg-red-500 hover:bg-red-600':
+                              order.paymentStatus === 'failed',
+                          }"
+                        >
+                          {{ order.paymentStatus }}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div class="flex flex-col">
+                          <h1>{{ order.contactPerson.name }}</h1>
+                          <p class="text-xs font-semibold">
+                            {{ order.contactPerson.phone }}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger as-child>
+                            <Button
+                              aria-haspopup="true"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <MoreHorizontal class="h-4 w-4" />
+                              <span class="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <nuxt-link
+                              :to="`/admin/order-management/${order._id}`"
+                            >
+                              <DropdownMenuItem>View</DropdownMenuItem>
+                            </nuxt-link>
+                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+              <CardFooter>
+                <div class="text-xs text-muted-foreground">
+                  Showing <strong>1-10</strong> of <strong>32</strong>
+                  products
+                </div>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="paid">
             <Card>
               <CardHeader>
                 <CardTitle>Shipped Orders</CardTitle>

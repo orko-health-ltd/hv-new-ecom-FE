@@ -14,13 +14,14 @@ const showEditForm = ref(false)
 const creating = ref(false)
 const loading = ref(false)
 const orders = ref<Order[]>([])
-const status = ref<string>('delivered')
-const getOrders = async () => {
+const status = ref<string>('completed')
+const getOrders = async (type?: string ) => {
   const { data } = await $fetch<{ data: Order[] }>(
-    `/api/admin/orders?status=${status.value}`
+    `/api/admin/orders?status=delivered${type ? `&payment_status=${type}` : ''}`
   )
-  orders.value = data
-} // const orders = computed(() => data.value?.data || [])
+  orders.value = data || []
+}
+
 onMounted(() => {
   getOrders()
 })
@@ -65,6 +66,7 @@ definePageMeta({
             placeholder="Search..."
             class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
+      
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
@@ -84,12 +86,12 @@ definePageMeta({
         </DropdownMenu>
       </header>
       <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-        <Tabs default-value="pending" >
+        <Tabs default-value="completed" >
           <div class="flex items-center">
             <TabsList>
-              <TabsTrigger value="pending" @click="status = 'pending', getOrders()"> Pending </TabsTrigger>
-              <TabsTrigger value="processing" @click="status = 'processing', getOrders()"> Processing </TabsTrigger>
-              <TabsTrigger value="shipped" @click="status = 'shipped', getOrders()"> Shipped </TabsTrigger>
+              <TabsTrigger value="completed" @click="status = 'completed', getOrders()"> Completed </TabsTrigger>
+              <TabsTrigger value="payment_pending" @click="status = 'payment_pending', getOrders('pending')">Payment Pending </TabsTrigger>
+              <TabsTrigger value="payment_paid" @click="status = 'payment_paid', getOrders('paid')"> Payment Paid </TabsTrigger>
             </TabsList>
 
             <div class="ml-auto flex items-center gap-2">
@@ -119,10 +121,10 @@ definePageMeta({
             </div>
           </div>
 
-          <TabsContent value="pending">
+          <TabsContent value="completed">
             <Card>
               <CardHeader>
-                <CardTitle>Pending Orders</CardTitle>
+                <CardTitle>Completed Orders</CardTitle>
                 <CardDescription>
                   Manage your orders and view the progress.
                 </CardDescription>
@@ -233,10 +235,10 @@ definePageMeta({
               </CardFooter>
             </Card>
           </TabsContent>
-          <TabsContent value="processing">
+          <TabsContent value="payment_pending">
             <Card>
               <CardHeader>
-                <CardTitle>Processing Orders</CardTitle>
+                <CardTitle>Payment Pending</CardTitle>
                 <CardDescription>
                   Manage your orders and view the progress.
                 </CardDescription>
@@ -347,10 +349,10 @@ definePageMeta({
               </CardFooter>
             </Card>
           </TabsContent>
-          <TabsContent value="shipped">
+          <TabsContent value="payment_paid">
             <Card>
               <CardHeader>
-                <CardTitle>Shipped Orders</CardTitle>
+                <CardTitle>Payment Paid</CardTitle>
                 <CardDescription>
                   Manage your orders and view the progress.
                 </CardDescription>

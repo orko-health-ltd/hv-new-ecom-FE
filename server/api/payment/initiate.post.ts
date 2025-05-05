@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
       tran_id: order_id,
       success_url: `${config.public.appUrl}/billing?success=true&order_id=${order_id}`,
       fail_url: `${config.public.appUrl}/billing?fail`,
-      cancel_url: `${config.public.appUrl}/cancel`,
+      cancel_url: `${config.public.appUrl}/billing?cancel`,
       ipn_url: `${config.public.apiBase}/ipn?order_id=${order_id}`,
       shipping_method: 'Courier',
       ship_name: body.customer_name,

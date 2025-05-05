@@ -9,7 +9,7 @@
       <Meta property="og:type" content="product" />
       <Meta name="keywords" :content="'tea, ' + product?.name + ', ' + product?.format + ', premium tea'" />
     </Head>
-    <div class="flex text-xs gap-2 px-10 py-2 pt-8">
+    <div class="flex text-xs gap-2 px-3 sm:px-5 md:px-10 py-2 pt-8">
       <nuxt-link to="/">Home</nuxt-link>/
       <nuxt-link to="/shop">Shop</nuxt-link>/
       <nuxt-link :to="`/shop/${product?.category_info?.slug}`">{{product?.category_info?.name}}</nuxt-link>/
@@ -34,7 +34,7 @@
     class="w-full sm:w-2/3 md:w-1/2 mx-auto p-3"
   >
     <template #default="{ item }">
-       <NuxtImg :src="`/halda/${item.url}`"  :alt="product.name":placeholder="fallbackImage"  class="rounded-lg container w-auto h-[300px]" />
+       <NuxtImg :src="`/halda/${item.url}`"  :alt="product.name" :placeholder="fallbackImage"  class="rounded-lg container w-auto h-[300px]" />
     </template>
 
     <template #indicator="{ onClick, page, active ,item }">
@@ -83,8 +83,9 @@
                 v-for="image in product.product_images"
                 :key="image._id"
               >
+              <!-- <img :src="$config.public.apiBase+'/'+image.url" alt=""> -->
                <NuxtImg
-                :placeholder="fallbackImage"
+                
               :src="`/halda/${image.url}`"
               :alt="product.name"
                   class="object-cover h-[4rem] rounded-md cursor-pointer transition duration-300"
@@ -243,6 +244,13 @@
             </div>
 
             <div class="flex space-x-4 mb-6">
+                      <div v-if="product.stock == 0" class="flex border border-gray-500 rounded-md px-2 py-2 items-center text-center justify-between gap-2 w-full ">
+              <h1 class="w-full text-gray-400 font-semibold">Out of stock</h1>
+            <!-- <UIcon name="material-symbols:shopping-bag" />
+            <p @click="addProductToCart(props.product)"  class="right-1/3 font-semibold text-sm items-center flex relative" >
+              <UIcon class="text-xl" name="tabler:currency-taka" /> {{props.product.price}} Taka</p> -->
+          </div>
+          <div v-else >
               <button @click="addToCart()" v-if="!addingToCart"
                 class="bg-indigo-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
@@ -273,6 +281,7 @@
                   :trailing="false"
                   
                 /> 
+                </div>
               <button
                 class="bg-gray-200 flex gap-2 items-center text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
               >

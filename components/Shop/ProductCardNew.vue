@@ -7,7 +7,7 @@
     </div>
    
    </div>
- 
+   
        <nuxt-link :to="'/product/'+props.product.slug" class="relative group">
         <NuxtImg
               :placeholder="fallbackImage"
@@ -26,7 +26,6 @@
        
        </nuxt-link>
       
-    
      <div v-if="props.product.stock == 0" class="flex border border-gray-500 rounded-md px-2 py-2 items-center text-center justify-between gap-2 w-full ">
         <h1 class="w-full text-gray-400 font-semibold">Out of stock</h1>
       <!-- <UIcon name="material-symbols:shopping-bag" />

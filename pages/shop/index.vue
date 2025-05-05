@@ -10,7 +10,7 @@
         </h1>
         <div class="sm:flex-row flex flex-col gap-2 ">
          <nuxt-link to="/shop/all"><Button variant="outline">Shop all teas</Button></nuxt-link> 
-        <Button class="justify-start sm:justify-center text-white">Shop top selling teas</Button>
+        <nuxt-link to="/shop/best-selling"><Button  class="justify-start sm:justify-center text-white">Shop top selling teas </Button></nuxt-link>
         </div>
         </div>
        
@@ -18,7 +18,7 @@
       </div>
     </div>
     <!-- <products-grid :products="products" /> -->
-     <ShopTeaTypes class="bg-gray-100 "/>
+     <ShopTeaTypes class="bg-gray-100 px-4"/>
      <div class="flex flex-col gap-2 py-10 justify-center items-center">
       <h1 class="text-4xl font-semibold py-3">Shop by tea format</h1>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 justify-center items-center">

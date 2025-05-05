@@ -8,7 +8,7 @@
       </div>
       <div v-for="(item, index) in cartStore.cart" :key="index" class="flex flex-col md:flex-row items-stretch py-8 md:py-10 lg:py-8 border-t border-gray-50">
         <div class="w-full md:w-4/12 2xl:w-1/4">
-          <NuxtImg :src="item.product.front_image" :alt="item.product.name" class="w-full h-64 md:h-full object-cover object-center" />
+          <NuxtImg  format="webp" :src="item.product.front_image" :alt="item.product.name" class="w-full h-64 md:h-full object-cover object-center" />
         </div>
         <div class="md:pl-3 md:w-8/12 2xl:w-3/4 flex flex-col justify-center mt-4 md:mt-0">
           <p class="text-xs leading-3 text-gray-800">{{ item.product.name }}</p>

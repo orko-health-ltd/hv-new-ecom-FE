@@ -196,7 +196,7 @@
 
                   <div class="space-y-2">
                     <Label for="last-name" class="text-sm font-medium text-gray-700">Front Image</Label>
-                   <NuxtImg :src="`/halda/${product.front_image}`" class="rounded-lg shadow-sm" />
+                   <NuxtImg  format="webp" :src="`/halda/${product.front_image}`" class="rounded-lg shadow-sm" />
                   </div>
                 
 
@@ -205,7 +205,7 @@
                     <Label for="last-name" class="text-sm font-medium text-gray-700">Back Image</Label>
                      <NuxtImg
 
-
+ format="webp"
 
 
                       :src="`/halda/${product.back_image}`"

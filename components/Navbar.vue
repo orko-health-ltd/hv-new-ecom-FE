@@ -357,7 +357,7 @@
                   <ul role="list" class="-my-6 divide-y divide-gray-200">
                     <li v-for="item in cart.cart" :key="item.id" class="flex py-6">
                       <div class="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                       <NuxtImg
+                       <NuxtImg  format="webp"
               :src="`/halda/${item.product.front_image}`"
               :alt="item.product.name" class="size-full object-cover" />
                       </div>

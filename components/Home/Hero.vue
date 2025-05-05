@@ -1,7 +1,7 @@
 <template>
   
  <div class="z-0 max-w-screen  h-auto  md:h-[87vh] top-0 overflow-hidden">
-    <!-- Background Video -->
+   
 
     <video
       autoplay
@@ -12,11 +12,9 @@
       src="/assets/videos/halda.mp4"
     ></video>
     
-
-    <!-- Content Overlay -->
     <div class="absolute inset-0   h-1/2 mt-5 md:mt-0 md:h-screen flex flex-col items-center justify-center text-white">
      <section class="flex flex-col items-center justify-center mb-5 py-13 px-4">
-    <!-- Title Section -->
+  
     <div class="flex w-full items-center space-x-5 mb-2">
       <div class="w-full border-t-2 border-yellow-600"></div>
       <h2 class="text-lg md:text-[28px] text-nowrap lg:text-[35px]  text-white">Halda Valley</h2>
@@ -25,7 +23,6 @@
 
     <h2 class="text-xl md:text-3xl lg:text-5xl uppercase tracking-[12px] font-bold text-white mb-2">Value You</h2>
 
-    <!-- Icon Section -->
     <div class="flex w-full items-center space-x-6">
       <div class="w-full border-t-2 border-yellow-600"></div>
       <img 

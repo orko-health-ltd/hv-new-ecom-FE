@@ -359,7 +359,7 @@ definePageMeta({
                       :key="categoryData._id"
                     >
                       <TableCell class="hidden sm:table-cell">
-                         <NuxtImg
+                         <NuxtImg  format="webp"
                     :placeholder="fallbackImage"
                     :src="`/halda/${categoryData.image}`"
                     :alt="categoryData.name"

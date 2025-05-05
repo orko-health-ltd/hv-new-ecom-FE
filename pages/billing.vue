@@ -173,7 +173,7 @@
             :key="index"
             class="product-item"
           >
-            <NuxtImg
+            <NuxtImg  format="webp"
               :src="`/halda/${item.product.front_image}`"
               :alt="item.product.name"
             />

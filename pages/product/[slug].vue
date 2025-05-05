@@ -34,7 +34,7 @@
     class="w-full sm:w-2/3 md:w-1/2 mx-auto p-3"
   >
     <template #default="{ item }">
-       <NuxtImg :src="`/halda/${item.url}`"  :alt="product.name" :placeholder="fallbackImage"  class="rounded-lg container w-auto h-[300px]" />
+       <NuxtImg  format="webp" :src="`/halda/${item.url}`"  :alt="product.name" :placeholder="fallbackImage"  class="rounded-lg container w-auto h-[300px]" />
     </template>
 
     <template #indicator="{ onClick, page, active ,item }">
@@ -85,7 +85,7 @@
               >
               <!-- <img :src="$config.public.apiBase+'/'+image.url" alt=""> -->
                <NuxtImg
-                
+                 format="webp"
               :src="`/halda/${image.url}`"
               :alt="product.name"
                   class="object-cover h-[4rem] rounded-md cursor-pointer transition duration-300"
@@ -113,7 +113,7 @@
             <div   v-for="image in product.product_images"
               :key="image._id" class="w-[500px] h-[500px] flex justify-center items-center rounded-lg shadow-md mb-4 p-3">
                <NuxtImg
-             
+              format="webp"
                  class="w-auto h-auto max-h-[500px]"
                :src="`/halda/${image.url}`"
                 :placeholder="fallbackImage"
@@ -211,7 +211,7 @@
                     name="material-symbols:check-circle"
                   />
               
-                  <NuxtImg
+                  <NuxtImg  format="webp"
               :src="`/halda/${sku.front_image}`"
                :placeholder="fallbackImage"
               :alt="sku.name"

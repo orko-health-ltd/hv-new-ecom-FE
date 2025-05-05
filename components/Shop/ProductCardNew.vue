@@ -10,10 +10,12 @@
    
        <nuxt-link :to="'/product/'+props.product.slug" class="relative group">
         <NuxtImg
+           format="webp"
               :placeholder="fallbackImage"
               :src="`/halda/${props.product.front_image}`"
               :alt="props.product.name"class="transition-opacity duration-300 group-hover:opacity-0" />
        <NuxtImg
+       format="webp"
           :placeholder="fallbackImage"
               :src="`/halda/${props.product.back_image}`"
               :alt="props.product.name"class="absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"  />

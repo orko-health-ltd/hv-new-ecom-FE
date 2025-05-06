@@ -34,6 +34,7 @@ const banner = ref<Banner>({
 })
 const imageData = ref(<File | null>null)
 const image = ref('')
+const showMod = ref(false)
 const handleFileChange = (
   event: Event,
   targetObject: Record<string, any>,
@@ -163,6 +164,25 @@ const updateBanner = async () => {
   }
   creating.value = true
 }
+const deleteBanner = async (bannerId: string) => {
+  showMod.value = false
+  try {
+    const response = await $fetch('/api/admin/banners/delete-banner', {
+      method: 'POST',
+      body: {
+        banner_id: bannerId,
+      },
+    })
+    toast.add({
+      title: 'Banner Deleted Successfully',
+      color: 'green',
+      timeout: 1500,
+    })
+    refresh()
+  } catch (error) {
+    console.log(error)
+  }
+}
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -186,7 +206,7 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/banners"
+                <nuxt-link to="/admin/marketing-promotions/banners"
                   >All Banners</nuxt-link
                 >
               </BreadcrumbLink>
@@ -473,6 +493,57 @@ definePageMeta({
                             <DropdownMenuItem @click="updateStatus(bannerData)">{{ bannerData.is_active ? 'Make Inactive' : 'Make Active' }}</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
+                      </TableCell>
+                       <TableCell
+                        ><AlertDialog>
+                          <DropdownMenu :modal="showMod">
+                            <DropdownMenuTrigger as-child>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal class="h-4 w-4" />
+                                <span class="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+<DropdownMenuItem
+                              @click="
+                                ;(banner = bannerData),
+                                  (showEditForm = true)
+                              "
+                              >Edit</DropdownMenuItem
+                            >
+                               <DropdownMenuItem @click="updateStatus(bannerData)">{{ bannerData.is_active ? 'Make Inactive' : 'Make Active' }}</DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle
+                                >Are you absolutely sure?</AlertDialogTitle
+                              >
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete your account and remove your
+                                data from our servers.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                class="bg-red-500 text-white"
+                                @click="deleteBanner(bannerData._id)"
+                                variant="destructive"
+                                >Delete</AlertDialogAction
+                              >
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </TableCell>
                     </TableRow>
                   </TableBody>

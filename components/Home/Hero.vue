@@ -1,8 +1,32 @@
 <template>
   
  <div class="z-0 max-w-screen  h-auto  md:h-[87vh] top-0 overflow-hidden">
+    <UCarousel
+    ref="carouselRef"
+    v-slot="{ item }"
+    :items="items"
+    :ui="{ item: 'basis-full w-screen flex-col w-full' }"
+    class="rounded-lg overflow-hidden w-full"
+    indicators
+  >
+  
+  <div class="bg-white w-full px-5 h-[40vh] sm:h-[50vh] md:h-[60vh] lg:h-[80vh] md:px-[16%] gap-2 md:gap-10 py-10 flex justify-center items-center" :style="`background-image: url(${item.img}); background-size: cover; background-position: center;`">>
    
-
+     
+    <!-- <div class="font-serif px-2 lg:px-14 py-5 flex flex-col justify-center items-center">
+      <h1 class="text-lg md:text-4xl text-gray-800 font-serif mb-0 sm:mb-2">{{ item.name }}</h1>
+     <h1 class="text-2xl md:text-6xl text-gray-800 font-serif mb-0 sm:mb-2">{{ item.title }}</h1>
+     <p class="text-gray-900 text-xs tracking-normal mb-5 sm:mb-10 font-thin">{{ item.description }}</p>
+      <div class="flex w-full items-center space-x-2 md:space-x-5 mb-2 text-[#b4a345]">
+      <div class="w-full border-t-2 border-[#b4a345]"></div>
+      <nuxt-link :to="`/product-category/${item.slug}`" class="text-sm md:text-[20px] font-thin ">Explore</nuxt-link>
+      <div class="w-full border-t-2 border-[#b4a345]"></div>
+    </div>
+    </div> -->
+   
+  </div>
+  </UCarousel>
+<!-- 
     <video
       autoplay
       muted
@@ -33,12 +57,57 @@
       <div class="w-full border-t-2 border-yellow-600"></div>
     </div>
   </section>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script lang="ts" setup>
+import GEBT from 'assets/images/Cover-scaled.jpg'
 
+import DWGT from 'assets/images/gallery/prod-3.jpg'
+import SNWT from 'assets/images/bg.webp'
+const items = [
+  {
+    name:'Dragon Well',
+    title: 'Green Tea',
+    slug:'dragon-well-green-tea',
+    description: "Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.",
+    img:GEBT
+  },
+  {
+    name:'Silver Needle',
+    title: 'White Tea',
+    slug:'silver-needle-white-tea',
+    description: "The lingering fragrance of our Halda Valley Silver Needle White Tea is Delicately honeysuckle floral, with a warmed sugar sweetness and soft mouthfeel and uplifting finish.",
+    img:SNWT
+  },
+  // {
+  //   name:'Dragon Well',
+  //   title: 'Green Tea',
+  //   description: "Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.",
+  //   img:dwgt
+  // },
+ {
+    name:'Golden Eyebrow',
+   title: 'Black Tea',
+    slug:'golden-eyebrow-black-tea',
+    description: "Halda Valley Golden Eyebrow Black Tea is made of delicate handpicked leaves that offers Strong honey and floral fragrance with distinctly honey-sweet & mellow taste.",
+    img:DWGT
+  },
+]
+const carouselRef = ref()
+
+onMounted(() => {
+  setInterval(() => {
+    if (!carouselRef.value) return
+
+    if (carouselRef.value.page === carouselRef.value.pages) {
+      return carouselRef.value.select(0)
+    }
+
+    carouselRef.value.next()
+  }, 5000)
+})
 </script>
 
 

@@ -152,3 +152,14 @@ export interface Order {
     card_issuer_bank_country_phone: string
   }
 }
+export interface Banner {
+  _id: string
+  title: string
+  description: string
+  image: string
+  is_active: boolean
+  links: {
+    title: string
+    link: string
+  }[]
+}

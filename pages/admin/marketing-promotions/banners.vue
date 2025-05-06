@@ -6,24 +6,163 @@ import {
   Loader2,
   MoreHorizontal,
   PlusCircle,
+  PlusIcon,
   Search,
+  Trash2Icon,
 } from 'lucide-vue-next'
-const showCategoryForm = ref(false)
+import type { Banner } from '~/types'
+import IMG from '@/assets/images/no-image.jpg'
+import { item } from '@unovis/ts/components/bullet-legend/style'
+const fallbackImage = IMG
+const toast = useToast()
+const showCreateForm = ref(false)
+const showEditForm = ref(false)
 const creating = ref(false)
-const createCategory = async () => {
-  creating.value = true
-  try {
-    // await createCategoryMutation.mutateAsync({
-    //     name: create
-    // })
-    showCategoryForm.value = false
-  } catch (error) {
-    console.log(error)
-  } finally {
-    creating.value = false
+const loading = ref(false)
+const banner = ref<Banner>({
+  _id: '',
+  title: '',
+  image: '',
+  description: '',
+  is_active: true,
+  links: [
+    {
+      title: '',
+      link:''
+    }
+  ]
+})
+const imageData = ref(<File | null>null)
+const image = ref('')
+const handleFileChange = (
+  event: Event,
+  targetObject: Record<string, any>,
+  property: string
+): void => {
+  const target = event.target as HTMLInputElement
+  const files = target.files
+  if (files && files.length > 0) {
+    targetObject[property] = files[0]
+    imageData.value = files[0]
+    console.log(files[0])
+    const reader = new FileReader()
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (e.target?.result && typeof e.target.result === 'string') {
+        image.value = e.target.result
+      }
+    }
+    reader.readAsDataURL(files[0])
   }
 }
+const { data, refresh } = useFetch<{ data: Banner[] }>(
+  '/api/admin/banners'
+)
+const banners = computed(() => data.value?.data || [])
+const createBanner = async () => {
+  creating.value = true
+  try {
+    const formData = new FormData()
 
+    formData.append('title', banner.value.title)
+    formData.append('image', banner.value.image)
+    formData.append('description', banner.value.description)
+    formData.append('is_active', banner.value.is_active.toString())
+    formData.append('links', JSON.stringify(banner.value.links))
+    await $fetch('/api/admin/banners/create', {
+      method: 'POST',
+      body: formData,
+    })
+    banner.value = {
+      _id: '',
+      title: '',
+      description: '',
+      image: '',
+      is_active: true,
+      links: [
+        {
+          title: '',
+          link:''
+        }
+      ]
+    }
+    toast.add({
+      title: 'Banner Added Successfully',
+      color: 'green',
+      timeout: 1500,
+    })
+
+    refresh()
+    setTimeout(() => {
+      creating.value = true
+      showCreateForm.value = false
+    }, 1000)
+  } catch (error) {
+    console.log(error)
+  }
+  creating.value = true
+}
+const updateStatus = async (banner : Banner) => {
+  try {
+    const response = await $fetch('/api/admin/banners/update-banner', {
+      method: 'POST',
+      body: {
+        banner_id: banner._id,
+        is_active: banner.is_active,
+      },
+    })
+    toast.add({
+      title: 'Status Updated Successfully',
+      color: 'green',
+      timeout: 1500,
+    })
+    refresh()
+  } catch (error) {
+    console.log(error)
+  }
+}
+const updateBanner = async () => {
+ 
+
+  creating.value = true
+  try {
+        const formData = new FormData()
+
+    formData.append('title', banner.value.title)
+    if(imageData.value)
+    formData.append('image', imageData.value)
+    formData.append('description', banner.value.description)
+    formData.append('links', JSON.stringify(banner.value.links))
+    await $fetch('/api/admin/banners/' + banner.value._id, {
+      method: 'POST',
+      body:  formData,
+    })
+    banner.value = {
+      _id: '',
+      title: '',
+      description: '',
+      image: '',
+      is_active: true,
+      links: [{
+        title: '',
+        link:''
+      }],
+    }
+    toast.add({
+      title: 'Banner Updated Successfully',
+      color: 'green',
+      timeout: 1500,
+    })
+
+    refresh()
+    setTimeout(() => {
+      creating.value = false
+      showEditForm.value = false
+    }, 1000)
+  } catch (error) {
+    console.log(error)
+  }
+  creating.value = true
+}
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -47,8 +186,8 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/admin/product-management/categories"
-                  >All Categories</nuxt-link
+                <nuxt-link to="/admin/product-management/banners"
+                  >All Banners</nuxt-link
                 >
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -92,6 +231,7 @@ definePageMeta({
                 Archived
               </TabsTrigger>
             </TabsList>
+
             <div class="ml-auto flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
@@ -118,52 +258,122 @@ definePageMeta({
               </Button>
               <Button
                 size="sm"
-                @click="showCategoryForm = !showCategoryForm"
+                :disabled="showEditForm"
+                @click="showCreateForm = !showCreateForm"
                 class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1"
               >
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Category
+                  Add Banner
                 </span>
               </Button>
             </div>
           </div>
-          <div class="mt-3" v-if="showCategoryForm">
+          <div class="mt-3" v-if="showCreateForm || showEditForm">
             <Card>
               <CardHeader>
-                <CardTitle>Add Category</CardTitle>
+                <CardTitle>{{
+                  showEditForm ? 'Update Banner' : 'Add Banner'
+                }}</CardTitle>
                 <CardDescription>
-                  Add new categories to manage your products.
+                  {{
+                    showEditForm
+                      ? 'Update Banner data to manage and identify products'
+                      : 'Add new banners to manage your products.'
+                  }}
                 </CardDescription></CardHeader
               >
-              <form @submit.prevent="createCategory" class="grid gap-4">
+              <form
+                @submit.prevent="
+                  showEditForm ? updateBanner() : createBanner()
+                "
+                class="grid gap-4"
+              >
                 <CardContent>
                   <div class="grid grid-cols-2 gap-4">
-                    <div class="grid gap-2">
-                      <Label for="first-name">Category name</Label>
-                      <Input id="first-name" placeholder="Category" required />
+                    <div class="flex flex-col items-start gap-2">
+                      <Label for="first-name">Banner Title</Label>
+                      <Input
+                        id="first-name"
+                        v-model="banner.title"
+                        required
+                        placeholder="Banner"
+                      />
                     </div>
+                   
+                  
+
                     <div class="grid gap-2">
-                      <Label for="last-name">Category Image</Label>
-                      <Input id="last-name" type="file" required />
+                      <Label for="last-name">Image</Label>
+                      <Input
+                        id="last-name"
+                        type="file"
+                        @change="(event: Event) => handleFileChange(event, banner, 'image')"
+                        :required="!showEditForm"
+                      /> <img
+                      :src="
+                        image
+                          ? image
+                          : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHZqj-XReJ2R76nji51cZl4ETk6-eHRmZBRw&s'
+                      "
+                      alt="Product Image"
+                      class="w-auto h-20"
+                    />
+                    </div>
+                     <div class="flex flex-col gap-2 items-start">
+                      <Label for="description">Banner Description</Label>
+                      <Textarea
+                        id="description"
+                        v-model="banner.description"
+                        required
+                        placeholder="Banner"
+                      />
+                    </div>
+                     <div class="grid gap-2">
+                      <Label for="description">Banner Buttons</Label>
+                      <div class="flex gap-4" v-for="(button,index) in banner.links">
+                        <Input v-model="button.title" placeholder="Button title" />
+                        <Input v-model="button.link" placeholder="Button link" />
+                         <Button variant="outline" type="button" @click="banner.links.splice(index, 1)" size="icon" class="px-2">
+                        <Trash2Icon class="w-4 h-4" />
+                      </Button>
+                      </div>
+                       <Button variant="outline" type="button" @click="banner.links.push({link:'',title:''})" size="icon">
+                        <PlusIcon class="w-4 h-4" />
+                      </Button>
+
                     </div>
                   </div>
                 </CardContent>
                 <CardFooter class="gap-3">
-                  <Button class="text-white" :disabled="creating">
+                  <Button type="submit" class="text-white" :disabled="creating">
                     <Loader2
                       v-if="creating"
                       class="w-4 h-4 mr-2 animate-spin"
                     />
-                    Add Category</Button
+                    {{
+                      showEditForm ? 'Update Banner' : 'Add Banner'
+                    }}</Button
                   >
                   <Button
-                    @click="showCategoryForm = !showCategoryForm"
-                    class="text-white"
                     type="button"
-                    variant="destructive"
-                  >
-                    Cancel</Button
+                    variant="outline"
+                    @click="
+                      (showEditForm = false),
+                        (showCreateForm = false),
+                        (banner = {
+                          _id: '',
+                          title: '',
+                          description: '',
+                          image: '',
+                          is_active: false,
+                          links: [{
+                            title: '',
+                            link: ''
+                          }]
+                        })
+                    "
+                    >Cancel</Button
                   >
                 </CardFooter>
               </form>
@@ -172,9 +382,9 @@ definePageMeta({
           <TabsContent value="all">
             <Card>
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>Banners</CardTitle>
                 <CardDescription>
-                  Manage your categories and view their sales performance.
+                  Manage your banners and view their sales performance.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -186,87 +396,58 @@ definePageMeta({
                       </TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Status</TableHead>
+                    
                       <TableHead class="hidden md:table-cell">
-                        Price
+                        Description
                       </TableHead>
                       <TableHead class="hidden md:table-cell">
-                        Total Sales
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Created at
+                        Buttons
                       </TableHead>
                       <TableHead>
-                        <span class="sr-only">Actions</span>
+                       Actions
                       </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
+                    <TableRow
+                      v-for="bannerData in banners"
+                      :key="bannerData._id"
+                    >
                       <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
+                        <img :src="$config.public.apiBase+'/'+bannerData.image"  :placeholder="fallbackImage" alt="">
+
+                         <!-- <NuxtImg  format="webp"
+                   
+                    :src="`/halda/${bannerData.image}`"
+                    :alt="bannerData.title"
+                  class="object-cover rounded-md cursor-pointer transition duration-300"
+                /> -->
+                      
                       </TableCell>
                       <TableCell class="font-medium">
-                        Laser Lemonade Machine
+                        {{ bannerData.title }}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline"> Draft </Badge>
+                        <Badge
+                          :variant="
+                            bannerData.is_active ? null : 'destructive'
+                          "
+                        >
+                          {{ bannerData.is_active ? 'Active' : 'Inactive' }}
+                        </Badge>
                       </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $499.99
+                   
+                      <TableCell class="hidden md:table-cell"> {{ bannerData.description }} </TableCell>
+                      <TableCell class="hidden md:table-cell"> 
+                      <ul>
+                        <li v-for="link in bannerData.links">
+                          <nuxt-link :to="'/shop/' + link.link">
+                            <Button class="text-white">{{ link.title }}</Button>
+                          </nuxt-link> 
+                        </li>
+                      </ul>  
                       </TableCell>
-                      <TableCell class="hidden md:table-cell"> 25 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-07-12 10:42 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Hypernova Headphones
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $129.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
+                    
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger as-child>
@@ -282,184 +463,14 @@ definePageMeta({
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
-                              ><nuxt-link
-                                :to="`/admin/product-management/categories/1`"
-                                >Edit</nuxt-link
-                              >
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        AeroGlow Desk Lamp
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $39.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 50 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-11-29 08:15 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
+                              @click="
+                                ;(banner = bannerData),
+                                  (showEditForm = true)
+                              "
+                              >Edit</DropdownMenuItem
                             >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        TechTonic Energy Drink
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary"> Draft </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $2.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 0 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-12-25 11:59 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Gamer Gear Pro Controller
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $59.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 75 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-01-01 12:00 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Luminous VR Headset
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $199.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 30 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-02-14 02:14 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <DropdownMenuItem @click="updateStatus(bannerData)">{{ bannerData.is_active ? 'Make Inactive' : 'Make Active' }}</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

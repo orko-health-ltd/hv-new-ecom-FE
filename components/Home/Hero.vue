@@ -156,15 +156,15 @@ const getBanners = async () => {
     links: [
       {
         title: 'Shop All',
-        link: 'shop/all',
+        link: 'all',
       },
       {
         title: 'Shop Top Selling',
-        link: 'shop/best-selling',
+        link: 'best-selling',
       },
       {
         title: 'Shop Gift Box',
-        link: 'shop/gift-box',
+        link: 'gift-box',
       },
     ],
     },
@@ -179,15 +179,15 @@ const getBanners = async () => {
     links: [
       {
         title: 'Shop All',
-        link: 'shop/all',
+        link: 'all',
       },
       {
         title: 'Shop Top Selling',
-        link: 'shop/best-selling',
+        link: 'best-selling',
       },
       {
         title: 'Shop Gift Box',
-        link: 'shop/gift-box',
+        link: 'gift-box',
       },
     ],
     },
@@ -202,15 +202,15 @@ const getBanners = async () => {
     links: [
       {
         title: 'Shop All',
-        link: 'shop/all',
+        link: 'all',
       },
       {
         title: 'Shop Top Selling',
-        link: 'shop/best-selling',
+        link: 'best-selling',
       },
       {
         title: 'Shop Gift Box',
-        link: 'shop/gift-box',
+        link: 'gift-box',
       },
     ],
     },

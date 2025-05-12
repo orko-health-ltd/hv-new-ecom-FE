@@ -8,7 +8,7 @@
           <br>
           world of tea
         </h1>
-        <div class="sm:flex-row flex flex-col gap-2 ">
+        <div class="sm:flex-row flex flex-col gap-2 mt-5">
          <nuxt-link to="/shop/all"><Button variant="outline">Shop all teas</Button></nuxt-link> 
         <nuxt-link to="/shop/best-selling"><Button  class="justify-start sm:justify-center text-white">Shop top selling teas </Button></nuxt-link>
         </div>
@@ -26,7 +26,7 @@
         <div class="flex w-40 sm:w-52 px-3 py-2 justify-center items-center gap-2 border rounded-md bg-transparent border-gray-500 hover:bg-black hover:text-white">Tea bags <UIcon name="fluent:leaf-two-48-regular" /></div>
         <div class="flex w-40 sm:w-52 px-3 py-2 justify-center items-center gap-2 border rounded-md bg-transparent border-gray-500 hover:bg-black hover:text-white">Refills <UIcon name="fluent:leaf-two-48-regular" /></div>
         <div class="flex w-40 sm:w-52 px-3 py-2 justify-center items-center gap-2 border rounded-md bg-transparent border-gray-500 hover:bg-black hover:text-white">Tins<UIcon name="fluent:leaf-two-48-regular" /></div>
-        <div class="flex w-40 sm:w-52 px-3 py-2 justify-center items-center gap-2 border rounded-md bg-transparent border-gray-500 hover:bg-black hover:text-white">Selectin packs<UIcon name="fluent:leaf-two-48-regular" /></div>
+        <div class="flex w-40 sm:w-52 px-3 py-2 justify-center items-center gap-2 border rounded-md bg-transparent border-gray-500 hover:bg-black hover:text-white">Selection packs<UIcon name="fluent:leaf-two-48-regular" /></div>
        
 
        

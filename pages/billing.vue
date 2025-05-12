@@ -373,6 +373,7 @@ const processCheckout = async () => {
     shippingcost: cartStore.shippingMethod,
     products: cartStore.cart.map((item) => ({
       product_id: item.id,
+      product_name : item.product.name,
       quantity: item.quantity,
       price: item.price,
     })),
@@ -471,6 +472,7 @@ const pay = async () => {
     shippingcost: cartStore.shippingMethod,
     products: cartStore.cart.map((item) => ({
       product_id: item.id,
+      product_name : item.product.name,
       quantity: item.quantity,
       price: item.price,
     })),

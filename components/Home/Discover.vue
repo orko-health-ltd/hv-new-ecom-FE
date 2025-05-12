@@ -7,7 +7,7 @@
      
       <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
-        <h2 class="text-white text-x2l md:text-[60px]  tracking-[20px] font-serif uppercase">
+        <h2 class="text-white text-x2l md:text-[60px] text-nowrap  tracking-[20px] font-serif uppercase">
  Our Tea
 </h2>
         <div class="flex items-center w-full space-x-5 mb-2 text-white">

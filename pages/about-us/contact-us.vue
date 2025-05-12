@@ -9,14 +9,14 @@
     </div>
     <div class="bg-white flex justify-center items-center space-y-8 flex-col py-20">
       <h1 class="text-lg text-center md:text-4xl font-extralight font-serif">COMPLETE THE FORM TO GET IN TOUCH WITH US</h1>
-      <div class="w-full space-y-4 px-[10%]">
+      <form @submit.prevent="submitForm" class="w-full space-y-4 px-[10%]">
 
-<UInput   size="lg" variant="outline" placeholder="Name" />
-<UInput   size="lg" variant="outline" placeholder="Email" />
-<UInput  size="lg" variant="outline" placeholder="Phone Number" />
-<UTextarea  size="lg" variant="outline" placeholder="Message..." />
- <UButton label="Send" size="lg" class="bg-gray-600 hover:bg-gray-800" block />
-      </div>
+<UInput   size="lg" v-model="formData.name" required variant="outline" placeholder="Name" />
+<UInput   size="lg" v-model="formData.email" required variant="outline" placeholder="Email" />
+<UInput  size="lg" v-model="formData.phone" required variant="outline" placeholder="Phone Number" />
+<UTextarea  size="lg" v-model="formData.message" variant="outline" placeholder="Message..." />
+ <UButton label="Send" type="submit" size="lg" class="bg-gray-600 hover:bg-gray-800" block />
+      </form>
       <h1 class="text-2xl sm:text-3xl md:text-5xl lg:text-7xl text-primary-900">HALDA VALLEY CONTACTS</h1>
       <div class="grid text-primary-900 w-full gap-y-5 justify-center items-center grid-cols-1 md:grid-cols-3">
         <div class="flex space-y-6 flex-col justify-center items-center">
@@ -57,7 +57,45 @@
 </template>
 
 <script lang="ts" setup>
-
+const toast = useToast()
+const formData = ref({
+  name: '',
+  email: '',
+  phone: '',
+  message: '',  
+})
+const submitForm = async () => {
+  try {
+    const response = await $fetch('/api/contact', {
+      method: 'POST',
+      body: formData.value,
+    })
+    console.log(response)
+    if (response?.success) {
+      // Handle success
+      toast.add({
+        title: 'Form submitted successfully',
+        color: 'green',
+        timeout: 3000,
+      })
+      formData.value = {
+        name: '',
+        email: '',
+        phone: '',
+        message: '',
+      }
+    } else {
+      // Handle error
+      toast.add({
+        title: 'Form submission failed',
+        color: 'red',
+        timeout: 3000,
+      })
+    }
+  } catch (error) {
+    // Handle error
+  }
+}
 </script>
 
 

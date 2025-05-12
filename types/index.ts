@@ -152,3 +152,21 @@ export interface Order {
     card_issuer_bank_country_phone: string
   }
 }
+export interface Banner {
+  _id: string
+  title: string
+  description: string
+  image: string
+  is_active: boolean
+  color:string
+  links: {
+    title: string
+    link: string
+  }[]
+}
+export interface Sku {
+  _id: string
+  name: string
+  productCount: number
+  is_active: boolean
+}

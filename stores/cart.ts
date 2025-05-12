@@ -41,6 +41,7 @@ export const useMyCartStore = defineStore('myCartStore', {
       items: [{ product_id: '',name:'', quantity: 0, price: 0 }],
     },
     cart: [] as CartItem[],
+    wishlist:[] as Product[],
     subtotal: 0,
     isOpen: false,
     isLoading: false,

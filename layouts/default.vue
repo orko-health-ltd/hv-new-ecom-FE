@@ -6,7 +6,7 @@
     </div>
     <div > -->
     <Navbar />
-    <div class="pt-[100px]">
+    <div class="pt-[120px] lg:pt-[90px]">
 <slot  />
     </div>
     

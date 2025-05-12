@@ -8,15 +8,15 @@ import {
   PlusCircle,
   Search,
 } from 'lucide-vue-next'
-const showCategoryForm = ref(false)
+const showCouponForm = ref(false)
 const creating = ref(false)
-const createCategory = async () => {
+const createCoupon = async () => {
   creating.value = true
   try {
-    // await createCategoryMutation.mutateAsync({
+    // await createCouponMutation.mutateAsync({
     //     name: create
     // })
-    showCategoryForm.value = false
+    showCouponForm.value = false
   } catch (error) {
     console.log(error)
   } finally {
@@ -47,8 +47,8 @@ definePageMeta({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink as-child>
-                <nuxt-link to="/back-admin/product-management/categories"
-                  >All Categories</nuxt-link
+                <nuxt-link to="/back-admin/marketing-promotions/coupons"
+                  >All Coupons</nuxt-link
                 >
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -87,9 +87,9 @@ definePageMeta({
             <TabsList>
               <TabsTrigger value="all"> All </TabsTrigger>
               <TabsTrigger value="active"> Active </TabsTrigger>
-              <TabsTrigger value="draft"> Draft </TabsTrigger>
-              <TabsTrigger value="archived" class="hidden sm:flex">
-                Archived
+              <TabsTrigger value="expired"> Expired </TabsTrigger>
+              <TabsTrigger value="scheduled" class="hidden sm:flex">
+                Scheduled
               </TabsTrigger>
             </TabsList>
             <div class="ml-auto flex items-center gap-2">
@@ -106,8 +106,8 @@ definePageMeta({
                   <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem checked> Active </DropdownMenuItem>
-                  <DropdownMenuItem>Draft</DropdownMenuItem>
-                  <DropdownMenuItem> Archived </DropdownMenuItem>
+                  <DropdownMenuItem>Expired</DropdownMenuItem>
+                  <DropdownMenuItem> Scheduled </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button size="sm" variant="outline" class="h-7 gap-1">
@@ -118,35 +118,85 @@ definePageMeta({
               </Button>
               <Button
                 size="sm"
-                @click="showCategoryForm = !showCategoryForm"
+                @click="showCouponForm = !showCouponForm"
                 class="h-7 bg-blue-500 hover:bg-blue-700 text-white gap-1"
               >
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Category
+                  Add Coupon
                 </span>
               </Button>
             </div>
           </div>
-          <div class="mt-3" v-if="showCategoryForm">
+          <div class="mt-3" v-if="showCouponForm">
             <Card>
               <CardHeader>
-                <CardTitle>Add Category</CardTitle>
+                <CardTitle>Add Coupon</CardTitle>
                 <CardDescription>
-                  Add new categories to manage your products.
+                  Create new discount coupons for your customers.
                 </CardDescription></CardHeader
               >
-              <form @submit.prevent="createCategory" class="grid gap-4">
+              <form @submit.prevent="createCoupon" class="grid gap-4">
                 <CardContent>
                   <div class="grid grid-cols-2 gap-4">
                     <div class="grid gap-2">
-                      <Label for="first-name">Category name</Label>
-                      <Input id="first-name" placeholder="Category" required />
+                      <Label for="name">Coupon Name</Label>
+                      <Input id="name" placeholder="Summer Sale" required />
                     </div>
                     <div class="grid gap-2">
-                      <Label for="last-name">Category Image</Label>
-                      <Input id="last-name" type="file" required />
+                      <Label for="code">Coupon Code</Label>
+                      <Input id="code" placeholder="SUMMER2024" required />
                     </div>
+                      <div class="grid gap-2">
+                      <Label for="is_active">Status</Label>
+                      <RadioGroup id="is_active" required>
+                        <div class="flex items-center space-x-2">
+                          <RadioGroupItem value="true" id="active" />
+                          <Label for="active">Active</Label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                          <RadioGroupItem value="false" id="inactive" />
+                          <Label for="inactive">Inactive</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="type">Discount Type</Label>
+                      <RadioGroup id="type" required>
+                        <div class="flex items-center space-x-2">
+                          <RadioGroupItem value="percentage" id="percentage" />
+                          <Label for="percentage">Percentage</Label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                          <RadioGroupItem value="fixed" id="fixed" />
+                          <Label for="fixed">Fixed Amount</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>                    <div class="grid gap-2">
+                      <Label for="value">Discount Value</Label>
+                      <Input id="value" type="number" min="0" required />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="min_order_amount">Minimum Order Amount</Label>
+                      <Input id="min_order_amount" type="number" min="0" required />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="max_discount_amount">Maximum Discount Amount</Label>
+                      <Input id="max_discount_amount" type="number" min="0" required />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="usage">Maximum Usage Count</Label>
+                      <Input id="usage" type="number" min="0" required />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="start_date">Start Date</Label>
+                      <Input id="start_date" type="date" required />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="expiry_date">Expiry Date</Label>
+                      <Input id="expiry_date" type="date" required />
+                    </div>
+                  
                   </div>
                 </CardContent>
                 <CardFooter class="gap-3">
@@ -155,10 +205,10 @@ definePageMeta({
                       v-if="creating"
                       class="w-4 h-4 mr-2 animate-spin"
                     />
-                    Add Category</Button
+                    Add Coupon</Button
                   >
                   <Button
-                    @click="showCategoryForm = !showCategoryForm"
+                    @click="showCouponForm = !showCouponForm"
                     class="text-white"
                     type="button"
                     variant="destructive"
@@ -172,29 +222,25 @@ definePageMeta({
           <TabsContent value="all">
             <Card>
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>Coupons</CardTitle>
                 <CardDescription>
-                  Manage your categories and view their sales performance.
+                  Manage your discount coupons and track their usage.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead class="hidden w-[100px] sm:table-cell">
-                        <span class="sr-only">img</span>
-                      </TableHead>
                       <TableHead>Name</TableHead>
+                      <TableHead>Code</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Value</TableHead>
+                      <TableHead>Min Order</TableHead>
+                      <TableHead>Max Discount</TableHead>
+                      <TableHead>Usage</TableHead>
+                      <TableHead class="hidden md:table-cell">Start Date</TableHead>
+                      <TableHead class="hidden md:table-cell">Expiry Date</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Price
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Total Sales
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Created at
-                      </TableHead>
                       <TableHead>
                         <span class="sr-only">Actions</span>
                       </TableHead>
@@ -202,27 +248,17 @@ definePageMeta({
                   </TableHeader>
                   <TableBody>
                     <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Laser Lemonade Machine
-                      </TableCell>
+                      <TableCell class="font-medium">Summer Sale</TableCell>
+                      <TableCell>SUMMER2024</TableCell>
+                      <TableCell>Percentage</TableCell>
+                      <TableCell>20%</TableCell>
+                      <TableCell>$100</TableCell>
+                      <TableCell>$50</TableCell>
+                      <TableCell>45/100</TableCell>
+                      <TableCell class="hidden md:table-cell">2024-06-01</TableCell>
+                      <TableCell class="hidden md:table-cell">2024-08-31</TableCell>
                       <TableCell>
-                        <Badge variant="outline"> Draft </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $499.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 25 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-07-12 10:42 AM
+                        <Badge variant="outline">Active</Badge>
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -239,226 +275,7 @@ definePageMeta({
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Hypernova Headphones
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $129.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 100 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              ><nuxt-link
-                                :to="`/back-admin/product-management/categories/1`"
-                                >Edit</nuxt-link
-                              >
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        AeroGlow Desk Lamp
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $39.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 50 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-11-29 08:15 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        TechTonic Energy Drink
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary"> Draft </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $2.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 0 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-12-25 11:59 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Gamer Gear Pro Controller
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $59.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 75 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-01-01 12:00 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell class="font-medium">
-                        Luminous VR Headset
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline"> Active </Badge>
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        $199.99
-                      </TableCell>
-                      <TableCell class="hidden md:table-cell"> 30 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2024-02-14 02:14 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem>Deactivate</DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -469,8 +286,8 @@ definePageMeta({
               </CardContent>
               <CardFooter>
                 <div class="text-xs text-muted-foreground">
-                  Showing <strong>1-10</strong> of <strong>32</strong>
-                  products
+                  Showing <strong>1-10</strong> of <strong>24</strong>
+                  coupons
                 </div>
               </CardFooter>
             </Card>

@@ -1,4 +1,5 @@
 
+import { Disc } from 'lucide-vue-next'
 import { defineStore } from 'pinia'
 import type { Product } from '~/types'
 // type product = {
@@ -28,6 +29,7 @@ export const useMyCartStore = defineStore('myCartStore', {
       contactPersonPhone: '',
       paymentMethod: '',
       paymentStatus: '',
+      discount: 0,
       total: 0,
       subtotal: 0,
       shippingCost: 0,

@@ -102,6 +102,7 @@ export interface Order {
   }>
   totalAmount: number
   subTotal: number
+  discount: number
   shippingcost: number
   status: string
   shippingAddress: {

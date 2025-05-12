@@ -345,6 +345,10 @@
                         <span class="font-medium">৳{{ order.subTotal }}</span>
                       </div>
                       <div class="flex justify-between">
+                        <span class="text-muted-foreground">Discount:</span>
+                        <span class="font-medium">৳{{ order.discount }}</span>
+                      </div>
+                      <div class="flex justify-between">
                         <span class="text-muted-foreground">Shipping:</span>
                         <span class="font-medium"
                           >৳{{ order.shippingcost }}</span

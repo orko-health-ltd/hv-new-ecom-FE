@@ -135,10 +135,15 @@
              {{ product.name }}
             </h2>
             <!-- <p class="text-gray-600 mb-4">SKU: WH1000XM4</p> -->
-            <div class="mb-4">
+            <div class="mb-4" v-if="discountPrice != price">
               <span class="text-2xl font-bold mr-2">TK : {{ price }}</span>
               <span class="text-gray-500 line-through">TK : {{ discountPrice }}</span>
             </div>
+            <div class="mb-4" v-else>
+              <span class="text-2xl font-bold mr-2">TK : {{ price }}</span>
+              <!-- <span class="text-gray-500 line-through">TK : {{ discountPrice }}</span> -->
+            </div>
+
             <div class="flex text-sm items-center mb-4">
               <svg
                 v-for="i in 5"
@@ -626,11 +631,12 @@ const reviews = [
 const toast = useToast()
 const getProduct = async (slug: string | string[]) => {
   const { data: responseData } = await $fetch<{ data: Product }>('/api/products/' + slug)
-  console.log('hello',responseData)
+ 
   product.value = responseData
   format.value = responseData.format
   if (product.value?.discount && product.value?.discount > 0 && product.value?.price) {
-    if (product.value.discount_unit === 'percent') {
+    if (product.value.discount_unit === 'percentage') {
+      
       price.value = product.value.price - (product.value.price * product.value.discount) / 100
     }
     else {

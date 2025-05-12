@@ -50,6 +50,10 @@
         <span class="text-sm font-medium text-gray-800">৳ {{ store.invoice.subtotal.toFixed(2) }}</span>
       </div>
       <div class="flex justify-between mb-2">
+        <span class="text-sm text-gray-600">Discount</span>
+        <span class="text-sm font-medium text-gray-800">৳ {{ store.invoice.discount.toFixed(2) }}</span>
+      </div>
+      <div class="flex justify-between mb-2">
         <span class="text-sm text-gray-600">Shipping Charge </span>
         <span class="text-sm font-medium text-gray-800">৳ {{ store.invoice.shippingCost.toFixed(2) }}</span>
       </div>

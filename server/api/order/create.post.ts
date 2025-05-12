@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
     formData.append('customerInfo',JSON.stringify(body.customerInfo))
     formData.append('paymentMethod', body.paymentMethod)
     formData.append('subTotal', body.subTotal)
+    formData.append('discount', body.discount)
     formData.append('shippingcost', body.shippingMethod)
     formData.append('products', JSON.stringify(body.products))
     formData.append('totalAmount', body.subtotal)

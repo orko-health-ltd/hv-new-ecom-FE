@@ -263,6 +263,10 @@
             <span>Subtotal</span>
             <span>৳ {{ cartStore.total }}</span>
           </div>
+          <div class="discounts">
+            <span>Discounts</span>
+            <span>৳ {{ discount }}</span>
+          </div>
           <div class="shipping">
             <span>Shipping</span>
             <span>৳ {{ cartStore.shippingMethod }}</span>
@@ -273,7 +277,7 @@
 </div> -->
           <div class="total">
             <span>Total</span>
-            <span>৳ {{ cartStore.subtotal }}</span>
+            <span>৳ {{ cartStore.subtotal - discount }}</span>
           </div>
         </div>
       </section>
@@ -377,7 +381,8 @@ const processCheckout = async () => {
       quantity: item.quantity,
       price: item.price,
     })),
-    totalAmount: cartStore.subtotal,
+    discount : discount.value,
+    totalAmount: cartStore.subtotal - discount.value,
     shippingAddress: {
       street: customerInfo.value.address,
       city: customerInfo.value.city,
@@ -444,7 +449,8 @@ const pay = async () => {
     customerInfo.value.district +
     ' , ' +
     customerInfo.value.country),
-    (cartStore.invoice.total = cartStore.subtotal)
+    (cartStore.invoice.total = cartStore.subtotal - discount.value )
+    cartStore.invoice.discount = discount.value
   cartStore.invoice.subtotal = cartStore.total
   cartStore.invoice.created_at = new Date().toISOString()
   cartStore.invoice.items = cartStore.cart.map((item) => ({
@@ -476,7 +482,7 @@ const pay = async () => {
       quantity: item.quantity,
       price: item.price,
     })),
-    totalAmount: cartStore.subtotal,
+    totalAmount: cartStore.subtotal - discount.value,
     shippingAddress: {
       street: customerInfo.value.address,
       city: customerInfo.value.city,
@@ -489,12 +495,15 @@ const pay = async () => {
       phone: customerInfo.value.contactPersonPhone,
     },
   }
+  try{
+    
   const response = await $fetch<{ status: string; payment_url?: string }>(
     '/api/payment/initiate',
     {
       method: 'POST',
       body: {
-        amount: cartStore.subtotal,
+        amount: cartStore.subtotal - discount.value,
+        discount : discount.value,
         customer_name:
           customerInfo.value.firstName + ' ' + customerInfo.value.lastName,
         customer_email: customerInfo.value.email,
@@ -517,8 +526,35 @@ const pay = async () => {
     paymentUrl.value = response.payment_url
     window.location.href = paymentUrl.value // openPayment.value = true
   }
+    loading.value = false
+  }
+  catch (error)
+  {
+    toast.add({ title: 'Payment failed.', color: 'red', timeout: 1500 })
   loading.value = false
 }
+
+}
+const discount = computed(() => {
+  let price = 0
+  cartStore.cart.forEach((item) => {
+    if (item.product.discount) {
+      if (item.product?.discount && item.product?.discount > 0 && item.product?.price) {
+    if (item.product.discount_unit === 'percentage') {
+      
+      price += ((item.product.price * item.product.discount) / 100) * item.quantity
+    }
+    else {
+      price +=  (item.product.discount) * item.quantity
+    }
+  }
+  else {
+    price +=  0
+  }
+    }
+  })
+  return price
+})
 onMounted(async () => {
   if (route.query.success == 'true' && route.query.order_id) {
     {

@@ -47,6 +47,7 @@ export default defineEventHandler(async (event) => {
       formData.append('customerInfo', JSON.stringify(order_data.customerInfo))
       formData.append('paymentMethod', order_data.paymentMethod)
       formData.append('subTotal', order_data.subTotal)
+      formData.append('discount', order_data.discount)
       formData.append('order_id', order_id)
       formData.append('shippingcost', order_data.shippingcost)
       formData.append('products', JSON.stringify(order_data.products))

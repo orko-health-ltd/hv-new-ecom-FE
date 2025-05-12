@@ -158,8 +158,15 @@ export interface Banner {
   description: string
   image: string
   is_active: boolean
+  color:string
   links: {
     title: string
     link: string
   }[]
+}
+export interface Sku {
+  _id: string
+  name: string
+  productCount: number
+  is_active: boolean
 }

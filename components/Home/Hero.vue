@@ -1,6 +1,6 @@
 <template>
   <div class="z-0 max-w-screen h-auto md:h-[70vh] top-0 overflow-hidden">
-    <UCarousel
+    <!-- <UCarousel
       ref="carouselRef"
       v-slot="{ item }"
       :items="items"
@@ -8,21 +8,27 @@
       :ui="{ item: 'basis-full w-screen flex-col w-full' }"
       class="overflow-hidden w-full"
       indicators
-    >
+    > -->
+     <swiper :modules="[EffectFade ,Autoplay]" :loop="true"  :autoplay="{
+      delay: 4500,
+      disableOnInteraction: false,
+    }"  effect="fade">
+      <swiper-slide v-for="item in items" :key="item._id">
+    
       <div
-        class="bg-[#2323232a] bg-cover w-full h-[40vh] sm:h-[50vh] md:h-[60vh] lg:h-[70vh] gap-2 md:gap-10 py-10 flex justify-start items-center"
+        class="bg-[#23232343] bg-cover w-full h-[40vh] sm:h-[50vh] md:h-[60vh] lg:h-[70vh] gap-2 md:gap-10 py-10 flex justify-start items-center"
         :style="`background-image: url(${item._id == '1234' ? item.image :
           $config.public.apiBase + '/' + item.image
         }); background-size: cover; background-position: center;`"
       >
         <div
-          class="font-mono mx-0 sm:mx-[5%] w-full px-4 sm:px-10 py-5 flex font-bold flex-col"
+          class="font-sans mx-0 sm:mx-[5%] w-full px-4 sm:px-10 py-5 flex font-bold flex-col"
         >
           <!-- <span class="text-sm md:text-lg text-white uppercase tracking-widest mb-2">New Collection</span> -->
-          <h1 class="text-2xl md:text-4xl text-white font-serif mb-2">
+          <h1 class="text-2xl md:text-4xl text-white  mb-2" :style="`color:${item.color}`">
             {{ item.title }}
           </h1>
-          <h2 class="text-xl md:text-2xl text-white font-serif mb-4">
+          <h2 class="text-base md:text-lg text-white w-2/3  mb-4" :style="`color:${item.color}`">
             {{ item.description }}
           </h2>
           <!-- <p class="text-white text-sm md:text-base max-w-2xl mb-8">Experience the finest craftsmanship and timeless elegance with our latest collection. Each piece tells a unique story of artistry and sophistication.</p> -->
@@ -60,7 +66,9 @@
     </div>
     </div> -->
       </div>
-    </UCarousel>
+      </swiper-slide>
+      </swiper>
+    <!-- </UCarousel> -->
     <!-- 
     <video
       autoplay
@@ -100,7 +108,12 @@
 import GEBT from 'assets/images/Cover-scaled.jpg'
 import SNWT from 'assets/images/gallery/prod-3.jpg'
 import dwgt from 'assets/images/bg.webp'
+ import { EffectFade ,Autoplay } from 'swiper/modules';
+  import { Swiper, SwiperSlide } from 'swiper/vue';
 
+  import 'swiper/css';
+  import 'swiper/css/autoplay';
+  import 'swiper/css/effect-fade';
 import type { Banner } from '~/types'
 const items = ref(<Banner[]>[
   //   {
@@ -129,51 +142,52 @@ const getBanners = async () => {
   const { data } = await $fetch<{ data: Banner[] }>('/api/banners')
   console.log(data)
   if(data.length > 0)
-  items.value = data as Banner[]
-}
-onMounted(() => {
-  items.value.push(
+    items.value = data as Banner[]
+  else
+ items.value.push(
     {
     _id: '1234',
     is_active: true,
-    title: 'Green Tea',
+      title: 'Green Tea',
+      color:'#fff',
     description:
       'Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.',
     image: GEBT,
     links: [
       {
         title: 'Shop All',
-        link: '/shop/all',
+        link: 'shop/all',
       },
       {
         title: 'Shop Top Selling',
-        link: '/shop/best-selling',
+        link: 'shop/best-selling',
       },
       {
         title: 'Shop Gift Box',
-        link: '/shop/gift-box',
+        link: 'shop/gift-box',
       },
     ],
     },
     {
     _id: '1234',
     is_active: true,
-    title: 'Green Tea',
+      title: 'Green Tea',
+    color:'#fff',
     description:
       'Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.',
     image: SNWT,
     links: [
       {
         title: 'Shop All',
-        link: '/shop/all',
+        link: 'shop/all',
       },
       {
         title: 'Shop Top Selling',
-        link: '/shop/best-selling',
+        link: 'shop/best-selling',
       },
       {
         title: 'Shop Gift Box',
-        link: '/shop/gift-box',
+        link: 'shop/gift-box',
       },
     ],
     },
@@ -183,23 +197,27 @@ onMounted(() => {
     title: 'Green Tea',
     description:
       'Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.',
-    image: dwgt,
+      image: dwgt,
+    color:'#fff',
     links: [
       {
         title: 'Shop All',
-        link: '/shop/all',
+        link: 'shop/all',
       },
       {
         title: 'Shop Top Selling',
-        link: '/shop/best-selling',
+        link: 'shop/best-selling',
       },
       {
         title: 'Shop Gift Box',
-        link: '/shop/gift-box',
+        link: 'shop/gift-box',
       },
     ],
     },
   )
+}
+onMounted(() => {
+ 
   getBanners()
   setInterval(() => {
     if (!carouselRef.value) return

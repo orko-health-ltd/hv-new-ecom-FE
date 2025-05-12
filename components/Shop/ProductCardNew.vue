@@ -1,7 +1,8 @@
 <template>
   <div class="w-full h-auto bg-white rounded   p-4">
    <div class="flex py-2 justify-end items-center w-full">
-    <div class="relative group">
+     <UIcon @click="removeFromWishlist" v-if="cart.wishlist.find(e=>e._id == props.product._id)" name="material-symbols:favorite" class="text-lg relative mb-2" />
+    <div v-else class="relative group" @click="addToWishlist()">
      <UIcon name="material-symbols:favorite-outline" class="text-lg transition-opacity duration-300 group-hover:opacity-0" />
       <UIcon name="material-symbols:favorite" class="text-lg absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </div>
@@ -69,18 +70,27 @@
 
 <script lang="ts" setup>
 import IMG from '@/assets/images/no-image.jpg'
+import type { Product } from '@/types'
 const fallbackImage = IMG
   const config = useRuntimeConfig()
 const toast = useToast()
 const isClicked = ref(false);
 const props = defineProps({
   product: {
-    type: Object,
+    type: Object as PropType<Product>,
     required: true,
   }
 })
 
 const cart = useMyCartStore()
+const addToWishlist = () => {
+  cart.wishlist.push(props.product)
+ toast.add({ title: 'Product added to wishlist', color: 'green',timeout: 1500 })
+}
+const removeFromWishlist = () => {
+  cart.wishlist.splice(cart.wishlist.findIndex(e => e._id === props.product._id), 1)
+  toast.add({ title: 'Product removed from wishlist', color: 'orange',timeout: 1500 })
+}
 const addProductToCart = (product: any) => {
    isClicked.value = true;
   setTimeout(() => (isClicked.value = false), 1500);

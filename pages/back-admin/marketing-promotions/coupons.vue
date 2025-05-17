@@ -8,22 +8,171 @@ import {
   PlusCircle,
   Search,
 } from 'lucide-vue-next'
+import moment from 'moment'
+import type { Coupon } from '~/types'
+const couponData = ref({
+  _id: <string>'',
+  name: <string>'',
+  code: <string>'',
+  type: <string>'percentage',
+  value: <number>0,
+  min_order_amount: <number>0,
+  max_discount_amount: <number>0,
+  usage: <number>0,
+  start_date: '',
+  expiry_date: '',
+  is_active: <boolean>true
+
+} as Coupon)
+const editing = ref(false)
+const items = ref([
+  {
+    label: 'Active',
+   
+    value: true
+  },
+  {
+    label: 'In-active',
+    
+    value: false
+  }
+  
+])
+const types = ref([
+  {
+    label: 'Percentage',
+   
+    value: 'percentage'
+  },
+  {
+    label: 'Amount',
+    
+    value: 'amount'
+  }
+  
+])
+const toast = useToast()
 const showCouponForm = ref(false)
 const creating = ref(false)
 const createCoupon = async () => {
   creating.value = true
+  console.log(couponData.value)
   try {
-    // await createCouponMutation.mutateAsync({
-    //     name: create
-    // })
+   const { data: responseData } = await $fetch<{ data: Coupon }>('/api/back-admin/coupons/create', {
+      method: 'POST',
+      body: couponData.value
+    })
+    console.log(responseData)
+    toast.add({
+      title: 'Coupon created successfully',
+      description: 'Coupon created successfully',
+      icon: 'success'
+    })
+    couponData.value = {
+      _id: <string>'',
+      name: <string>'',
+      code: <string>'',
+      type: <string>'',
+      value: <number>0,
+      min_order_amount: <number>0,
+      max_discount_amount: <number>0,
+      usage: <number>0,
+      start_date: '',
+      expiry_date: '',
+      is_active: <boolean>true
+    }
+    getCoupons()
     showCouponForm.value = false
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
+    toast.add({
+      title: 'Error creating coupon',
+      color: 'red',
+      icon: 'error'
+    })
   } finally {
     creating.value = false
   }
 }
+const updateCoupon = async () => {
+  creating.value = true
+  console.log(couponData.value)
+  try {
+   const { data: responseData } = await $fetch<{ data: Coupon }>(`/api/back-admin/coupons/${couponData.value._id}`, {
+      method: 'POST',
+      body: couponData.value
+    })
+    console.log(responseData)
+    toast.add({
+      title: 'Coupon updated successfully',
+      // description: 'Coupon created successfully',
+      icon: 'success'
+    })
+    couponData.value = {
+      _id: <string>'',
+      name: <string>'',
+      code: <string>'',
+      type: <string>'',
+      value: <number>0,
+      min_order_amount: <number>0,
+      max_discount_amount: <number>0,
+      usage: <number>0,
+      start_date: '',
+      expiry_date: '',
+      is_active: <boolean>true
+    }
+    getCoupons()
+    showCouponForm.value = false
+  } catch (error: any) {
+    console.log(error)
+    toast.add({
+      title: 'Error updating coupon',
+      color: 'red',
+      icon: 'error'
+    })
+  } finally {
+    creating.value = false
+  }
+}
+const coupons = ref<Coupon[]>([])
+const editCoupon = (coupon:Coupon) => {
+  editing.value = true
+  couponData.value = coupon
+  couponData.value.start_date = moment(coupon.start_date).format('YYYY-MM-DD')
+  couponData.value.expiry_date = moment(coupon.expiry_date).format('YYYY-MM-DD')
+  showCouponForm.value = true
+}
 
+const getCoupons = async () => {
+  const { data } = await $fetch<{ data: Coupon[] }>('/api/back-admin/coupons')
+  coupons.value = data
+}
+const deleteCoupon = async (id: string) => {
+  try {
+    await $fetch(`/api/back-admin/coupons/delete`, {
+      method: 'post',
+      body: {
+        coupon_id: id
+      }
+    })
+    toast.add({
+      title: 'Coupon deleted successfully',
+      description: 'Coupon deleted successfully',
+      icon: 'success'
+    })
+    getCoupons()
+  } catch (error) {
+    console.log(error)
+    toast.add({
+      title: 'Error deleting coupon',
+      color: 'red',
+      icon: 'error'
+    })
+  }
+}
+onMounted(() => {
+  getCoupons()
+})
 definePageMeta({
   layout: 'admin',
   middleware: ['auth'],
@@ -123,7 +272,7 @@ definePageMeta({
               >
                 <PlusCircle class="h-3.5 w-3.5" />
                 <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Coupon
+                 {{editing ? 'Edit Coupon' : 'Add Coupon'}}
                 </span>
               </Button>
             </div>
@@ -131,70 +280,52 @@ definePageMeta({
           <div class="mt-3" v-if="showCouponForm">
             <Card>
               <CardHeader>
-                <CardTitle>Add Coupon</CardTitle>
+                <CardTitle>  {{editing ? 'Edit Coupon' : 'Add Coupon'}}</CardTitle>
                 <CardDescription>
-                  Create new discount coupons for your customers.
+                 {{ editing ? 'Edit coupon details' :  'Create new discount coupons for your customers.' }} 
                 </CardDescription></CardHeader
               >
-              <form @submit.prevent="createCoupon" class="grid gap-4">
+              <form @submit.prevent="editing ? updateCoupon() : createCoupon()" class="grid gap-4">
                 <CardContent>
                   <div class="grid grid-cols-2 gap-4">
                     <div class="grid gap-2">
                       <Label for="name">Coupon Name</Label>
-                      <Input id="name" placeholder="Summer Sale" required />
+                      <Input id="name" v-model="couponData.name" placeholder="Summer Sale" required />
                     </div>
                     <div class="grid gap-2">
                       <Label for="code">Coupon Code</Label>
-                      <Input id="code" placeholder="SUMMER2024" required />
+                      <Input id="code" v-model="couponData.code" placeholder="SUMMER2024" required />
                     </div>
                       <div class="grid gap-2">
-                      <Label for="is_active">Status</Label>
-                      <RadioGroup id="is_active" required>
-                        <div class="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="active" />
-                          <Label for="active">Active</Label>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="inactive" />
-                          <Label for="inactive">Inactive</Label>
-                        </div>
-                      </RadioGroup>
+                      <!-- <Label for="is_active">Status</Label> -->
+                    <URadioGroup v-model="couponData.is_active" legend="Choose coupon status" :options="items" />
                     </div>
                     <div class="grid gap-2">
-                      <Label for="type">Discount Type</Label>
-                      <RadioGroup id="type" required>
-                        <div class="flex items-center space-x-2">
-                          <RadioGroupItem value="percentage" id="percentage" />
-                          <Label for="percentage">Percentage</Label>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                          <RadioGroupItem value="fixed" id="fixed" />
-                          <Label for="fixed">Fixed Amount</Label>
-                        </div>
-                      </RadioGroup>
+                      <!-- <Label for="type">Discount Type</Label> -->
+                      <URadioGroup v-model="couponData.type" legend="Choose discount type" :options="types" />
                     </div>                    <div class="grid gap-2">
                       <Label for="value">Discount Value</Label>
-                      <Input id="value" type="number" min="0" required />
+                      <Input id="value" v-model="couponData.value" type="number" min="0" required />
                     </div>
                     <div class="grid gap-2">
                       <Label for="min_order_amount">Minimum Order Amount</Label>
-                      <Input id="min_order_amount" type="number" min="0" required />
+                      <Input id="min_order_amount" v-model="couponData.min_order_amount" type="number" min="0" required />
                     </div>
                     <div class="grid gap-2">
                       <Label for="max_discount_amount">Maximum Discount Amount</Label>
-                      <Input id="max_discount_amount" type="number" min="0" required />
+                      <Input id="max_discount_amount" v-model="couponData.max_discount_amount" type="number" min="0" required />
                     </div>
                     <div class="grid gap-2">
                       <Label for="usage">Maximum Usage Count</Label>
-                      <Input id="usage" type="number" min="0" required />
+                      <Input id="usage" v-model="couponData.usage" type="number" min="0" required />
                     </div>
                     <div class="grid gap-2">
                       <Label for="start_date">Start Date</Label>
-                      <Input id="start_date" type="date" required />
+                      <Input id="start_date" v-model="couponData.start_date" type="date" required />
                     </div>
                     <div class="grid gap-2">
                       <Label for="expiry_date">Expiry Date</Label>
-                      <Input id="expiry_date" type="date" required />
+                      <Input id="expiry_date" v-model="couponData.expiry_date" type="date" required />
                     </div>
                   
                   </div>
@@ -205,10 +336,10 @@ definePageMeta({
                       v-if="creating"
                       class="w-4 h-4 mr-2 animate-spin"
                     />
-                    Add Coupon</Button
+                   {{  editing ? 'Update Coupon' : 'Add Coupon'}}</Button
                   >
                   <Button
-                    @click="showCouponForm = !showCouponForm"
+                    @click="showCouponForm = !showCouponForm , editing = false"
                     class="text-white"
                     type="button"
                     variant="destructive"
@@ -247,18 +378,19 @@ definePageMeta({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell class="font-medium">Summer Sale</TableCell>
-                      <TableCell>SUMMER2024</TableCell>
-                      <TableCell>Percentage</TableCell>
-                      <TableCell>20%</TableCell>
-                      <TableCell>$100</TableCell>
-                      <TableCell>$50</TableCell>
-                      <TableCell>45/100</TableCell>
-                      <TableCell class="hidden md:table-cell">2024-06-01</TableCell>
-                      <TableCell class="hidden md:table-cell">2024-08-31</TableCell>
+                    <TableRow v-for="coupon in coupons" :key="coupon._id">
+                      <TableCell class="font-medium">{{coupon.name}}</TableCell>
+                      <TableCell class="font-bold">{{coupon.code}}</TableCell>
+                      <TableCell>{{ coupon.type }}</TableCell>
+                      <TableCell >৳ {{ coupon.value }}</TableCell>
+                      <TableCell>৳ {{ coupon.min_order_amount }}</TableCell>
+                      <TableCell>৳ {{ coupon.max_discount_amount }}</TableCell>
+                      <TableCell>{{ coupon.usage }}</TableCell>
+                      <TableCell class="hidden md:table-cell">{{moment(coupon.start_date).format('D/M/Y')}}</TableCell>
+                      <TableCell class="hidden md:table-cell">{{moment( coupon.expiry_date).format('D/M/Y') }}</TableCell>
                       <TableCell>
-                        <Badge variant="outline">Active</Badge>
+                        <Badge v-if="coupon.is_active" variant="default" class="text-white">Active</Badge>
+                        <Badge v-else variant="destructive" class="text-nowrap">In-active</Badge>
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -274,9 +406,9 @@ definePageMeta({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Deactivate</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <DropdownMenuItem @click="editCoupon(coupon)">Edit</DropdownMenuItem>
+                            <DropdownMenuItem @click="couponData = coupon ,couponData.is_active =  !couponData.is_active ,updateCoupon()">{{coupon.is_active ?  'Deactivate' : 'Activate'}}</DropdownMenuItem>
+                            <DropdownMenuItem @click="deleteCoupon(coupon._id)">Delete</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

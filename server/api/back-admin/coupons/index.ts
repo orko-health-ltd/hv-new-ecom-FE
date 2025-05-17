@@ -1,14 +1,16 @@
 export default defineEventHandler(async (event) => {
- 
+  const token = getCookie(event, 'token')
 
   const config = useRuntimeConfig()
   try {
-    const { data } = await $fetch<{ data: unknown }>(
-      `${config.public.apiBase}/product/list`
-    )
-    return data
+    const brands = await $fetch(`${config.public.apiBase}/coupon/list`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return brands
   } catch (error: unknown) {
-    console.error('Error:', error)
     const statusCode =
       error instanceof Error && 'statusCode' in error
         ? (error as { statusCode: number }).statusCode

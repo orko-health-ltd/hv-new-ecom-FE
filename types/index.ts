@@ -171,3 +171,16 @@ export interface Sku {
   productCount: number
   is_active: boolean
 }
+export interface Coupon {
+  _id: string
+  name: string
+  code: string
+  type: string
+  value: number
+  min_order_amount: number
+  max_discount_amount: number
+  usage: number
+  start_date: string
+  expiry_date: string
+  is_active: boolean
+}

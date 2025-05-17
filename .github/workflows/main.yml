@@ -33,15 +33,16 @@ jobs:
           with:
             host: ${{ vars.HVECOM_SERVER_IP }}
             username: ${{ vars.HVECOM_SERVER_USERNAME }}
-            # key: ${{ secrets.HVECOM_SERVER_PRIVATE_KEY }}
-            key: ${{ secrets.HV_ECOM_SERVER_SECRET_DO }}
+            key: ${{ secrets.HVECOM_SERVER_PRIVATE_KEY }}
+            # key: ${{ secrets.HV_ECOM_SERVER_SECRET_DO }}
             port: ${{ vars.HVECOM_SSH_PORT || 22 }}
             script: |
                 # Load NVM to set up Node.js and npm 
                 source ~/.nvm/nvm.sh 
 
                 # Navigate to project directory
-                cd /var/www/project/hv-prod-fe
+                # cd /var/www/project/hv-prod-fe
+                cd /var/www/hv-new-ecom-FE
 
                 # Fetch latest changes
                 git fetch origin

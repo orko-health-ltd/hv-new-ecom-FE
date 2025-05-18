@@ -1,3 +1,4 @@
+import { FormData, File } from 'formdata-node'
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'token')
 
@@ -7,7 +8,7 @@ export default defineEventHandler(async (event) => {
     if (!body) {
       throw createError({ statusCode: 400, statusMessage: 'Invalid FormData' })
     }
-   
+
     const formData = new FormData()
     const config = useRuntimeConfig()
 
@@ -16,7 +17,7 @@ export default defineEventHandler(async (event) => {
       const field = body.find((item) => item.name === fieldName)
       return field ? field.data.toString() : ''
     }
-    
+
     // Append other fields to FormData
     formData.append('name', getValue('name'))
     formData.append('_id', getValue('_id'))
@@ -31,12 +32,12 @@ export default defineEventHandler(async (event) => {
     formData.append('sku_id', getValue('sku_id'))
     formData.append('category_id', getValue('category_id'))
     formData.append('specification', getValue('specification'))
-   
+
     formData.append('format', getValue('format'))
     formData.append('features', getValue('features'))
     formData.append('ingredients', getValue('ingredients'))
     formData.append('brewing_guide', getValue('brewing_guide'))
-   
+
     // // Append image files to FormData as an array
     // const imageFiles = body.filter((item) => item.name === 'product_images')
 
@@ -52,21 +53,25 @@ export default defineEventHandler(async (event) => {
     // Append image files to FormData as an array
     body
 
-      .filter((item) => item.name && item.name.startsWith('product_images') && item.data.length > 0)
+      .filter(
+        (item) =>
+          item.name &&
+          item.name.startsWith('product_images') &&
+          item.data.length > 0
+      )
       .forEach((file) => {
         // Append the file directly instead of Blob
-        if(file.filename)
-        formData.append(
-          'product_images',
-          new File([file.data], file.filename , {
-            type: file.type,
-          })
-        )
-
-      }) // Log the FormData to check the files 
-         const front_image = body.find((item) => item.name === 'front_image')
+        if (file.filename)
+          formData.append(
+            'product_images',
+            new File([file.data], file.filename, {
+              type: file.type,
+            })
+          )
+      }) // Log the FormData to check the files
+    const front_image = body.find((item) => item.name === 'front_image')
     const back_image = body.find((item) => item.name === 'back_image')
-    
+
     if (front_image) {
       formData.append(
         'front_image',
@@ -83,7 +88,6 @@ export default defineEventHandler(async (event) => {
         })
       )
     }
-   
 
     // Send the FormData to the API
     const data = await $fetch<{ token: string; user: any }>(

@@ -1,17 +1,20 @@
 <template>
   <div>
    <HomeHero />
-   <HomeFeatureStory />
+   <HomeProducts />
+  
    <HomeDiscover />
    <HomeFeaturedTeas />
    <HomeLounge />
-   <HomeProducts />
+    <HomeFeatureStory />
    <HomeAddress />
   </div>
 </template>
 
 <script lang="ts" setup>
-
+definePageMeta({
+  title: 'Halda'
+})
 </script>
 
 

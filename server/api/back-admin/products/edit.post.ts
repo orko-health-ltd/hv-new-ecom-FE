@@ -1,4 +1,5 @@
 // import { File , FormData } from 'formdata-node'
+import { FormData, File } from 'formdata-node'
 
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'token')

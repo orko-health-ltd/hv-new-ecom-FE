@@ -9,17 +9,17 @@
    
    </div>
    
-       <nuxt-link :to="'/product/'+props.product.slug" class="relative group">
-        <NuxtImg
-           format="webp"
+       <nuxt-link :to="'/product/'+props.product.slug" class="relative group flex justify-center items-center min-h-72">
+        <NuxtImg  format="webp"
               :placeholder="fallbackImage"
               :src="`/halda/${props.product.front_image}`"
-              :alt="props.product.name"class="transition-opacity duration-300 group-hover:opacity-0" />
+              :alt="props.product.name"
+              class="transition-opacity container duration-300 group-hover:opacity-0" />
        <NuxtImg
        format="webp"
           :placeholder="fallbackImage"
               :src="`/halda/${props.product.back_image}`"
-              :alt="props.product.name"class="absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"  />
+              :alt="props.product.name"class="absolute  container left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"  />
        </nuxt-link>  
       
       <div class="flex flex-col space-y-2 mt-4">

@@ -6,7 +6,8 @@ FROM node:18-bullseye
 WORKDIR /app
 
 # Install necessary tools and PM2
-RUN apk add --no-cache bash && npm install -g pm2
+RUN apt-get update && apt-get install -y bash && npm install -g pm2
+
 
 # Copy dependency files
 COPY package*.json ./

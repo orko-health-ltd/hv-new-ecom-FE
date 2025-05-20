@@ -54,7 +54,9 @@ export default defineNuxtConfig({
       halda: process.env.API_BASE_URL || '',
     },
   },
-  
+  pwa: {
+  registerType: 'autoUpdate'
+},
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   typescript: {

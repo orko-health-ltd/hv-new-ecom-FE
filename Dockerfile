@@ -1,24 +1,27 @@
-# Use Node 18 official image as base
+# Use Node 18 Alpine image
 FROM node:18-alpine
 
-# Set working directory inside container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json first (for caching dependencies)
+# Install necessary tools and PM2
+RUN apk add --no-cache bash && npm install -g pm2
+
+# Copy dependency files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy all project files
+# Copy the rest of the project
 COPY . .
 
-# Build the Nuxt app
+# Build the Nuxt app with memory flag
 ENV NODE_OPTIONS=--max-old-space-size=4084
 RUN npm run build
 
-# Expose port 3000 (default Nuxt port)
+# Expose Nuxt port
 EXPOSE 3000
 
-# Run the Nuxt server
-CMD ["npm", "run", "start"]
+# Run using PM2 (with Nuxt production mode)
+CMD ["pm2-runtime", "start", "node_modules/nuxt/bin/nuxt.cjs", "--", "start"]

@@ -3,9 +3,9 @@ export default defineNuxtConfig({
   css: ['~/assets/css/tailwind.css'],
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL,
+      apiBase: 'https://dev.haldavalley.com',
       appUrl: process.env.APP_URL,
-      sslKey: process.env.SSL_KEY ,
+      sslKey: process.env.SSL_KEY,
       sslPass: process.env.SSL_PASS,
     },
   },
@@ -55,8 +55,8 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-  registerType: 'autoUpdate'
-},
+    registerType: 'autoUpdate',
+  },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   typescript: {

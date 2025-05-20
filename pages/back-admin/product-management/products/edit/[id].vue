@@ -271,10 +271,13 @@
                       @change="(event: Event) => handleFileChange(event, product, 'front_image')"
                     />
                   </div>
-                  <NuxtImg
-                    format="webp"
-                    :src="`/halda/${product.front_image}`"
-                    :alt="product.name"
+                  <img
+                    :src="
+                      front_image
+                        ? front_image
+                        : $config.public.apiBase + '/' + product.front_image
+                    "
+                    alt="Product Image"
                     class="w-auto h-20"
                   />
                   <div class="grid gap-2">

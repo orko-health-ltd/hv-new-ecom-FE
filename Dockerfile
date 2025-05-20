@@ -26,5 +26,5 @@ RUN npm run build
 EXPOSE 3000
 
 # Run using PM2 (with Nuxt production mode)
-CMD ["pm2-runtime", "pm2.config.js", "--env", "production"]
+CMD ["pm2-runtime", "pm2.config.cjs", "--env", "production"]
 

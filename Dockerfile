@@ -1,5 +1,6 @@
 # Use Node 18 Alpine image
-FROM node:18-alpine
+FROM node:18-bullseye
+
 
 # Set working directory
 WORKDIR /app

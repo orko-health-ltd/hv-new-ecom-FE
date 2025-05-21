@@ -9,21 +9,22 @@
         <div>
           
         <div>
-           <h1 class="text-black underline underline-offset-2 font-[200] py-2 text-lg md:text-2xl">Halda Valley Tea Company Limited.
+           <h1 class="text-black underline underline-offset-2 font-[200] py-2 text-lg md:text-2xl">Halda Valley Tea Lounge.
 </h1>
-           <p class=" text-sm">Head Office: Pedrollo Plaza, 5 Jubilee Road, Chattogram - 4000</p>
+           <p class=" text-sm"> YN Center, House - 6/A, Road - 113, Gulshan Avenue, Dhaka - 1212</p>
         </div>
-        <div>
+        <!-- <div>
           <h1 class="text-black underline underline-offset-2 font-[200] py-2 text-lg md:text-2xl">Halda Valley Tea Estate
 </h1>
            <p class=" text-sm">
 P/O - Narayanhat, Thana - Bhujpur, Upazila - Fatikchhari, Chattogram</p>
-        </div>
+        </div> -->
         <div>
           <h1 class="text-black underline underline-offset-2 font-[200] py-2 text-lg md:text-2xl">Halda Valley Food and Beverage Ltd.
 </h1>
            <p class=" text-sm">
-YN Center, House - 6/A, Road - 113, Gulshan Avenue, Dhaka - 1205</p>
+Pedrollo NK Tower, Plot D-16 & C-29, BSCIC Industrial Area, Pahartali, Chattogram</p>
+           <p class=" text-sm">Dhaka Office : House - 27, Rd 44, Dhaka 1212</p>
         </div>
         </div>
        

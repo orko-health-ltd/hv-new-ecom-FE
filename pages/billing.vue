@@ -41,8 +41,12 @@
           </div>
           <div class="shipping">
             <span>Shipping</span>
-            <span>৳ {{ cartStore.shippingMethod }}</span>
+            <span>৳ {{ shippingCost }}</span>
           </div>
+           <p v-if="cartStore.total < 1000" class="text-xs flex justify-start items-center text-amber-500">Shop above 1000tk to get free delivery</p>
+          <p v-else class="text-xs flex justify-start items-center text-green-500">
+            <UIcon name="material-symbols:check-circle-outline" />
+           Great, you are eligible for free delivery</p>
           <!-- <div class="tax">
 <span>Tax</span>
 <span>{{ cartStore.tax }}</span>
@@ -141,7 +145,7 @@
                 <Select
                   required
                   v-model="customerInfo.district"
-                  @update:model-value="handleCityUpdate()"
+                 
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select District" />
@@ -269,8 +273,12 @@
           </div>
           <div class="shipping">
             <span>Shipping</span>
-            <span>৳ {{ cartStore.shippingMethod }}</span>
+            <span class="">৳{{ shippingCost }} </span>
           </div>
+          <p v-if="cartStore.total < 1000" class="text-xs flex justify-start items-center text-amber-500">Shop above 1000tk to get free delivery</p>
+          <p v-else class="text-xs flex justify-start items-center text-green-500">
+            <UIcon name="material-symbols:check-circle-outline" />
+           Great, you are eligible for free delivery</p>
           <!-- <div class="tax">
 <span>Tax</span>
 <span>{{ cartStore.tax }}</span>
@@ -336,6 +344,16 @@ const customerInfo = ref({
   note: '',
 })
 const divisions = division.divisions
+const shippingCost = computed(() => {
+ customerInfo.value.district == 'Dhaka'
+    ? (cartStore.shippingMethod = 60)
+    : (cartStore.shippingMethod = 120)
+    if(cartStore.subtotal >=1000){
+      cartStore.shippingMethod = 0
+    }
+  cartStore.calculateSubtotal()
+  return cartStore.shippingMethod
+})
 const districts = computed(() => {
   let id = divisions.find((e) => e.name == customerInfo.value.city)?.id
 
@@ -356,12 +374,15 @@ const countries = ref([
   },
 ])
 
-const handleCityUpdate = () => {
-  customerInfo.value.district == 'Dhaka'
-    ? (cartStore.shippingMethod = 0)
-    : (cartStore.shippingMethod = 120)
-  cartStore.calculateSubtotal()
-}
+// const handleCityUpdate = () => {
+//   customerInfo.value.district == 'Dhaka'
+//     ? (cartStore.shippingMethod = 60)
+//     : (cartStore.shippingMethod = 120)
+//     if(cartStore.subtotal >=1000){
+//       cartStore.shippingMethod = 0
+//     }
+//   cartStore.calculateSubtotal()
+// }
 const processCheckout = async () => {
   // Implement checkout logic here
   let form = {

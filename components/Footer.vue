@@ -39,8 +39,10 @@
         <p class=" px-10">Privacy Policy</p>
       </div>
       <p class="text-center mt-4 text-sm">
-        YN Center, House - 6/A, Road - 113, Gulshan Avenue, Dhaka - 1212</p>
-        <p class="text-center text-sm">© 2023 Halda Valley Food & Beverage Ltd. Handcrafted with love by <nuxt-link to="https://myorko.com/" class="text-white"> Orko Health Team</nuxt-link>
+     Pedrollo NK Tower, Plot D-16 & C-29, BSCIC Industrial Area, Pahartali, Chattogram</p>
+      <p class="text-center  text-sm">
+    Dhaka Office : House - 27, Rd 44, Dhaka 1212</p>
+        <p class="text-center text-sm">© 2025 Halda Valley Food & Beverage Ltd. Handcrafted with love by <p class="text-white"> Halda Valley IT Team</p>
       </p>
     </div>
   </div>

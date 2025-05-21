@@ -63,7 +63,7 @@ Halda Valley is a tea estate where growth is hardwired into her DNA. Since 2010,
    </div>
   
   </div>
-  <featured-products class="px-[10%] py-20" />
+  <HomeProducts class="px-[10%] py-20" />
   </div>
 </template>
 

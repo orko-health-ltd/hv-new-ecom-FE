@@ -288,7 +288,14 @@
                   
                 /> 
                 </div>
-              <button
+
+              <button @click="removeFromWishlist()" v-if="cart.wishlist.find(e=>e._id == product?._id)"
+                class="bg-gray-200 flex gap-2 items-center text-red-500 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              >
+               <UIcon name="material-symbols:favorite" class="text-xl relative" />
+                Wishlisted
+              </button>
+              <button @click="addToWishlist()" v-else
                 class="bg-gray-200 flex gap-2 items-center text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
               >
                 <svg
@@ -543,8 +550,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getPreciseStringLengthPx } from '@unovis/ts'
-import { set } from '@vueuse/core'
+import IMG from '@/assets/images/no-image.jpg'
 import Accordion from '~/components/ui/accordion/Accordion.vue'
 import AccordionContent from '~/components/ui/accordion/AccordionContent.vue'
 import AccordionItem from '~/components/ui/accordion/AccordionItem.vue'
@@ -555,7 +561,6 @@ import NumberFieldDecrement from '~/components/ui/number-field/NumberFieldDecrem
 import NumberFieldIncrement from '~/components/ui/number-field/NumberFieldIncrement.vue'
 import NumberFieldInput from '~/components/ui/number-field/NumberFieldInput.vue'
 import type { Product } from '~/types'
-import IMG from '@/assets/images/no-image.jpg'
 const fallbackImage = IMG
 const img2 =
   'https://i3.wp.com/haldavalley.com/wp-content/uploads/2025/02/Web-Page-2-05.jpg'
@@ -572,6 +577,20 @@ const price = ref(0)
 const discountPrice = ref(0)
 const addingToCart = ref(false)
 const cart = useMyCartStore()
+const addToWishlist = () => {
+  if (product?.value) {
+    cart.wishlist.push(product.value)
+    toast.add({ title: 'Product added to wishlist', color: 'green', timeout: 1500 })
+  }
+}
+const removeFromWishlist = () => {
+   if (product?.value?._id) {
+    const productId = product.value._id
+    cart.wishlist.splice(cart.wishlist.findIndex(e => e._id === productId), 1)
+    toast.add({ title: 'Product removed from wishlist', color: 'orange', timeout: 1500 })
+  }
+}
+
 const reviews = [
   {
     name: 'Mark',

@@ -42,7 +42,7 @@
      Pedrollo NK Tower, Plot D-16 & C-29, BSCIC Industrial Area, Pahartali, Chattogram</p>
       <p class="text-center  text-sm">
     Dhaka Office : House - 27, Rd 44, Dhaka 1212</p>
-        <p class="text-center text-sm">© 2025 Halda Valley Food & Beverage Ltd. Handcrafted with love by <p class="text-white"> Halda Valley IT Team</p>
+        <p class="text-center text-sm">© 2025 Halda Valley Food & Beverage Ltd. Handcrafted with love by  Halda Valley IT Team
       </p>
     </div>
   </div>

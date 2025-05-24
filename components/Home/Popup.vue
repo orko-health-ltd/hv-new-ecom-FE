@@ -46,9 +46,10 @@ const getBanners = async () => {
     
     if (response.data.value) {
       banners.value = response.data.value.data.filter(e => e.is_popup)
-       setTimeout(() => {
+      if(banners.value.length > 0)
+      { setTimeout(() => {
     show.value = true
-  }, 2000)
+  }, 2000)}
     }
   } catch(error) {
     console.log(error)

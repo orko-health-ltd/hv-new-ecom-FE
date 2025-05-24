@@ -19,7 +19,7 @@
      <p class="text-gray-900 text-xs tracking-normal mb-5 sm:mb-10 font-thin">{{ item.description }}</p>
       <div class="flex w-full items-center space-x-2 md:space-x-5 mb-2 text-[#b4a345]">
       <div class="w-full border-t-2 border-[#b4a345]"></div>
-      <nuxt-link :to="`/product-category/${item.slug}`" class="text-sm md:text-[20px] font-thin ">Explore</nuxt-link>
+      <nuxt-link :to="`/shop/${item.slug}`" class="text-sm md:text-[20px] font-thin ">Explore</nuxt-link>
       <div class="w-full border-t-2 border-[#b4a345]"></div>
     </div>
     </div>
@@ -36,14 +36,14 @@ const items = [
   {
     name:'Dragon Well',
     title: 'Green Tea',
-    slug:'dragon-well-green-tea',
+    slug:'green-tea',
     description: "Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.",
     img:DWGT
   },
   {
     name:'Silver Needle',
     title: 'White Tea',
-    slug:'silver-needle-white-tea',
+    slug:'white-tea',
     description: "The lingering fragrance of our Halda Valley Silver Needle White Tea is Delicately honeysuckle floral, with a warmed sugar sweetness and soft mouthfeel and uplifting finish.",
     img:SNWT
   },
@@ -56,7 +56,7 @@ const items = [
  {
     name:'Golden Eyebrow',
    title: 'Black Tea',
-    slug:'golden-eyebrow-black-tea',
+    slug:'gebt',
     description: "Halda Valley Golden Eyebrow Black Tea is made of delicate handpicked leaves that offers Strong honey and floral fragrance with distinctly honey-sweet & mellow taste.",
     img:GEBT
   },

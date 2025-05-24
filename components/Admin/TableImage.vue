@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 const props = defineProps(['image'])
-console.log(props.image)
+
 const config = useRuntimeConfig()
 
 </script>

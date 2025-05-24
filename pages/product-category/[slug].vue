@@ -365,7 +365,7 @@ const { data: responseData } = await useAsyncData('products', () =>
 )
 watchEffect(() => {
   if (responseData.value) {
-    console.log(responseData.value)
+   
     products.value = responseData.value.data
   }
 })

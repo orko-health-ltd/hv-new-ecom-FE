@@ -140,14 +140,15 @@ const items = ref(<Banner[]>[
 const carouselRef = ref()
 const getBanners = async () => {
   const { data } = await $fetch<{ data: Banner[] }>('/api/banners')
-  console.log(data)
-  if(data.length > 0)
-    items.value = data as Banner[]
+ 
+  if(data.filter(e=>e.is_popup == false).length > 0)
+    items.value = data.filter(e=>e.is_popup == false) as Banner[]
   else
  items.value.push(
     {
     _id: '1234',
     is_active: true,
+    is_popup: false,
       title: 'Green Tea',
       color:'#fff',
     description:
@@ -171,6 +172,7 @@ const getBanners = async () => {
     {
     _id: '1234',
     is_active: true,
+    is_popup: false,
       title: 'Green Tea',
     color:'#fff',
     description:
@@ -194,6 +196,7 @@ const getBanners = async () => {
     {
     _id: '1234',
     is_active: true,
+    is_popup: false,
     title: 'Green Tea',
     description:
       'Our fine Halda Valley Dragon Well Green Tea has a bitter sweet, strong aroma and a deep, long-lasting flavor. A truly satisfying cup of wellness.',

@@ -56,13 +56,13 @@ const showCouponForm = ref(false)
 const creating = ref(false)
 const createCoupon = async () => {
   creating.value = true
-  console.log(couponData.value)
+ 
   try {
    const { data: responseData } = await $fetch<{ data: Coupon }>('/api/back-admin/coupons/create', {
       method: 'POST',
       body: couponData.value
     })
-    console.log(responseData)
+  
     toast.add({
       title: 'Coupon created successfully',
       description: 'Coupon created successfully',
@@ -96,13 +96,13 @@ const createCoupon = async () => {
 }
 const updateCoupon = async () => {
   creating.value = true
-  console.log(couponData.value)
+ 
   try {
    const { data: responseData } = await $fetch<{ data: Coupon }>(`/api/back-admin/coupons/${couponData.value._id}`, {
       method: 'POST',
       body: couponData.value
     })
-    console.log(responseData)
+   
     toast.add({
       title: 'Coupon updated successfully',
       // description: 'Coupon created successfully',

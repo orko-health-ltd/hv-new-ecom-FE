@@ -30,7 +30,7 @@ const brand = ref<Brand>({
 const { data, refresh } = useFetch<{ data: Brand[] }>('/api/back-admin/brands')
 const brands = computed(() => data.value?.data || [])
 const setShortName = () => {
-  console.log(brand.value.name)
+ 
   brand.value.short_name = brand.value.name
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase())

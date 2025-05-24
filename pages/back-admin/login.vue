@@ -80,7 +80,7 @@ const handleLogin = async () => {
       form.value.password,
       remember.value
     )
-    console.log(login)
+  
     if (login) {
       navigateTo('/back-admin')
     }

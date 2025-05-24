@@ -258,14 +258,50 @@
                 <h3>{{ item.product.name }}</h3>
                 <p>Quantity: {{ item.quantity }}</p>
               </div>
-              <p class="text-nowrap font-semibold">৳ {{ item.price }}</p>
+              <div class="flex flex-col">
+                 <sup class="text-nowrap text-end font-semibold line-through">৳ {{ item.price }}</sup>
+              <p class="text-nowrap font-semibold ">৳ {{ discountedPrice(item.product) }}
+
+                
+              </p>
+              </div>
+             
             </div>
           </div>
         </div>
+        <div class="coupon-section mb-4">
+                  <div class="flex gap-2">
+                    <input
+                      type="text"
+                      v-model="coupon.Code"
+                      placeholder="Enter coupon code"
+                      class="flex-1 px-3 py-2 border rounded-lg"
+                    />
+                    <Button
+                      @click="applyCoupon"
+                      :disabled="loading"
+                      class="whitespace-nowrap text-white"
+                    >
+                      <UIcon v-if="loading" name="svg-spinners:6-dots-rotate" />
+                      Apply Coupon
+                    </Button>
+                  </div>
+                  <p v-if="coupon.Error" class="text-red-500 text-sm mt-1">
+                    {{ coupon.Error }}
+                  </p>
+                  <p v-if="coupon.Success" class="text-green-500 text-sm mt-1">
+                    {{ coupon.Success }}
+                  </p>
+                </div>
+        
         <div class="total-section">
           <div class="subtotal">
             <span>Subtotal</span>
             <span>৳ {{ cartStore.total }}</span>
+          </div>
+          <div v-if="couponDiscount > 0" class="promodiscounts">
+            <span>Promo Code Discounts</span>
+            <span>৳ {{ couponDiscount }}</span>
           </div>
           <div class="discounts">
             <span>Discounts</span>
@@ -275,10 +311,10 @@
             <span>Shipping</span>
             <span class="">৳{{ shippingCost }} </span>
           </div>
-          <p v-if="cartStore.total < 1000" class="text-xs flex justify-start items-center text-amber-500">Shop above 1000tk to get free delivery</p>
-          <p v-else class="text-xs flex justify-start items-center text-green-500">
+          <p v-if="cartStore.total > 1000" class="text-md flex justify-start items-center text-green-500">
             <UIcon name="material-symbols:check-circle-outline" />
            Great, you are eligible for free delivery</p>
+          <p v-else class="text-md flex justify-start items-center text-amber-500">Shop above 1000tk to get free delivery</p>
           <!-- <div class="tax">
 <span>Tax</span>
 <span>{{ cartStore.tax }}</span>
@@ -322,7 +358,10 @@
 <script lang="ts" setup>
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import division from '@/divisions.json'
-import type { Order } from '~/types'
+import moment from 'moment'
+import coupons from '~/server/api/back-admin/coupons'
+import Id from '~/server/api/order/[id]'
+import type { Order, Product } from '~/types'
 const cartStore = useMyCartStore()
 const paymentUrl = ref('')
 const route = useRoute()
@@ -330,6 +369,67 @@ const toast = useToast()
 const loading = ref(false)
 const openOrder = ref(false)
 const success = ref(false)
+const couponDiscount = ref(0)
+const coupon = ref({
+  Code: '',
+  Error: '',
+  Success: '',
+  id: '',
+})
+const applyCoupon = async () => {
+  loading.value = true
+  coupon.value.Error = ''
+  coupon.value.Success = ''
+  try {
+    const { data: response }: { data: any } = await useFetch('/api/coupon', {
+      method: 'POST',
+      body: {
+        coupon: coupon.value.Code,
+      },
+    })
+   
+    if (response.value) {
+      let couponData = response.value?.data
+      if (moment(couponData.start_date).isAfter(moment()) || moment(couponData.expiry_date).isBefore(moment())) {
+        coupon.value.Error = 'Coupon is expired 1'
+        loading.value = false
+        return
+      }
+      else if (couponData.min_order_amount > cartStore.subtotal) {
+        coupon.value.Error = 'Minimum purchase amount is ' + couponData.min_order_amount + 'tk'
+        loading.value = false
+        return
+      }
+      else if (couponData.usage <= couponData.total_orders) {
+        coupon.value.Error = 'Coupon is expired 2'
+        loading.value = false
+        return
+      }
+      else {
+        let discountAmount = 0
+      if (couponData.type == 'percentage') {
+          discountAmount =(cartStore.total * couponData.value) / 100
+      }
+      else
+        discountAmount = couponData.value
+          if (discountAmount >= couponData.max_discount_amount)
+            couponDiscount.value = couponData.max_discount_amount
+      else couponDiscount.value = discountAmount
+        coupon.value.Success = 'Coupon applied successfully'
+        coupon.value.id = couponData._id
+      }
+    
+     
+      // cartStore.applyCoupon(coupon.value.Code)
+    } else {
+      coupon.value.Error = response.value?.status
+    }
+  } catch (error) {
+    coupon.value.Error = 'Invalid Coupon'
+    loading.value = false
+  }
+  loading.value = false
+}
 const customerInfo = ref({
   firstName: '',
   lastName: '',
@@ -354,6 +454,20 @@ const shippingCost = computed(() => {
   cartStore.calculateSubtotal()
   return cartStore.shippingMethod
 })
+const discountedPrice = (product:{price:number,discount:number,discount_unit:string}) => {
+  console.log(product)
+  if (product.discount) {
+      if (product?.discount && product?.discount > 0 && product?.price) {
+    if (product.discount_unit === 'percentage') {
+      
+      return product.price -((product.price * product.discount) / 100) 
+    }
+    else {
+     return product.price -(product.discount)
+    }
+  }
+  }
+}
 const districts = computed(() => {
   let id = divisions.find((e) => e.name == customerInfo.value.city)?.id
 
@@ -411,6 +525,7 @@ const processCheckout = async () => {
       country: customerInfo.value.country,
     },
     note: customerInfo.value.note,
+    coupon_id: coupon.value.id,
     contactPerson: {
       name: customerInfo.value.contactPerson,
       phone: customerInfo.value.contactPersonPhone,
@@ -423,7 +538,7 @@ const processCheckout = async () => {
       body: form,
     }
   )
-  console.log(order, status)
+ 
   if (status == 'success') {
     setTimeout(() => {
       route.query.order_id = order.order_id
@@ -447,6 +562,7 @@ const pay = async () => {
     toast.add({ title: 'Cart is empty.', color: 'red', timeout: 1500 })
     return
   }
+
   loading.value = true
   cartStore.invoice.name =
     customerInfo.value.firstName + ' ' + customerInfo.value.lastName
@@ -510,6 +626,7 @@ const pay = async () => {
       district: customerInfo.value.district,
       country: customerInfo.value.country,
     },
+    coupon_id: coupon.value.id,
     note: customerInfo.value.note,
     contactPerson: {
       name: customerInfo.value.contactPerson,
@@ -574,7 +691,8 @@ const discount = computed(() => {
   }
     }
   })
-  return price
+  console.log(couponDiscount.value)
+  return price+couponDiscount.value
 })
 onMounted(async () => {
   if (route.query.success == 'true' && route.query.order_id) {
@@ -587,7 +705,7 @@ onMounted(async () => {
         cartStore.invoice.id = route.query.order_id as string
         cartStore.invoice.paymentStatus = 'paid'
         cartStore.clearCart()
-        console.log(cartStore.cart)
+      
         toast.add({
           title: 'Order Placed Successfully.',
           color: 'green',

@@ -677,7 +677,7 @@ const addToCart = () => {
   if (product.value) {
       addingToCart.value = true
       cart.addToCart(product.value, quantity.value)
-    console.log(quantity.value)
+  
     toast.add({ title: 'Product added to cart', color: 'green',timeout: 1500 })
       setTimeout(() => {
         addingToCart.value = false

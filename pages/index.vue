@@ -1,5 +1,6 @@
 <template>
   <div>
+    <HomePopup />
    <HomeHero />
    <HomeProducts />
   

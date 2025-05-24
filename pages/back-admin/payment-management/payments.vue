@@ -64,7 +64,7 @@ const filterpayments = useDebounceFn(() => {
 const getPayments = async () => {
   const { data } = await $fetch<{ data: Order[] }>(`/api/back-admin/payments`)
   payments.value = data
-  console.log(payments.value)
+ 
 }
 // Pagination
 const itemsPerPage = ref(10)

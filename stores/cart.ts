@@ -117,12 +117,10 @@ export const useMyCartStore = defineStore('myCartStore', {
       }
       this.calculateSubtotal()
     },
-    applyPromo() {
-      if (this.promoCode === 'DISCOUNT') {
-        this.discount = 0.1
-      } else {
-        this.discount = 0
-      }
+    applyPromo(couponData: any) {
+      this.promoCode = couponData.code
+     
+      
     },
     calculateSubtotal() {
       if (this.cart.length == 0) {

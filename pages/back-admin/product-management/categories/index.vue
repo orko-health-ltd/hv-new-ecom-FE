@@ -41,7 +41,7 @@ const handleFileChange = (
   if (files && files.length > 0) {
     targetObject[property] = files[0]
     imageData.value = files[0]
-    console.log(files[0])
+  
     const reader = new FileReader()
     reader.onload = (e: ProgressEvent<FileReader>) => {
       if (e.target?.result && typeof e.target.result === 'string') {

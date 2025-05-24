@@ -370,10 +370,10 @@ const getProduct = async () => {
     const { data } = await $fetch<{ data: Product }>(
       `/api/back-admin/products/${route.params.id}`
     )
-    console.log(data)
+   
     if (data) {
       product.value = data
-      console.log(product.value)
+    
     }
   } catch (error) {
     console.error('Error fetching product:', error)
@@ -434,7 +434,7 @@ const updateProduct = async () => {
   try {
     updating.value = true
     const formData = new FormData()
-    console.log(images.value.length)
+   
     Object.entries(product.value).forEach(([key, value]) => {
       // if (Array.isArray(value)) {
       //   value.forEach((file, index) => {
@@ -496,7 +496,7 @@ const handleFileChange = (
 ): void => {
   const target = event.target as HTMLInputElement
   const files = target.files
-  console.log(files, property)
+ 
   if (property == 'product_images' && files && files.length > 0) {
     targetObject[property] = Array.from(files)
 
@@ -531,7 +531,7 @@ const handleFileChange = (
     }
     reader.readAsDataURL(files[0])
   }
-  console.log(typeof targetObject[property], product.value)
+ 
 }
 const uploadImage = async (event: Event) => {
   const formData = new FormData()
@@ -572,7 +572,7 @@ const deleteImage = async (image: { _id: string }) => {
   deleting.value = image._id
   try {
     const formData = new FormData()
-    console.log(image._id, product.value._id)
+   
     formData.append('image_id', image._id)
     formData.append('product_id', product.value._id)
     const response = await useFetch(`/api/back-admin/products/imageDelete`, {

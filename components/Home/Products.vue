@@ -47,7 +47,7 @@ interface Product {
 const products = ref<Product[]>([])
 const getProducts = async () => {
   const { data } = await $fetch<{ data: Product[] }>('/api/products/giftbox')
-  console.log(data)
+ 
   products.value = data
 }
 onMounted(() => {

@@ -70,7 +70,7 @@ const submitForm = async () => {
       method: 'POST',
       body: formData.value,
     })
-    console.log(response)
+   
     if (response?.success) {
       // Handle success
       toast.add({

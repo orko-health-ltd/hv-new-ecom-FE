@@ -111,6 +111,7 @@ export interface Order {
     district: string
     country: string
   }
+  coupon : Coupon
   contactPerson: {
     name: string
     phone: string
@@ -159,6 +160,7 @@ export interface Banner {
   description: string
   image: string
   is_active: boolean
+  is_popup: boolean
   color:string
   links: {
     title: string

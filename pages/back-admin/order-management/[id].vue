@@ -487,7 +487,7 @@ const getOrder = async () => {
   }
 }
 const updatePaymentStatus = async (id: string) => {
-  console.log(order.value)
+ 
   let formdata = {
     paymentStatus: 'paid',
     ssl_ipn: JSON.stringify({

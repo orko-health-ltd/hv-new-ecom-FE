@@ -755,19 +755,23 @@ const teas = [
     },
     {
       label: 'Dragon Well Green Tea',
-      to: '/shop/dragon-well-green-tea/',
+      to: '/shop/green-tea/',
     },
     {
       label: 'Golden Eyebrow Black Tea',
-      to: '/shop/golden-eyebrow-black-tea/',
+      to: '/shop/gebt/',
     },
     {
       label: 'Red Robe Olong Tea',
-      to: '/shop/red-robe-olong-tea',
+      to: '/shop/rrot',
     },
     {
       label: 'Silver Needle White Tea',
-      to: '/shop/silver-needle-white-tea',
+      to: '/shop/white-tea',
+    },
+    {
+      label: 'Black tea',
+      to: '/shop/black-tea',
     },
   ],
 ]
@@ -827,10 +831,9 @@ const getProducts = async () => {
   const data = await $fetch<Product[]>('/api/products')
 
   products.value = data
-  console.log(data)
+ 
 }
 
-console.log(products.value)
 watch(route, () => {
   isOpen.value = false
   isCartOpen.value = false

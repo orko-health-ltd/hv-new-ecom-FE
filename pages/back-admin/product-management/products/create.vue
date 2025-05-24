@@ -487,11 +487,8 @@ const createProduct = async () => {
       }
     })
 
-    console.log('FormData Entries:')
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]) // Debugging log
-    }
-    console.log('FormData Contents:', formData)
+  
+  
     const { data, error } = await useFetch('/api/back-admin/products/create', {
       method: 'POST',
       body: formData,

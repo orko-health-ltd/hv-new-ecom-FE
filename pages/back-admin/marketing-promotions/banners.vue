@@ -25,6 +25,7 @@ const banner = ref<Banner>({
   description: '',
   color: '#ffffff',
   is_active: true,
+  is_popup: false,
   links: [
     {
       title: '',
@@ -45,7 +46,7 @@ const handleFileChange = (
   if (files && files.length > 0) {
     targetObject[property] = files[0]
     imageData.value = files[0]
-    console.log(files[0])
+  
     const reader = new FileReader()
     reader.onload = (e: ProgressEvent<FileReader>) => {
       if (e.target?.result && typeof e.target.result === 'string') {
@@ -81,6 +82,7 @@ const createBanner = async () => {
       image: '',
       color: '#ffffff',
       is_active: true,
+      is_popup: false,
       links: [
         {
           title: '',
@@ -106,7 +108,7 @@ const createBanner = async () => {
       timeout: 1500,
     })
     creating.value = false
-    console.log(error)
+  
   }
   creating.value = false
 }
@@ -149,6 +151,7 @@ const updateBanner = async () => {
       description: '',
       image: '',
       is_active: true,
+      is_popup: false,
       color: '#ffffff',
       links: [
         {
@@ -326,6 +329,15 @@ definePageMeta({
                         required
                         placeholder="Banner"
                       />
+                      <div class="flex gap-10">
+                         <Label for="first-name">Is Popup</Label>
+                        <Switch
+                        @click="banner.is_popup = !banner.is_popup"
+                        class="h-5 w-11"
+                        :checked="banner.is_popup"
+                      />
+                      </div>
+                     
                     </div>
 
                     <div class="flex gap-5">
@@ -423,6 +435,7 @@ definePageMeta({
                           description: '',
                           image: '',
                           is_active: false,
+                          is_popup: false,
                           color: '#ffffff',
                           links: [
                             {
@@ -455,6 +468,7 @@ definePageMeta({
                       </TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Popup</TableHead>
 
                       <TableHead class="hidden md:table-cell">
                         Description
@@ -493,6 +507,10 @@ definePageMeta({
                         >
                           {{ bannerData.is_active ? 'Active' : 'Inactive' }}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <UIcon v-if="bannerData.is_popup" name="material-symbols:check-circle-outline" class="text-xl text-green-500" />
+                        <UIcon v-else name="ep:warning" class="text-xl text-yellow-500" />
                       </TableCell>
 
                       <TableCell class="hidden md:table-cell">

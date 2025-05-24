@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/tailwind.css'],
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'https://dev.haldavalley.com',
+      apiBase: 'https://dev.haldavalley.com',
       appUrl: process.env.APP_URL,
       sslKey: process.env.SSL_KEY,
       sslPass: process.env.SSL_PASS,

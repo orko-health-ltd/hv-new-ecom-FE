@@ -32,7 +32,7 @@
     <div class="flex flex-col space-y-4 items-center justify-center">
     <h1 class="text-4xl font-bold"> PRODUCTION</h1>
     <p class="text-xl/8 font-light gap-2">
-Halda Valley is a tea estate where growth is hardwired into her DNA. Since 2010, we have achieved exponential growth in CTC tea production and awarded for Highest yield per hector amongst all tea gardens in Bangladesh. On 2020, we produced record 3380 kg CTC tea / hector against 1250 kg CTC tea / hector national average production.</p>
+Halda Valley is a tea estate where growth is hardwired into her DNA. Since 2010, we have achieved exponential growth in CTC tea production and awarded for Highest yield per hector amongst all tea gardens in Bangladesh. On 2024, we produced record 3380 kg CTC tea / hector against 1250 kg CTC tea / hector national average production.</p>
    </div>
    <div>
    

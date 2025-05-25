@@ -781,14 +781,14 @@ const abouts = [
       label: 'Our Story',
       to: '/about-us/our-story',
     },
-    {
-      label: 'Timeline',
-      to: '/about-us/timeline',
-    },
-    {
-      label: 'Our People',
-      to: '/about-us/our-people',
-    },
+    // {
+    //   label: 'Timeline',
+    //   to: '/about-us/timeline',
+    // },
+    // {
+    //   label: 'Our People',
+    //   to: '/about-us/our-people',
+    // },
     {
       label: 'Corporate Client List',
       to: '/about-us/corporate-client-list',

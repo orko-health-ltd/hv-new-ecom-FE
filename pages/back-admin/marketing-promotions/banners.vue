@@ -141,6 +141,7 @@ const updateBanner = async () => {
     if (imageData.value) formData.append('image', imageData.value)
     formData.append('description', banner.value.description)
     formData.append('links', JSON.stringify(banner.value.links))
+    formData.append('is_popup', banner.value.is_popup.toString())
     await $fetch('/api/back-admin/banners/' + banner.value._id, {
       method: 'POST',
       body: formData,

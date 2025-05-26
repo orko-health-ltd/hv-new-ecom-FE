@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
     formData.append('title', getValue('title'))
     formData.append('color', getValue('color'))
     formData.append('links', getValue('links'))
+    formData.append('is_popup', getValue('is_popup'))
     formData.append('description', getValue('description'))
    
     const imageField = body.find((item) => item.name === 'image')

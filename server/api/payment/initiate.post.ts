@@ -4,7 +4,7 @@ import SSLCommerz from 'sslcommerz-lts'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    console.log('body',body)
+    
     const { order_data } = body
     const config = useRuntimeConfig()
     const store_id = config.public.sslKey
@@ -43,6 +43,8 @@ export default defineEventHandler(async (event) => {
     const apiResponse = await sslcz.init(data)
     if (apiResponse.status == 'SUCCESS') {
       //Create Temporary Order in your Database
+      console.log('order -data',order_data)
+
       const formData = new FormData()
       formData.append('customerInfo', JSON.stringify(order_data.customerInfo))
       formData.append('paymentMethod', order_data.paymentMethod)

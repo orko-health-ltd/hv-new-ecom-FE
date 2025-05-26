@@ -610,6 +610,7 @@ const pay = async () => {
       phone: customerInfo.value.phone,
       address: customerInfo.value.address,
     },
+    discount:discount.value,
     paymentMethod: selectedPayment.value,
     subTotal: cartStore.total,
     shippingcost: cartStore.shippingMethod,

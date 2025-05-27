@@ -223,7 +223,7 @@
                         <Button
                           class="text-white"
                           v-if="
-                            order.paymentMethod === 'cod' &&
+                            (order.paymentMethod === 'cod' ||  order.paymentMethod === 'partial') &&
                             order.paymentStatus === 'pending' &&
                             order.status != 'cancelled'
                           "
@@ -232,6 +232,14 @@
                           >Mark as Paid</Button
                         >
                       </div>
+                    </div>
+                    <div v-if="order" class="flex justify-between">
+                      <span class="text-muted-foreground">Amount Paid:</span>
+                      <span class="font-medium">{{ order.paymentStatus === 'pending' ? order.partialPayment : order.total}}</span>
+                    </div>
+                    <div v-if="order" class="flex justify-between">
+                      <span class="text-muted-foreground">Amount Due:</span>
+                      <span class="font-medium">{{ order.total- (order.paymentStatus === 'pending' ? order.partialPayment : order.total )}}</span>
                     </div>
                   </div>
                 </div>

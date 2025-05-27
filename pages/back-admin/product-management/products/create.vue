@@ -396,7 +396,7 @@ const categories = ref<Category[]>([])
 const images = ref<Array<string>>([])
 const front_image = ref<string>('')
 const back_image = ref<string>('')
-const formats = ['Loose Leaf', 'Tea Bag']
+const formats = ['Loose Leaf', 'Tea Bag' , 'Accessory']
 const getSkus = async () => {
   try {
     const { data, refresh } = await useFetch<{ data: Sku[] }>(

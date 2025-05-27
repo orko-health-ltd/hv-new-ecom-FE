@@ -12,16 +12,61 @@ interface User {
   _id: string
   name: string
   email: string
+  password:string
+  confirm_password: string
   role: string
+  role_name: string
 }
+const user = ref<User>({
+  _id: '',
+  name: '',
+  email: '',
+  password: '',
+  confirm_password: '',
+  role_name: '',
+  role: '',
+})
+const toast = useToast()
 const showCategoryForm = ref(false)
 const creating = ref(false)
 const createCategory = async () => {
   creating.value = true
   try {
-    // await createCategoryMutation.mutateAsync({
-    //     name: create
-    // })
+    if (!user.value.name || !user.value.email || !user.value.password || !user.value.confirm_password) {
+      toast.add({
+        title: 'Please fill all fields',
+        color: 'red',
+        timeout: 1500,
+      })
+      return
+    }
+    if (user.value.password !== user.value.confirm_password) {
+      toast.add({
+        title: 'Passwords do not match',
+        color: 'red',
+        timeout: 1500,
+      })
+      return
+    }
+    const { data, error } = await useFetch('/api/back-admin/users/create', {
+      method: 'POST',
+      body: user.value,
+    })
+    if (error.value) {
+      console.error('Error creating user:', error.value)
+      toast.add({
+        title: 'Error creating user',
+        color: 'red',
+        timeout: 1500,
+      })
+      return
+    }
+    toast.add({
+        title: 'User Created Successfully',
+        color: 'green',
+        timeout: 1500,
+      })
+      refresh()
     showCategoryForm.value = false
   } catch (error) {
     console.log(error)
@@ -168,12 +213,21 @@ definePageMeta({
                   <div class="grid grid-cols-2 gap-4">
                     <div class="grid gap-2">
                       <Label for="first-name">User name</Label>
-                      <Input id="first-name" placeholder="Category" required />
+                      <Input id="first-name" v-model="user.name" placeholder="Name" required />
                     </div>
                     <div class="grid gap-2">
-                      <Label for="last-name">User Image</Label>
-                      <Input id="last-name" type="file" required />
+                      <Label for="first-name">User Email</Label>
+                      <Input id="first-name" v-model="user.email" type="email" placeholder="Email" required />
                     </div>
+                    <div class="grid gap-2">
+                      <Label for="first-name"> Password</Label>
+                      <Input id="first-name" v-model="user.password" type="password" placeholder="Password" required />
+                    </div>
+                    <div class="grid gap-2">
+                      <Label for="first-name">Confirm Password</Label>
+                      <Input id="first-name" v-model="user.confirm_password" type="password" placeholder="Confirm Password" required />
+                    </div>
+                   
                   </div>
                 </CardContent>
                 <CardFooter class="gap-3">
@@ -209,68 +263,33 @@ definePageMeta({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead class="hidden w-[100px] sm:table-cell">
-                        <span class="sr-only">img</span>
-                      </TableHead>
+                    
                       <TableHead>Name</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Price
+                      <TableHead>Email</TableHead>
+                      <!-- <TableHead>Status</TableHead> -->
+                      <TableHead >
+                        Role
                       </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Total Sales
-                      </TableHead>
-                      <TableHead class="hidden md:table-cell">
-                        Created at
-                      </TableHead>
-                      <TableHead>
-                        <span class="sr-only">Actions</span>
-                      </TableHead>
+                    
+                     
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow v-for="user in users" :key="user._id">
-                      <TableCell class="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          class="aspect-square rounded-md object-cover"
-                          height="64"
-                          src="/assets/images/GEBT.jpg"
-                          width="64"
-                        />
-                      </TableCell>
+                     
                       <TableCell class="font-medium">
                         {{ user.name }}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline"> Draft </Badge>
+                        {{ user.email }}
                       </TableCell>
+                      <!-- <TableCell class="hidden md:table-cell">
+                        {{ user.is_active ? 'Active' : 'Inactive' }}
+                      </TableCell> -->
                       <TableCell class="hidden md:table-cell">
-                        $499.99
+                        {{ user.role_name }}
                       </TableCell>
-                      <TableCell class="hidden md:table-cell"> 25 </TableCell>
-                      <TableCell class="hidden md:table-cell">
-                        2023-07-12 10:42 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger as-child>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal class="h-4 w-4" />
-                              <span class="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+                    
                     </TableRow>
                   </TableBody>
                 </Table>

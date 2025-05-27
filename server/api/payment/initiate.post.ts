@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     const is_live = true
     const order_id = 'ORD-' + Date.now()
     const data = {
-      total_amount: body.amount,
+      total_amount:body.order_data.paymentMethod == 'partial' ? body.order_data.partialPayment : body.amount,
       currency: 'BDT',
       tran_id: order_id,
       success_url: `${config.public.appUrl}/billing?success=true&order_id=${order_id}`,
@@ -54,6 +54,7 @@ export default defineEventHandler(async (event) => {
       formData.append('shippingcost', order_data.shippingcost)
       formData.append('products', JSON.stringify(order_data.products))
       formData.append('totalAmount', order_data.totalAmount)
+      formData.append('partialPayment', order_data.partialPayment)
       formData.append(
         'shippingAddress',
         JSON.stringify(order_data.shippingAddress)

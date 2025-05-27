@@ -195,7 +195,15 @@
                 @click="selectedPayment = 'online_payment'"
               >
                 <i class="fas fa-credit-card"></i>
-                <span>Online Payment</span>
+                <span>Online Payment(Full)</span>
+              </div>
+              <div
+                class="payment-option"
+                :class="{ active: selectedPayment === 'partial' }"
+                @click="selectedPayment = 'partial'"
+              >
+                <i class="fas fa-credit-card"></i>
+                <span>Online Payment(Partial)</span>
               </div>
 
               <div
@@ -601,7 +609,7 @@ const pay = async () => {
     processCheckout()
     return
   }
-
+ 
   let form = {
     customerInfo: {
       first_name: customerInfo.value.firstName,
@@ -613,6 +621,7 @@ const pay = async () => {
     discount:discount.value,
     paymentMethod: selectedPayment.value,
     subTotal: cartStore.total,
+    partialPayment: 0,
     shippingcost: cartStore.shippingMethod,
     products: cartStore.cart.map((item) => ({
       product_id: item.id,
@@ -633,6 +642,10 @@ const pay = async () => {
       name: customerInfo.value.contactPerson,
       phone: customerInfo.value.contactPersonPhone,
     },
+  }
+  if(selectedPayment.value == 'partial')
+  {
+    form.partialPayment = form.totalAmount /2
   }
   try{
     

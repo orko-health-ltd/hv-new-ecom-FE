@@ -363,7 +363,6 @@ definePageMeta({
                           :alt="categoryData.name"
                           class="object-cover rounded-md cursor-pointer transition duration-300"
                         />
-                        <img :src="$config.public.apiBase+'/'+categoryData.image" alt="">
                       </TableCell>
                       <TableCell class="font-medium">
                         {{ categoryData.name }}

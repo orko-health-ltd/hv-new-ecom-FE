@@ -190,7 +190,7 @@
                   </div>
                   <div class="grid gap-2">
                     <Label for="last-name">Discount Unit</Label>
-                    <Select v-model="product.discount_unit">
+                    <Select v-model="product.discount_unit" required>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Discount Unit" />
                       </SelectTrigger>
@@ -488,11 +488,22 @@ const createProduct = async () => {
     })
 
   
-  
-    const { data, error } = await useFetch('/api/back-admin/products/create', {
+    const { data, error } = await useFetch<{ status: string, message: { message: string } }>('/api/back-admin/products/create', {
+   
       method: 'POST',
       body: formData,
     })
+    if(data.value?.status == 'error')
+    {
+      toast.add({
+        title: 'Error creating product',
+        description: data.value?.message.message || 'Something went wrong',
+        color: 'red',
+        timeout: 3500,
+      })
+      creating.value = false
+      return
+    }
     toast.add({
       title: 'Product created successfully',
       color: 'green',

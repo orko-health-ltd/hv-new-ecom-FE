@@ -40,6 +40,8 @@ export default defineNuxtConfig({
           content:
             'Halda Valley is a premium tea company offering the finest quality teas sourced from the pristine Halda Valley region. We are committed to delivering exceptional tea experiences through our carefully curated selection of premium teas.',
         },
+         { name: 'google-site-verification',
+          content: '0NF6YMDjFuV6jCyl01Mw9fGUO4g6QpstGIfLrUDQkEk' }
       ],
     },
   },

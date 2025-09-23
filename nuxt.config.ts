@@ -33,8 +33,8 @@ export default defineNuxtConfig({
   app: {
     head: {
       meta: [
-        { name: 'author', content: 'Ishmam Bin Azim' },
-        { name: 'title', content: 'Halda Valley' },
+        { name: 'author', content: 'Ishmam Bin Azim'},
+        { name: 'title', content: 'Halda Valley'},
         {
           name: 'description',
           content:

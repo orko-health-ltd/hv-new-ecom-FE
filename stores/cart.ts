@@ -56,7 +56,7 @@ export const useMyCartStore = defineStore('myCartStore', {
       {
         id: 1,
         name: 'Inside Dhaka',
-        price: 60,
+        price: 70,
       },
       {
         id: 2,

@@ -1,68 +1,86 @@
 <template>
   <div class="billing-container">
-      <Collapsible v-model:open="isOpen" class="block sm:hidden bg-gray-100 p-3">
-    <CollapsibleTrigger class="w-full flex justify-between items-center"> 
-      <h2 class="text-xl font-semibold">Order Summary </h2>
-      <div class="flex gap-2 items-center">
-           <span class="text-xl font-semibold">৳ {{ cartStore.subtotal }}</span>
-          
-         <UIcon v-if="!isOpen" class="text-xl" name="material-symbols:keyboard-arrow-down-rounded" />
-         <UIcon v-else class="text-xl" name="material-symbols:keyboard-arrow-up-rounded" />
-      </div>
-   
-    </CollapsibleTrigger>
-    <CollapsibleContent>
-      <section class="shadow-lg p-4 mt-10 rounded-lg mb-4">
-       
-        <div class="products-list">
-          <div
-            v-for="(item, index) in cartStore.cart"
-            :key="index"
-            class="product-item"
-          >
-            <NuxtImg
-              format="webp"
-              :src="`/halda/${item.product.front_image}`"
-              :alt="item.product.name"
-            />
-            <div class="flex gap-4 justify-between w-full">
-              <div class="product-details">
-                <h3>{{ item.product.name }}</h3>
-                <p>Quantity: {{ item.quantity }}</p>
+    <Collapsible v-model:open="isOpen" class="block sm:hidden bg-gray-100 p-3">
+      <CollapsibleTrigger class="w-full flex justify-between items-center">
+        <h2 class="text-xl font-semibold">Order Summary</h2>
+        <div class="flex gap-2 items-center">
+          <span class="text-xl font-semibold">৳ {{ cartStore.subtotal }}</span>
+
+          <UIcon
+            v-if="!isOpen"
+            class="text-xl"
+            name="material-symbols:keyboard-arrow-down-rounded"
+          />
+          <UIcon
+            v-else
+            class="text-xl"
+            name="material-symbols:keyboard-arrow-up-rounded"
+          />
+        </div>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <section class="shadow-lg p-4 mt-10 rounded-lg mb-4">
+          <div class="products-list">
+            <div
+              v-for="(item, index) in cartStore.cart"
+              :key="index"
+              class="product-item"
+            >
+              <NuxtImg
+                format="webp"
+                :src="`/halda/${item.product.front_image}`"
+                :alt="item.product.name"
+              />
+              <div class="flex gap-4 justify-between w-full">
+                <div class="product-details">
+                  <h3>{{ item.product.name }}</h3>
+                  <p>Quantity: {{ item.quantity }}</p>
+                </div>
+                <p class="text-nowrap font-semibold">৳ {{ item.price }}</p>
               </div>
-              <p class="text-nowrap font-semibold">৳ {{ item.price }}</p>
             </div>
           </div>
-        </div>
-        <div class="total-section">
-          <div class="subtotal">
-            <span>Subtotal</span>
-            <span>৳ {{ cartStore.total }}</span>
-          </div>
-          <div class="shipping">
-            <span>Shipping</span>
-            <span>৳ {{ shippingCost }}</span>
-          </div>
-           <p v-if="cartStore.total < 1000" class="text-xs flex justify-start items-center text-amber-500">Shop above 1000tk to get free delivery</p>
-          <p v-else class="text-xs flex justify-start items-center text-green-500">
-            <UIcon name="material-symbols:check-circle-outline" />
-           Great, you are eligible for free delivery</p>
-          <!-- <div class="tax">
+          <div class="total-section">
+            <div class="subtotal">
+              <span>Subtotal</span>
+              <span>৳ {{ cartStore.total }}</span>
+            </div>
+            <div class="shipping">
+              <span>Shipping</span>
+              <span>৳ {{ shippingCost }}</span>
+            </div>
+            <p
+              v-if="cartStore.total < 1000"
+              class="text-xs flex justify-start items-center text-amber-500"
+            >
+              Shop above 1000tk to get free delivery
+            </p>
+            <p
+              v-else
+              class="text-xs flex justify-start items-center text-green-500"
+            >
+              <UIcon name="material-symbols:check-circle-outline" />
+              Great, you are eligible for free delivery
+            </p>
+            <!-- <div class="tax">
 <span>Tax</span>
 <span>{{ cartStore.tax }}</span>
 </div> -->
-          <div class="total">
-            <span>Total</span>
-            <span>৳ {{ cartStore.subtotal }}</span>
+            <div class="total">
+              <span>Total</span>
+              <span>৳ {{ cartStore.subtotal }}</span>
+            </div>
           </div>
-        </div>
-      </section>
-    </CollapsibleContent>
-  </Collapsible>
+        </section>
+      </CollapsibleContent>
+    </Collapsible>
     <Invoice v-if="success" :invoice="cartStore.invoice" />
-    <div v-else class="billing-form p-5 sm:p-10 grid pt-16 gap-5 grid-cols-2 sm:grid-cols-3">
+    <div
+      v-else
+      class="billing-form p-5 sm:p-10 grid pt-16 gap-5 grid-cols-2 sm:grid-cols-3"
+    >
       <div class="col-span-2">
-        <div class="flex flex-col justify-center items-center ">
+        <div class="flex flex-col justify-center items-center">
           <img
             class="w-32 h-30 object-cover"
             src="/assets/images/logo/golden_logo.png"
@@ -142,11 +160,7 @@
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <Select
-                  required
-                  v-model="customerInfo.district"
-                 
-                >
+                <Select required v-model="customerInfo.district">
                   <SelectTrigger>
                     <SelectValue placeholder="Select District" />
                   </SelectTrigger>
@@ -267,41 +281,41 @@
                 <p>Quantity: {{ item.quantity }}</p>
               </div>
               <div class="flex flex-col">
-                 <sup class="text-nowrap text-end font-semibold line-through">৳ {{ item.price }}</sup>
-              <p class="text-nowrap font-semibold ">৳ {{ discountedPrice(item.product) }}
-
-                
-              </p>
+                <sup class="text-nowrap text-end font-semibold line-through"
+                  >৳ {{ item.price }}</sup
+                >
+                <p class="text-nowrap font-semibold">
+                  ৳ {{ discountedPrice(item.product) }}
+                </p>
               </div>
-             
             </div>
           </div>
         </div>
         <div class="coupon-section mb-4">
-                  <div class="flex gap-2">
-                    <input
-                      type="text"
-                      v-model="coupon.Code"
-                      placeholder="Enter coupon code"
-                      class="flex-1 px-3 py-2 border rounded-lg"
-                    />
-                    <Button
-                      @click="applyCoupon"
-                      :disabled="loading"
-                      class="whitespace-nowrap text-white"
-                    >
-                      <UIcon v-if="loading" name="svg-spinners:6-dots-rotate" />
-                      Apply Coupon
-                    </Button>
-                  </div>
-                  <p v-if="coupon.Error" class="text-red-500 text-sm mt-1">
-                    {{ coupon.Error }}
-                  </p>
-                  <p v-if="coupon.Success" class="text-green-500 text-sm mt-1">
-                    {{ coupon.Success }}
-                  </p>
-                </div>
-        
+          <div class="flex gap-2">
+            <input
+              type="text"
+              v-model="coupon.Code"
+              placeholder="Enter coupon code"
+              class="flex-1 px-3 py-2 border rounded-lg"
+            />
+            <Button
+              @click="applyCoupon"
+              :disabled="loading"
+              class="whitespace-nowrap text-white"
+            >
+              <UIcon v-if="loading" name="svg-spinners:6-dots-rotate" />
+              Apply Coupon
+            </Button>
+          </div>
+          <p v-if="coupon.Error" class="text-red-500 text-sm mt-1">
+            {{ coupon.Error }}
+          </p>
+          <p v-if="coupon.Success" class="text-green-500 text-sm mt-1">
+            {{ coupon.Success }}
+          </p>
+        </div>
+
         <div class="total-section">
           <div class="subtotal">
             <span>Subtotal</span>
@@ -319,10 +333,19 @@
             <span>Shipping</span>
             <span class="">৳{{ shippingCost }} </span>
           </div>
-          <p v-if="cartStore.total > 1000" class="text-md flex justify-start items-center text-green-500">
+          <p
+            v-if="cartStore.total > 1000"
+            class="text-md flex justify-start items-center text-green-500"
+          >
             <UIcon name="material-symbols:check-circle-outline" />
-           Great, you are eligible for free delivery</p>
-          <p v-else class="text-md flex justify-start items-center text-amber-500">Shop above 1000tk to get free delivery</p>
+            Great, you are eligible for free delivery
+          </p>
+          <p
+            v-else
+            class="text-md flex justify-start items-center text-amber-500"
+          >
+            Shop above 1000tk to get free delivery
+          </p>
           <!-- <div class="tax">
 <span>Tax</span>
 <span>{{ cartStore.tax }}</span>
@@ -367,9 +390,7 @@
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import division from '@/divisions.json'
 import moment from 'moment'
-import coupons from '~/server/api/back-admin/coupons'
-import Id from '~/server/api/order/[id]'
-import type { Order, Product } from '~/types'
+import type { Order } from '~/types'
 const cartStore = useMyCartStore()
 const paymentUrl = ref('')
 const route = useRoute()
@@ -395,39 +416,37 @@ const applyCoupon = async () => {
         coupon: coupon.value.Code,
       },
     })
-   
+
     if (response.value) {
       let couponData = response.value?.data
-      if (moment(couponData.start_date).isAfter(moment()) || moment(couponData.expiry_date).isBefore(moment())) {
+      if (
+        moment(couponData.start_date).isAfter(moment()) ||
+        moment(couponData.expiry_date).isBefore(moment())
+      ) {
         coupon.value.Error = 'Coupon is expired 1'
         loading.value = false
         return
-      }
-      else if (couponData.min_order_amount > cartStore.subtotal) {
-        coupon.value.Error = 'Minimum purchase amount is ' + couponData.min_order_amount + 'tk'
+      } else if (couponData.min_order_amount > cartStore.subtotal) {
+        coupon.value.Error =
+          'Minimum purchase amount is ' + couponData.min_order_amount + 'tk'
         loading.value = false
         return
-      }
-      else if (couponData.usage <= couponData.total_orders) {
+      } else if (couponData.usage <= couponData.total_orders) {
         coupon.value.Error = 'Coupon is expired 2'
         loading.value = false
         return
-      }
-      else {
+      } else {
         let discountAmount = 0
-      if (couponData.type == 'percentage') {
-          discountAmount =(cartStore.total * couponData.value) / 100
-      }
-      else
-        discountAmount = couponData.value
-          if (discountAmount >= couponData.max_discount_amount)
-            couponDiscount.value = couponData.max_discount_amount
-      else couponDiscount.value = discountAmount
+        if (couponData.type == 'percentage') {
+          discountAmount = (cartStore.total * couponData.value) / 100
+        } else discountAmount = couponData.value
+        if (discountAmount >= couponData.max_discount_amount)
+          couponDiscount.value = couponData.max_discount_amount
+        else couponDiscount.value = discountAmount
         coupon.value.Success = 'Coupon applied successfully'
         coupon.value.id = couponData._id
       }
-    
-     
+
       // cartStore.applyCoupon(coupon.value.Code)
     } else {
       coupon.value.Error = response.value?.status
@@ -453,27 +472,29 @@ const customerInfo = ref({
 })
 const divisions = division.divisions
 const shippingCost = computed(() => {
- customerInfo.value.district == 'Dhaka'
-    ? (cartStore.shippingMethod = 60)
+  customerInfo.value.district == 'Dhaka'
+    ? (cartStore.shippingMethod = 70)
     : (cartStore.shippingMethod = 120)
-    if(cartStore.subtotal >=1000){
-      cartStore.shippingMethod = 0
-    }
+  if (cartStore.subtotal >= 1000) {
+    cartStore.shippingMethod = 0
+  }
   cartStore.calculateSubtotal()
   return cartStore.shippingMethod
 })
-const discountedPrice = (product:{price:number,discount:number,discount_unit:string}) => {
+const discountedPrice = (product: {
+  price: number
+  discount: number
+  discount_unit: string
+}) => {
   console.log(product)
   if (product.discount) {
-      if (product?.discount && product?.discount > 0 && product?.price) {
-    if (product.discount_unit === 'percentage') {
-      
-      return product.price -((product.price * product.discount) / 100) 
+    if (product?.discount && product?.discount > 0 && product?.price) {
+      if (product.discount_unit === 'percentage') {
+        return product.price - (product.price * product.discount) / 100
+      } else {
+        return product.price - product.discount
+      }
     }
-    else {
-     return product.price -(product.discount)
-    }
-  }
   }
 }
 const districts = computed(() => {
@@ -520,11 +541,11 @@ const processCheckout = async () => {
     shippingcost: cartStore.shippingMethod,
     products: cartStore.cart.map((item) => ({
       product_id: item.id,
-      product_name : item.product.name,
+      product_name: item.product.name,
       quantity: item.quantity,
       price: item.price,
     })),
-    discount : discount.value,
+    discount: discount.value,
     totalAmount: cartStore.subtotal - discount.value,
     shippingAddress: {
       street: customerInfo.value.address,
@@ -546,7 +567,7 @@ const processCheckout = async () => {
       body: form,
     }
   )
- 
+
   if (status == 'success') {
     setTimeout(() => {
       route.query.order_id = order.order_id
@@ -594,8 +615,8 @@ const pay = async () => {
     customerInfo.value.district +
     ' , ' +
     customerInfo.value.country),
-    (cartStore.invoice.total = cartStore.subtotal - discount.value )
-    cartStore.invoice.discount = discount.value
+    (cartStore.invoice.total = cartStore.subtotal - discount.value)
+  cartStore.invoice.discount = discount.value
   cartStore.invoice.subtotal = cartStore.total
   cartStore.invoice.created_at = new Date().toISOString()
   cartStore.invoice.items = cartStore.cart.map((item) => ({
@@ -609,7 +630,7 @@ const pay = async () => {
     processCheckout()
     return
   }
- 
+
   let form = {
     customerInfo: {
       first_name: customerInfo.value.firstName,
@@ -618,14 +639,14 @@ const pay = async () => {
       phone: customerInfo.value.phone,
       address: customerInfo.value.address,
     },
-    discount:discount.value,
+    discount: discount.value,
     paymentMethod: selectedPayment.value,
     subTotal: cartStore.total,
     partialPayment: 0,
     shippingcost: cartStore.shippingMethod,
     products: cartStore.cart.map((item) => ({
       product_id: item.id,
-      product_name : item.product.name,
+      product_name: item.product.name,
       quantity: item.quantity,
       price: item.price,
     })),
@@ -643,70 +664,69 @@ const pay = async () => {
       phone: customerInfo.value.contactPersonPhone,
     },
   }
-  if(selectedPayment.value == 'partial')
-  {
-    form.partialPayment = form.totalAmount /2
+  if (selectedPayment.value == 'partial') {
+    form.partialPayment = form.totalAmount / 2
   }
-  try{
-    
-  const response = await $fetch<{ status: string; payment_url?: string }>(
-    '/api/payment/initiate',
-    {
-      method: 'POST',
-      body: {
-        amount: cartStore.subtotal - discount.value,
-        discount : discount.value,
-        customer_name:
-          customerInfo.value.firstName + ' ' + customerInfo.value.lastName,
-        customer_email: customerInfo.value.email,
-        customer_phone: customerInfo.value.phone,
-        customer_address: customerInfo.value.address,
-        customer_city: customerInfo.value.city,
-        customer_country: customerInfo.value.country,
-        customer_state: customerInfo.value.district,
-        num_of_items: cartStore.cart.length,
-        cart: cartStore.cart,
-        product_name: cartStore.cart.map((item) => item.product.name).join(','),
-        product_category: 'Tea',
-        product_profile: 'general',
-        order_data: form,
-      },
-    }
-  )
+  try {
+    const response = await $fetch<{ status: string; payment_url?: string }>(
+      '/api/payment/initiate',
+      {
+        method: 'POST',
+        body: {
+          amount: cartStore.subtotal - discount.value,
+          discount: discount.value,
+          customer_name:
+            customerInfo.value.firstName + ' ' + customerInfo.value.lastName,
+          customer_email: customerInfo.value.email,
+          customer_phone: customerInfo.value.phone,
+          customer_address: customerInfo.value.address,
+          customer_city: customerInfo.value.city,
+          customer_country: customerInfo.value.country,
+          customer_state: customerInfo.value.district,
+          num_of_items: cartStore.cart.length,
+          cart: cartStore.cart,
+          product_name: cartStore.cart
+            .map((item) => item.product.name)
+            .join(','),
+          product_category: 'Tea',
+          product_profile: 'general',
+          order_data: form,
+        },
+      }
+    )
 
-  if (response.status === 'success' && response.payment_url) {
-    paymentUrl.value = response.payment_url
-    window.location.href = paymentUrl.value // openPayment.value = true
-  }
+    if (response.status === 'success' && response.payment_url) {
+      paymentUrl.value = response.payment_url
+      window.location.href = paymentUrl.value // openPayment.value = true
+    }
+    loading.value = false
+  } catch (error) {
+    toast.add({ title: 'Payment failed.', color: 'red', timeout: 1500 })
     loading.value = false
   }
-  catch (error)
-  {
-    toast.add({ title: 'Payment failed.', color: 'red', timeout: 1500 })
-  loading.value = false
-}
-
 }
 const discount = computed(() => {
   let price = 0
   cartStore.cart.forEach((item) => {
     if (item.product.discount) {
-      if (item.product?.discount && item.product?.discount > 0 && item.product?.price) {
-    if (item.product.discount_unit === 'percentage') {
-      
-      price += ((item.product.price * item.product.discount) / 100) * item.quantity
-    }
-    else {
-      price +=  (item.product.discount) * item.quantity
-    }
-  }
-  else {
-    price +=  0
-  }
+      if (
+        item.product?.discount &&
+        item.product?.discount > 0 &&
+        item.product?.price
+      ) {
+        if (item.product.discount_unit === 'percentage') {
+          price +=
+            ((item.product.price * item.product.discount) / 100) * item.quantity
+        } else {
+          price += item.product.discount * item.quantity
+        }
+      } else {
+        price += 0
+      }
     }
   })
   console.log(couponDiscount.value)
-  return price+couponDiscount.value
+  return price + couponDiscount.value
 })
 onMounted(async () => {
   if (route.query.success == 'true' && route.query.order_id) {
@@ -719,7 +739,7 @@ onMounted(async () => {
         cartStore.invoice.id = route.query.order_id as string
         cartStore.invoice.paymentStatus = 'paid'
         cartStore.clearCart()
-      
+
         toast.add({
           title: 'Order Placed Successfully.',
           color: 'green',

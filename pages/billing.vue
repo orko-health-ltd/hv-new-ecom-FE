@@ -479,6 +479,9 @@ const shippingCost = computed(() => {
     cartStore.shippingMethod = 0
   }
   cartStore.calculateSubtotal()
+  console.log('Cart Store')
+  console.log(cartStore)
+
   return cartStore.shippingMethod
 })
 const discountedPrice = (product: {
